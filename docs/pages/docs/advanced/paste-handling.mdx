@@ -1,29 +1,29 @@
 ---
-title: Paste Handling
-description: This section explains how to handle paste events in BlockNote.
-imageTitle: Paste Handling
+title: 粘贴处理
+description: 本节介绍如何在 BlockNote 中处理粘贴事件。
+imageTitle: 粘贴处理
 ---
 
 import { Example } from "@/components/example";
 
-# Paste Handling
+# 粘贴处理
 
-BlockNote, by default, attempts to paste content in the following order:
+BlockNote 默认尝试按以下顺序粘贴内容：
 
--   VS Code compatible content
--   Files
+-   VS Code 兼容内容
+-   文件
 -   BlockNote HTML
 -   Markdown
 -   HTML
--   Plain text
+-   纯文本
 
-> In certain cases, BlockNote will attempt to detect markdown in the clipboard and paste that into the editor as rich text.
+> 在某些情况下，BlockNote 会尝试检测剪贴板中的 Markdown 并将其作为富文本粘贴到编辑器中。
 
-You can change the default paste behavior by providing a custom paste handler, which will give you full control over how pasted content is inserted into the editor.
+您可以通过提供自定义粘贴处理器来更改默认的粘贴行为，从而完全控制粘贴内容如何插入到编辑器中。
 
-## `pasteHandler` option
+## `pasteHandler` 选项
 
-The `pasteHandler` option is a function that receives the following arguments:
+`pasteHandler` 选项是一个函数，接收以下参数：
 
 ```ts
 type PasteHandler = (context: {
@@ -36,39 +36,39 @@ type PasteHandler = (context: {
 }) => boolean;
 ```
 
--   `event`: The paste event.
--   `editor`: The current editor instance.
--   `defaultPasteHandler`: The default paste handler. If you only need to customize the paste behavior a little bit, you can fall back on the default paste handler.
+-   `event`：粘贴事件。
+-   `editor`：当前的编辑器实例。
+-   `defaultPasteHandler`：默认的粘贴处理器。如果您只需稍微自定义粘贴行为，可以调用默认的粘贴处理器作为回退。
 
-The `defaultPasteHandler` function can be called with the following options:
+`defaultPasteHandler` 函数可以接受以下选项：
 
--   `prioritizeMarkdownOverHTML`: Whether to prioritize Markdown content in `text/plain` over `text/html` when pasting from the clipboard.
--   `plainTextAsMarkdown`: Whether to interpret plain text as markdown and paste that as rich text or to paste the text directly into the editor.
+-   `prioritizeMarkdownOverHTML`：是否在从剪贴板粘贴时优先考虑 `text/plain` 中的 Markdown 内容，而非 `text/html`。
+-   `plainTextAsMarkdown`：是否将纯文本视为 Markdown 并以富文本形式粘贴，或直接将文本粘贴到编辑器中。
 
 
-## Custom Paste Handler
+## 自定义粘贴处理器
 
-You can also provide your own paste handler by providing a function to the `pasteHandler` option.
+您也可以通过向 `pasteHandler` 选项提供一个函数来自定义粘贴处理器。
 
-In this example, we handle the paste event if the clipboard data contains `text/my-custom-format`. If we don't handle the paste event, we call the default paste handler to do the default behavior.
+在下面的示例中，如果剪贴板数据包含 `text/my-custom-format`，我们将处理粘贴事件。如果不处理该事件，则调用默认粘贴处理器执行默认行为。
 
 ```ts
 const editor = new BlockNoteEditor({
   pasteHandler: ({ event, editor, defaultPasteHandler }) => {
     if (event.clipboardData?.types.includes("text/my-custom-format")) {
-      // You can do any custom logic here, for example you could transform the clipboard data before pasting it
+      // 这里可以执行任何自定义逻辑，例如在粘贴前转换剪贴板数据
       const markdown = customToMarkdown(event.clipboardData.getData("text/my-custom-format"));
       
-      // The editor is able paste markdown (`pasteMarkdown`), HTML (`pasteHTML`), or plain text (`pasteText`)
+      // 编辑器能够粘贴 markdown（`pasteMarkdown`），HTML（`pasteHTML`）或纯文本（`pasteText`）
       editor.pasteMarkdown(markdown);
-      // We handled the paste event, so return true, returning false will cancel the paste event
+      // 我们已经处理了粘贴事件，返回 true，返回 false 将取消粘贴事件
       return true;
     }
 
-    // If we didn't handle the paste event, call the default paste handler to do the default behavior
+    // 如果未处理粘贴事件，则调用默认粘贴处理器执行默认行为
     return defaultPasteHandler();
   },
 });
 ```
 
-See an example of this in the [Custom Paste Handler](/examples/basic/custom-paste-handler) example.
+请参阅此示例的 [自定义粘贴处理器](/examples/basic/custom-paste-handler) 示例。

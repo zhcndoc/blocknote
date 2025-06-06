@@ -1,18 +1,18 @@
 ---
-description: Learn how documents (the content of the rich text editor) are structured to make the most out of BlockNote.
+description: 了解文档（富文本编辑器的内容）是如何结构化的，以便最大限度利用 BlockNote。
 ---
 
 import { Example } from "@/components/example";
 import { ThemedImage } from "@/components/ThemedImage";
 
-# Document Structure
+# 文档结构
 
-Learn how documents (the content of the rich text editor) are structured to make the most out of BlockNote.
+了解文档（富文本编辑器的内容）是如何结构化的，以便最大限度利用 BlockNote。
 
-## Blocks
+## 块（Blocks）
 
-Each BlockNote document is made up of a list of blocks.
-A block is a piece of content like a paragraph, heading, list item or image. Blocks can be dragged around by users in the editor. A block contains a piece of content and optionally nested (child) blocks:
+每个 BlockNote 文档由一个块列表组成。  
+块是一段内容，如段落、标题、列表项或图片。用户可以在编辑器中拖动块。块包含一段内容，并且可选地包含嵌套（子）块：
 
 <ThemedImage
   style={{ marginTop: "1em" }}
@@ -23,9 +23,9 @@ A block is a piece of content like a paragraph, heading, list item or image. Blo
   height={2000}
 />
 
-### Block Objects
+### 块对象（Block Objects）
 
-The `Block` type is used to describe any given block in the editor:
+`Block` 类型用于描述编辑器中的任意块：
 
 ```typescript
 type Block = {
@@ -37,19 +37,19 @@ type Block = {
 };
 ```
 
-`id:` The block's ID. Multiple blocks cannot share a single ID, and a block will keep the same ID from when it's created until it's removed.
+`id:` 块的 ID。多个块不能共享同一个 ID，且块在创建到移除之前保持不变。
 
-`type:` The block's type, such as a paragraph, heading, or list item. For an overview of built-in block types, see [Default Blocks](/docs/editor-basics/default-schema#default-blocks).
+`type:` 块的类型，例如段落、标题或列表项。内置块类型概览请参见[默认块](/docs/editor-basics/default-schema#default-blocks)。
 
-`props:` The block's properties, which is a set of key/value pairs that further specify how the block looks and behaves. Different block types have different props - see [Default Blocks](/docs/editor-basics/default-schema#default-blocks) for more.
+`props:` 块的属性，是一组键值对，用以进一步指定块的外观和行为。不同块类型拥有不同的属性 - 详见[默认块](/docs/editor-basics/default-schema#default-blocks)。
 
-`content:` The block's rich text content, usually represented as an array of `InlineContent` objects. This does not include content from any nested blocks. Read on to [Inline Content](/docs/editor-basics/document-structure#inline-content) for more on this.
+`content:` 块的富文本内容，通常表示为一组 `InlineContent` 对象的数组。不包括任何嵌套块的内容。更多内容请参阅[内联内容](/docs/editor-basics/document-structure#inline-content)。
 
-`children:` Any blocks nested inside the block. The nested blocks are also represented using `Block` objects.
+`children:` 该块内嵌套的任何块。嵌套块同样用 `Block` 对象表示。
 
-### Column Blocks
+### 列块（Column Blocks）
 
-The `@blocknote/xl-multi-column` package allows you to organize blocks side-by-side in columns. It introduces 2 additional block types, the column and column list:
+`@blocknote/xl-multi-column` 包允许你在列中并排组织块。它引入了两种额外的块类型：列和列列表：
 
 ```typescript
 type ColumnBlock = {
@@ -69,19 +69,19 @@ type ColumnListBlock = {
 };
 ```
 
-While both of these act as regular blocks, there are a few additional restrictions to have in mind when working with them:
+尽管这两者都表现为普通块，使用时须注意以下额外限制：
 
-- Children of columns must be regular blocks
-- Children of column lists must be columns
-- There must be at least 2 columns in a column list
+- 列的子块必须是普通块  
+- 列列表的子块必须是列  
+- 列列表中至少必须有两个列  
 
-## Inline Content
+## 内联内容（Inline Content）
 
-The `content` field of a block contains the rich-text content of a block. This is defined as an array of `InlineContent` objects. Inline content can either be styled text or a link (or a custom inline content type if you customize the editor schema).
+块的 `content` 字段包含块的富文本内容，定义为一组 `InlineContent` 对象的数组。内联内容可以是带样式的文本，也可以是链接（或者如果你自定义编辑器模式，则可能是自定义的内联内容类型）。
 
-### Inline Content Objects
+### 内联内容对象（Inline Content Objects）
 
-The `InlineContent` type is used to describe a piece of inline content:
+`InlineContent` 类型描述一段内联内容：
 
 ```typescript
 type Link = {
@@ -99,13 +99,14 @@ type StyledText = {
 type InlineContent = Link | StyledText;
 ```
 
-The `styles` property is explained below.
+`styles` 属性将在下文解释。
 
-### Other types of Block Content
+### 其它类型的块内容
 
-While most blocks use an array of `InlineContent` objects to describe their content (e.g.: paragraphs, headings, list items). Some blocks, like [images](/docs/editor-basics/default-schema#image), don't contain any rich text content, so their `content` fields will be `undefined`.
+多数块使用一组 `InlineContent` 对象描述内容（例如：段落、标题、列表项）。  
+一些块，如[图片](/docs/editor-basics/default-schema#image)，不包含任何富文本内容，因此其 `content` 字段为 `undefined`。
 
-[Tables](/docs/editor-basics/default-schema#table) are also different, as they contain `TableContent`. Here, each table cell is represented as an array of `InlineContent` objects:
+[表格](/docs/editor-basics/default-schema#table) 则不同，其包含 `TableContent`。在此，每个表格单元格表示为一组 `InlineContent` 对象的二维数组：
 
 ```typescript
 type TableContent = {
@@ -116,14 +117,14 @@ type TableContent = {
 };
 ```
 
-### Styles and Rich Text
+### 样式和富文本
 
-The `styles` property of `StyledText` objects is used to describe the rich text styles (e.g.: bold, italic, color) or other attributes of a piece of text. It's a set of key / value pairs that specify the styles applied to the text.
+`StyledText` 对象的 `styles` 属性用以描述富文本样式（例如：加粗、斜体、颜色）或其它文本属性。它是一组指定应用于文本的样式键值对。
 
-See the [Default Schema](/docs/editor-basics/default-schema) to learn which styles are included in BlockNote by default.
+查看[默认模式](/docs/editor-basics/default-schema)以了解 BlockNote 默认包含的样式。
 
-## Document JSON
+## 文档 JSON
 
-The demo below shows the editor contents (document) in JSON. It's an array of `Block` objects that updates as you type in the editor:
+下面演示展示编辑器内容（文档）为 JSON。它是一个不断更新的 `Block` 对象数组，随你在编辑器内输入而变化：
 
 <Example name="basic/block-objects" />

@@ -1,129 +1,129 @@
 ---
-title: Markdown & HTML
-description: It's possible to export or import Blocks to and from Markdown and HTML.
-imageTitle: Markdown & HTML
+title: Markdown 与 HTML
+description: 可以导出或导入块到 Markdown 和 HTML。
+imageTitle: Markdown 与 HTML
 path: /docs/converting-blocks
 ---
 
 import { Example } from "@/components/example";
 import { Callout } from "nextra/components";
 
-# Markdown & HTML
+# Markdown 与 HTML
 
-It's possible to export or import Blocks to and from Markdown and HTML.
+可以导出或导入块到 Markdown 和 HTML。
 
 <Callout type={"warning"}>
-    The functions to import/export to and from Markdown/HTML are considered "lossy"; some information might be dropped when you export Blocks to those formats.
+    导入/导出 Markdown/HTML 的功能被视为「有损」；导出块到这些格式时，部分信息可能会丢失。
 
-    To serialize Blocks to a non-lossy format (for example, to store the contents of the editor in your backend), simply export the built-in Block format using `JSON.stringify(editor.document)`.
+    要序列化块为无损格式（例如，存储编辑器内容到后端），只需使用 `JSON.stringify(editor.document)` 导出内置块格式。
 
 </Callout>
 
 ## Markdown
 
-BlockNote can import / export Blocks to and from Markdown. Note that this is also considered "lossy", as not all structures can be entirely represented in Markdown.
+BlockNote 可以导入 / 导出块到 Markdown。请注意这也是「有损」的，因为并非所有结构都能完全用 Markdown 表示。
 
-### Converting Blocks to Markdown
+### 将块转换为 Markdown
 
-`blocksToMarkdownLossy` converts `Block` objects to a Markdown string:
+`blocksToMarkdownLossy` 将 `Block` 对象转换为 Markdown 字符串：
 
 ```typescript
 async blocksToMarkdownLossy(blocks?: Block[]): Promise<string>;
 
-// Usage
+// 用法
 const markdownFromBlocks = await editor.blocksToMarkdownLossy(blocks);
 ```
 
-`blocks:` The blocks to convert. If not provided, the entire document (all top-level blocks) is used.
+`blocks:` 要转换的块。如果未提供，则使用整个文档（所有顶级块）。
 
-`returns:` The blocks, serialized as a Markdown string.
+`返回:` 以 Markdown 字符串序列化的块。
 
-The output is simplified as Markdown does not support all features of BlockNote (e.g.: children of blocks which aren't list items are un-nested and certain styles are removed).
+输出经过简化，因为 Markdown 不支持 BlockNote 的所有功能（例如：非列表项块的子项会被取消嵌套，且某些样式会被移除）。
 
-**Demo**
+**演示**
 
 <Example name="interoperability/converting-blocks-to-md" />
 
-### Parsing Markdown to Blocks
+### 解析 Markdown 为块
 
-Use `tryParseMarkdownToBlocks` to try parsing a Markdown string into `Block` objects:
+使用 `tryParseMarkdownToBlocks` 尝试将 Markdown 字符串解析为 `Block` 对象：
 
 ```typescript
 async tryParseMarkdownToBlocks(markdown: string): Promise<Blocks[]>;
 
-// Usage
+// 用法
 const blocksFromMarkdown = await editor.tryParseMarkdownToBlocks(markdown);
 ```
 
-`returns:` The blocks parsed from the Markdown string.
+`返回:` 从 Markdown 字符串解析得到的块。
 
-Tries to create `Block` and `InlineContent` objects based on Markdown syntax, though not all symbols are recognized. If BlockNote doesn't recognize a symbol, it will parse it as text.
+尝试基于 Markdown 语法创建 `Block` 和 `InlineContent` 对象，但并非所有符号都被识别。如果 BlockNote 不认识某个符号，则将其作为文本解析。
 
-**Demo**
+**演示**
 
 <Example name="interoperability/converting-blocks-from-md" />
 
-## Export HTML (for static rendering)
+## 导出 HTML（用于静态渲染）
 
-Use `blocksToFullHTML` to export the entire document with all structure, styles and formatting.
-The exported HTML is the same as BlockNote would use to render the editor, and includes all structure for nested blocks.
+使用 `blocksToFullHTML` 导出整个文档，包括所有结构、样式和格式。
+导出的 HTML 与 BlockNote 用于渲染编辑器的 HTML 相同，包含所有嵌套块的结构。
 
-For example, you an use this for static rendering documents that have been created in the editor.
-Make sure to include the same stylesheets when you want to render the output HTML ([see example](/examples/backend/rendering-static-documents)).
+例如，可以用此方法静态渲染用编辑器创建的文档。
+渲染输出 HTML 时，确保引入相同的样式表（[参见示例](/examples/backend/rendering-static-documents)）。
 
 ```typescript
 async blocksToFullHTML(blocks?: Block[]): Promise<string>;
 
-// Usage
+// 用法
 const HTMLFromBlocks = await editor.blocksToFullHTML(blocks);
 ```
 
-`blocks:` The blocks to convert. If not provided, the entire document (all top-level blocks) is used.
+`blocks:` 要转换的块。如果未提供，则使用整个文档（所有顶级块）。
 
-`returns:` The blocks, exported to an HTML string.
+`返回:` 导出的 HTML 字符串。
 
-## HTML (for interoperability)
+## HTML（用于互操作）
 
-The editor exposes functions to convert Blocks to and from HTML for interoperability with other applications.
+编辑器提供函数将块与 HTML 相互转换，实现与其他应用的互操作。
 
-Converting Blocks to HTML this way will lose some information such as the nesting of nodes in order to export a simple HTML structure.
+此方式将块转换为 HTML 会丢失部分信息，例如节点嵌套，以导出更简洁的 HTML 结构。
 
-### Converting Blocks to HTML
+### 将块转换为 HTML
 
-Use `blocksToHTMLLossy` to export `Block` objects to an HTML string:
+使用 `blocksToHTMLLossy` 导出 `Block` 对象为 HTML 字符串：
 
 ```typescript
 async blocksToHTMLLossy(blocks?: Block[]): Promise<string>;
 
-// Usage
+// 用法
 const HTMLFromBlocks = await editor.blocksToHTMLLossy(blocks);
 ```
 
-`blocks:` The blocks to convert. If not provided, the entire document (all top-level blocks) is used.
+`blocks:` 要转换的块。如果未提供，则使用整个文档（所有顶级块）。
 
-`returns:` The blocks, exported to an HTML string.
+`返回:` 导出的 HTML 字符串。
 
-To better conform to HTML standards, children of blocks which aren't list items are un-nested in the output HTML.
+为了更符合法 HTML 标准，非列表项块的子项在输出 HTML 中会取消嵌套。
 
-**Demo**
+**演示**
 
 <Example name="interoperability/converting-blocks-to-html" />
 
-### Parsing HTML to Blocks
+### 解析 HTML 为块
 
-Use `tryParseHTMLToBlocks` to parse an HTML string to `Block` objects:
+使用 `tryParseHTMLToBlocks` 将 HTML 字符串解析为 `Block` 对象：
 
 ```typescript
 async tryParseHTMLToBlocks(html: string): Promise<Blocks[]>;
 
-// Usage
+// 用法
 const blocksFromHTML = await editor.tryParseHTMLToBlocks(html);
 ```
 
-`returns:` The blocks parsed from the HTML string.
+`返回:` 从 HTML 字符串解析得到的块。
 
-Tries to create `Block` objects out of any HTML block-level elements, and `InlineContent` objects from any HTML inline elements, though not all HTML tags are recognized. If BlockNote doesn't recognize an element's tag, it will parse it as a paragraph or plain text.
+尝试从任何 HTML 块级元素创建 `Block` 对象，从任何 HTML 行内元素创建 `InlineContent` 对象，但并非所有 HTML 标签都被识别。如果 BlockNote 不认识元素标签，则作为段落或纯文本解析。
 
-**Demo**
+**演示**
 
 <Example name="interoperability/converting-blocks-from-html" />

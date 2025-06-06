@@ -1,20 +1,20 @@
 ---
-title: Suggestion Menus
-description: Suggestion Menus appear when the user enters a trigger character, and text after the character is used to filter the menu items.
-imageTitle: Suggestion Menus
+title: 建议菜单
+description: 当用户输入触发字符时，会出现建议菜单，触发字符后的文本用于过滤菜单项。
+imageTitle: 建议菜单
 path: /docs/slash-menu
 ---
 
 import { Example } from "@/components/example";
 import { ThemedImage } from "@/components/ThemedImage";
 
-# Suggestion Menus
+# 建议菜单
 
-Suggestion Menus appear when the user enters a trigger character, and text after the character is used to filter the menu items.
+当用户输入触发字符时，会出现建议菜单，触发字符后的文本用于过滤菜单项。
 
-## Slash Menu
+## 斜杠菜单
 
-The Slash Menu is a Suggestion Menu that opens with the `/` character (or when clicking the `+` button in the [Block Side Menu](/docs/ui-components/side-menu).
+斜杠菜单是一个建议菜单，使用 `/` 字符打开（或点击 [块侧边菜单](/docs/ui-components/side-menu) 中的 `+` 按钮时打开）。
 
 <ThemedImage
   src="/img/screenshots/slash_menu.png"
@@ -24,13 +24,13 @@ The Slash Menu is a Suggestion Menu that opens with the `/` character (or when c
   height={400}
 />
 
-### Changing Slash Menu Items
+### 更改斜杠菜单项
 
-You can change the items in the Slash Menu. The demo below adds an item that inserts a new block, with "Hello World" in bold.
+你可以更改斜杠菜单中的项。下面的演示添加了一个插入新块的项，其中包含加粗的“Hello World”。
 
 <Example name="ui-components/suggestion-menus-slash-menu-items" />
 
-Slash Menu items are objects with the following fields:
+斜杠菜单项是具有以下字段的对象：
 
 ```typescript
 type DefaultSuggestionItem = {
@@ -43,59 +43,59 @@ type DefaultSuggestionItem = {
 };
 ```
 
-`title:` The title of the item.
+`title:` 项的标题。
 
-`onItemClick:` A callback function to call when selecting the item.
+`onItemClick:` 选择该项时调用的回调函数。
 
-`subtext:` The subtitle of the item.
+`subtext:` 项的副标题。
 
-`badge:` Text to display in a badge within the item. Intended to show the keyboard shortcut for the item.
+`badge:` 在项内徽章中显示的文本。用于显示该项的键盘快捷键。
 
-`aliases:` Other names for the item other than the `title`, which are used for filtering items based on the user query.
+`aliases:` 除 `title` 外的该项其他名称，用于基于用户查询过滤项。
 
-`group:` The group the item belongs to. Items in the same group are separated by a divider in the menu. To ensure items are grouped properly, make sure they are consecutive in the array of items you pass to the Slash Menu.
+`group:` 项所属的组。属于同一组的项在菜单中用分隔线分隔。为确保项被正确分组，请确保它们在传递给斜杠菜单的项数组中是连续的。
 
-After creating your item, there are a some changes you must make to `BlockNoteView` to add it to the Slash Menu.
+创建你的项后，你还需要对 `BlockNoteView` 进行一些更改，以将该项添加到斜杠菜单。
 
-Passing `slashMenu={false}` to `BlockNoteView` tells BlockNote not to show the default Slash Menu. Adding the `SuggestionMenuController` with `triggerCharacter={"/"}` and a custom `getItems` function tells BlockNote to show one with custom items instead.
+向 `BlockNoteView` 传递 `slashMenu={false}` 告诉 BlockNote 不显示默认斜杠菜单。添加带有 `triggerCharacter={"/"}` 和自定义 `getItems` 函数的 `SuggestionMenuController` 则告诉 BlockNote 显示一个自定义项的菜单。
 
-`getItems` should return the items that need to be shown in the Slash Menu, based on a `query` entered by the user (anything the user types after the `triggerCharacter`). In this case, we simply append the "Hello World" item to the default Slash Menu items, and use `filterSuggestionItems` to filter the full list of items based on the user query.
+`getItems` 应基于用户输入的 `query`（用户在触发字符后输入的内容）返回需要显示在斜杠菜单中的项。在此示例中，我们只是将“Hello World”项添加到默认斜杠菜单项列表，并使用 `filterSuggestionItems` 根据用户查询过滤完整项列表。
 
-### Replacing the Slash Menu Component
+### 替换斜杠菜单组件
 
-You can replace the React component used for the Slash Menu with your own, as you can see in the demo below.
+你可以用自己的 React 组件替换斜杠菜单中使用的组件，下面的演示展示了这一点。
 
 <Example name="ui-components/suggestion-menus-slash-menu-component" />
 
-Again, we add a `SuggestionMenuController` component with `triggerCharacter={"/"}` and set `slashMenu={false}` to replace the default Slash Menu.
+同样，我们添加了带有 `triggerCharacter={"/"}` 的 `SuggestionMenuController` 组件，并设置 `slashMenu={false}` 来替换默认斜杠菜单。
 
-Now, we also pass a component to its `suggestionMenuComponent` prop. The `suggestionMenuComponent` we pass is responsible for rendering the filtered items. The `SuggestionMenuController` controls its position and visibility (below the trigger character), and it also determines which items should be shown (using the optional `getItems` prop we've seen above).
+现在，我们还将一个组件传递给它的 `suggestionMenuComponent` 属性。传递的 `suggestionMenuComponent` 负责渲染过滤后的项。`SuggestionMenuController` 控制它的位置和可见性（触发字符下方），并且还决定显示哪些项（使用之前见过的可选 `getItems` 属性）。
 
-## Creating additional Suggestion Menus
+## 创建额外的建议菜单
 
-You can add additional Suggestion Menus to the editor, which can use any trigger character. The demo below adds an example Suggestion Menu for mentions, which opens with the `@` character.
+你可以在编辑器中添加额外的建议菜单，触发字符可以为任意字符。下面的演示添加了一个示例建议菜单，用于提及，使用 `@` 字符打开。
 
 <Example name="custom-schema/suggestion-menus-mentions" />
 
-Changing the items in the new Suggestion Menu, or the component used to render it, is done the same way as for the [Slash Menu](/docs/ui-components/suggestion-menus#slash-menu). For more information about how the mentions elements work, see [Custom Inline Content](/docs/custom-schemas/custom-inline-content).
+以同样的方式更改新建议菜单中的项，或更改用于渲染的组件，方法同 [斜杠菜单](/docs/ui-components/suggestion-menus#slash-menu)。有关提及元素的更多信息，请参阅 [自定义内联内容](/docs/custom-schemas/custom-inline-content)。
 
-## Additional Features
+## 其他功能
 
-BlockNote offers a few other features for working with Suggestion Menus which may fit your use case.
+BlockNote 提供了一些用于建议菜单的其他功能，可能适合你的使用场景。
 
-### Opening Suggestion Menus Programmatically
+### 编程式打开建议菜单
 
-While suggestion menus are generally meant to be opened when the user presses a trigger character, you may also want to open them from code. To do this, you can use the following editor method:
+虽然建议菜单通常在用户按下触发字符时打开，但你也可以通过代码打开它们。为此，你可以使用编辑器的以下方法：
 
 ```typescript
 openSuggestionMenu(triggerCharacter: string): void;
 
-// Usage
+// 用法示例
 editor.openSuggestionMenu("/");
 ```
 
-### Waiting for a Query
+### 等待查询
 
-You may want to hold off displaying a Suggestion Menu unless you're certain that the user actually wants to open the menu and not just enter the trigger character. In this case, you should use the `minQueryLength` prop for `SuggestionMenuController`, which takes a number.
+你可能希望延迟显示建议菜单，除非确定用户确实想打开菜单，而不仅仅是输入了触发字符。在这种情况下，应使用 `SuggestionMenuController` 的 `minQueryLength` 属性，该属性接受一个数字。
 
-The number indicates how many characters the user query needs to have before the menu is shown. When greater than 0, it also prevents the menu from displaying if the user enters a space immediately after the trigger character.
+该数字表示用户查询需要达到的字符数，菜单才会显示。当大于 0 时，如果用户在触发字符后立即输入空格，也会阻止菜单显示。

@@ -1,55 +1,51 @@
 ---
-title: Quickstart
-description: Getting started with BlockNote is quick and easy. All you need to do is install the package and add the React component to your app!
-imageTitle: Quickstart
+title: 快速开始
+description: 使用 BlockNote 快速且轻松地入门。您只需安装包并将 React 组件添加到您的应用程序中即可！
+imageTitle: 快速开始
 path: /docs/quickstart
 ---
 
 import { Example } from "@/components/example";
 import { Callout } from "nextra/components";
 
-# Quickstart
+# 快速开始
 
-Getting started with BlockNote is quick and easy. Install the required packages and add the React component to your app.
+使用 BlockNote 快速且轻松地入门。安装所需的包并将 React 组件添加到您的应用中。
 
-## Installing with NPM
+## 使用 NPM 安装
 
-To install BlockNote with [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), run:
+要通过 [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 安装 BlockNote，请运行：
 
 ```console
 npm install @blocknote/core @blocknote/react @blocknote/mantine
 ```
 
-## Creating an Editor
+## 创建编辑器
 
-With the `useCreateBlockNote` hook, we can create a new editor instance, then use the`BlockNoteView` component to render it. See below:
+使用 `useCreateBlockNote` 钩子，我们可以创建一个新的编辑器实例，然后使用 `BlockNoteView` 组件进行渲染。见下方示例：
 
 <Example name="basic/minimal" />
 
-We also import `@blocknote/mantine/style.css` to add default styling for the editor and the `Inter` font that BlockNote exports (optional).
+我们还导入 `@blocknote/mantine/style.css`，为编辑器添加默认样式以及 BlockNote 提供的 `Inter` 字体（可选）。
 
 <Callout type="warning" emoji={""}>
-  <strong>Next.js usage (or other server-side React frameworks)</strong>
+  <strong>Next.js 使用（或其他服务端 React 框架）</strong>
   <p>
-    Are you using Next.js (`create-next-app`)? Because BlockNote is a
-    client-only component, make sure to disable server-side rendering of
-    BlockNote. [Read our guide on setting up Next.js + BlockNote](/docs/nextjs)
+    如果您正在使用 Next.js（例如通过 `create-next-app` 创建的项目），因为 BlockNote 仅是客户端组件，请确保禁用 BlockNote 的服务端渲染。[阅读我们关于设置 Next.js 与 BlockNote 的指南](/docs/nextjs)
   </p>
 </Callout>
 
 <Callout type="warning" emoji={""}>
-  <strong>Using BlockNote without React</strong>
+  <strong>不使用 React 也能使用 BlockNote</strong>
   <p>
-    It's also possible to use BlockNote without React, using "vanilla"
-    JavaScript or other frameworks. [Read our guide on using BlockNote without
-    React](/docs/vanilla-js){" "}
+    也可以不使用 React，使用“原生”JavaScript 或其他框架来使用 BlockNote。[阅读我们关于不使用 React 而使用 BlockNote 的指南](/docs/vanilla-js){" "}
   </p>
 </Callout>
 
-## Next steps
+## 接下来
 
-You now know how to integrate BlockNote into your React app! However, this is just scratching the surface of what you can do with BlockNote.
+现在您已经知道如何将 BlockNote 集成到您的 React 应用中！不过，这只是 BlockNote 功能的冰山一角。
 
-- Learn about [blocks and the editor basics](/docs/editor-basics) and how to interact with the editor using the [editor API](/docs/editor-api)
-- See [UI Components](/docs/ui-components) to customize built-in menus and toolbars and [Styling & Theming](/docs/styling-theming) to customize the look and feel of the editor
-- Further extend the editor with your own Blocks using [Custom Schemas](/docs/custom-schemas) or add [Real-Time Collaboration](/docs/advanced/real-time-collaboration)
+- 了解 [区块与编辑器基础](/docs/editor-basics) 以及如何使用 [编辑器 API](/docs/editor-api) 与编辑器交互
+- 查看 [UI 组件](/docs/ui-components) 来定制内置菜单和工具栏，以及 [样式与主题](/docs/styling-theming) 来自定义编辑器的外观和感觉
+- 使用 [自定义架构](/docs/custom-schemas) 扩展编辑器，或添加 [实时协作](/docs/advanced/real-time-collaboration) 功能

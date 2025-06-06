@@ -1,49 +1,49 @@
 ---
-title: Usage Without React (Vanilla JS)
-description: BlockNote is mainly designed as a quick and easy drop-in block-based editor for React apps, but can also be used in vanilla JavaScript apps.
-imageTitle: Usage Without React (Vanilla JS)
+title: 无需 React 的使用方法（纯 JavaScript）
+description: BlockNote 主要设计为 React 应用中快速且简易的块级编辑器，但也可以在纯 JavaScript 应用中使用。
+imageTitle: 无需 React 的使用方法（纯 JavaScript）
 ---
 
 import { Callout } from "nextra/components";
 
-# Usage Without React (Vanilla JS)
+# 无需 React 的使用方法（纯 JavaScript）
 
-BlockNote is mainly designed as a quick and easy drop-in block-based editor for React apps, but can also be used in vanilla JavaScript apps. However, this does involve writing your own UI elements.
+BlockNote 主要设计为 React 应用中快速且简易的块级编辑器，但也可以在纯 JavaScript 应用中使用。不过，这需要你自己编写 UI 元素。
 
 <Callout type={"warning"}>
-  We recommend using BlockNote with React so you can use the built-in UI
-  components. This document will explain how you can use BlockNote without
-  React, and write your own components, but this is not recommended as you'll
-  lose the great out-of-the-box experience that BlockNote offers.
+  我们建议在 React 中使用 BlockNote，这样你可以利用内置的 UI
+  组件。本文档将说明如何在不使用 React 的情况下使用 BlockNote，
+  并编写你自己的组件，但不推荐这样做，因为你将失去 BlockNote
+  出色的开箱即用体验。
 </Callout>
 
-## Installing with NPM
+## 使用 NPM 安装
 
-To install only the vanilla JS parts of BlockNote with [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), run:
+要仅安装 BlockNote 的纯 JS 部分，请使用 [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 运行：
 
 ```console
 npm install @blocknote/core
 ```
 
-## Creating an editor
+## 创建编辑器
 
-This is how to create a new BlockNote editor:
+以下是创建一个新的 BlockNote 编辑器的方法：
 
 ```typescript
 import { BlockNoteEditor } from "@blocknote/core";
 
 const editor = BlockNoteEditor.create();
 
-editor.mount(document.getElementById("root")); // element to append the editor to
+editor.mount(document.getElementById("root")); // 挂载编辑器的元素
 ```
 
-Now, you'll have a plain BlockNote instance on your page. However, it's missing some menus and other UI elements.
+现在，你的页面上已经有一个基础的 BlockNote 实例了。但它缺少一些菜单和其他 UI 元素。
 
-## Creating your own UI elements
+## 创建你自己的 UI 元素
 
-Because you can't use the built-in React [UI Components](/docs/quickstart), you'll need to create and register your own UI elements.
+因为你无法使用内置的 React [UI 组件](/docs/quickstart)，所以需要创建并注册你自己的 UI 元素。
 
-While it's up to you to decide how you want the elements to be rendered, BlockNote provides methods for updating the visibility, position, and state of your elements:
+虽然你可以自由决定如何渲染这些元素，BlockNote 提供了用于更新元素可见性、位置和状态的方法：
 
 ```typescript
 type UIElement =
@@ -61,7 +61,7 @@ editor[uiElement].onUpdate((uiElementState: ...) => {
 })
 ```
 
-Let's look at how you could add the [Side Menu]() to your editor:
+接下来，来看一个如何向编辑器添加[侧边菜单]()的示例：
 
 ```typescript
 import { BlockNoteEditor } from "@blocknote/core";

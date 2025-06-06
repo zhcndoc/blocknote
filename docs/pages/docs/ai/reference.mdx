@@ -1,6 +1,6 @@
 ---
-title: BlockNote AI Reference
-description: Reference documentation for the BlockNote AI extension
+title: BlockNote AI 参考
+description: BlockNote AI 扩展的参考文档
 imageTitle: BlockNote AI
 path: /docs/ai/reference
 ---
@@ -8,42 +8,42 @@ path: /docs/ai/reference
 import { Example } from "@/components/example";
 import { Callout } from "nextra/components";
 
-# BlockNote AI Reference
+# BlockNote AI 参考
 
 ## `createAIExtension`
 
-Use `createAIExtension` to create a new AI new AI Extension that can be registered to an editor when calling `useCreateBlockNote`.
+使用 `createAIExtension` 来创建一个新的 AI 扩展，该扩展可以在调用 `useCreateBlockNote` 时注册到编辑器。
 
 ```typescript
-// Usage:
+// 用法:
 const aiExtension = createAIExtension(opts: AIExtensionOptions);
 
-// Definitions:
+// 定义:
 function createAIExtension(options: AIExtensionOptions): (editor: BlockNoteEditor) => AIExtension;
 
 type AIExtensionOptions = {
     /**
-   * The default language model to use for LLM calls
+   * 用于调用大语言模型的默认语言模型
    */
   model: LanguageModel;
   /**
-   * Whether to stream the LLM response
+   * 是否对大语言模型的响应进行流式传输
    * @default true
    */
   stream?: boolean;
   /**
-   * The default data format to use for LLM calls
-   * html format is recommended, the other formats are experimental
+   * 用于调用大语言模型的默认数据格式
+   * 推荐使用 html 格式，其他格式为实验性支持
    * @default llmFormats.html
    */
   dataFormat?: LLMFormat;
   /**
-   * A function that can be used to customize the prompt sent to the LLM
-   * @default the default prompt builder for the selected {@link dataFormat}
+   * 用于自定义发送给大语言模型的提示函数
+   * @default 选定 {@link dataFormat} 的默认提示构建器
    */
   promptBuilder?: PromptBuilder;
   /**
-   * The name and color of the agent cursor when the AI is writing
+   * AI 书写时代理光标的名称和颜色
    *
    * @default { name: "AI", color: "#8bc6ff" }
    */
@@ -53,7 +53,7 @@ type AIExtensionOptions = {
 
 ## `getAIExtension`
 
-Use `getAIExtension` to retrieve the AI extension instance registered to the editor:
+使用 `getAIExtension` 来获取注册到编辑器的 AI 扩展实例：
 
 ```typescript
 function getAIExtension(editor: BlockNoteEditor): AIExtension;
@@ -61,25 +61,25 @@ function getAIExtension(editor: BlockNoteEditor): AIExtension;
 
 ## `AIExtension`
 
-The `AIExtension` class is the main class for the AI extension. It exposes state and methods to interact with BlockNote's AI features.
+`AIExtension` 类是 AI 扩展的主类。它暴露状态和方法以便与 BlockNote 的 AI 功能交互。
 
 ```typescript
 class AIExtension {
   /**
-   * Execute a call to an LLM and apply the result to the editor
+   * 执行对大语言模型的调用并将结果应用到编辑器中
    */
   callLLM(
     opts: MakeOptional<LLMRequestOptions, "model">,
   ): Promise<LLMResponse | undefined>;
   /**
-   * Returns a read-only zustand store with the state of the AI Menu
+   * 返回一个只读的 zustand 存储，包含 AI 菜单的状态
    */
   get store(): ReadonlyStoreApi<{
     aiMenuState:
       | ({
           /**
-           * The ID of the block that the AI menu is opened at.
-           * This changes as the AI is making changes to the document
+           * AI 菜单打开所在区块的 ID。
+           * 当 AI 正在修改文档时会发生变化
            */
           blockId: string;
         } & (
@@ -97,13 +97,13 @@ class AIExtension {
         ))
       | "closed";
     /**
-     * The previous response from the LLM, used for multi-step LLM calls
+     * 大语言模型的上一次响应，用于多步调用
      */
     llmResponse?: LLMResponse;
   }>;
   /**
-   * Returns a zustand store with the global configuration of the AI Extension,
-   * these options are used as default across all LLM calls when calling {@link callLLM}
+   * 返回 zustand 存储，包含 AI 扩展的全局配置，
+   * 这些选项在所有调用 {@link callLLM} 的大语言模型请求中作为默认值
    */
   readonly options: StoreApi<{
     model: LanguageModel;
@@ -113,33 +113,33 @@ class AIExtension {
   }>;
 
   /**
-   * Open the AI menu at a specific block
+   * 在指定区块打开 AI 菜单
    */
   openAIMenuAtBlock(blockID: string): void;
   /**
-   * Close the AI menu
+   * 关闭 AI 菜单
    */
   closeAIMenu(): void;
   /**
-   * Accept the changes made by the LLM
+   * 接受大语言模型所做的更改
    */
   acceptChanges(): void;
   /**
-   * Reject the changes made by the LLM
+   * 拒绝大语言模型所做的更改
    */
   rejectChanges(): void;
   /**
-   * Retry the previous LLM call.
+   * 重试上一次大语言模型调用。
    *
-   * Only valid if the current status is "error"
+   * 仅当当前状态为 "error" 时有效
    */
   retry(): Promise<void>;
   /**
-   * Update the status of a call to an LLM
+   * 更新大语言模型调用的状态
    *
-   * @warning This method should usually only be used for advanced use-cases
-   * if you want to implement how an LLM call is executed. Usually, you should
-   * use {@link callLLM} instead which will handle the status updates for you.
+   * @warning 该方法通常仅用于高级用例，
+   * 如果您想要实现大语言模型调用的执行方式。
+   * 通常应使用 {@link callLLM}，其会自动处理状态更新。
    */
   setAIResponseStatus(
     status:
@@ -157,130 +157,128 @@ class AIExtension {
 
 ### `LLMRequestOptions`
 
-Requests to a LLM are made by calling `callLLM` on the `AIExtension` object.
-This takes a `LLMRequestOptions` object as an argument.
+对大语言模型的请求由 `AIExtension` 对象的 `callLLM` 调用发起。
+该方法接受一个 `LLMRequestOptions` 对象作为参数。
 
 ```typescript
 type LLMRequestOptions = {
   /**
-   * The language model to use for the LLM call (AI SDK)
+   * 用于调用大语言模型的语言模型 (AI SDK)
    *
-   * (when invoking `callLLM` via the `AIExtension` this will default to the
-   * model set in the `AIExtension` options)
+   * （通过 `AIExtension` 调用 `callLLM` 时，默认使用 `AIExtension` 配置中的模型）
    */
   model: LanguageModelV1;
   /**
-   * The user prompt to use for the LLM call
+   * 用于大语言模型调用的用户提示
    */
   userPrompt: string;
   /**
-   * Previous response from the LLM, used for multi-step LLM calls
+   * 大语言模型之前的响应，用于多步调用
    *
-   * (populated automatically when invoking `callLLM` via the `AIExtension` class)
+   * （通过 `AIExtension` 类调用 `callLLM` 时自动填充）
    */
   previousResponse?: LLMResponse;
   /**
-   * The default data format to use for LLM calls
-   * "html" is recommended, the other formats are experimental
-   * @default html format (`llm.html`)
+   * 用于调用大语言模型的默认数据格式
+   * 推荐使用 "html"，其他格式为实验性支持
+   * @default html 格式(`llm.html`)
    */
   dataFormat?: LLMFormat;
   /**
-   * The `PromptBuilder` to use for the LLM call
+   * 用于调用大语言模型的 `PromptBuilder`
    *
-   * (A PromptBuilder is a function that takes a BlockNoteEditor and details about the user's prompt
-   * and turns it into an AI SDK `CoreMessage` array to be passed to the LLM)
+   * (PromptBuilder 是一个函数，接受 BlockNoteEditor 和用户提示的详细信息，
+   * 生成一个 AI SDK 的 `CoreMessage` 数组传入大语言模型)
    *
-   * @default provided by the format (e.g. `llm.html.defaultPromptBuilder`)
+   * @default 由格式提供 (例如 `llm.html.defaultPromptBuilder`)
    */
   promptBuilder?: PromptBuilder;
   /**
-   * The maximum number of retries for the LLM call
+   * 大语言模型调用的最大重试次数
    *
    * @default 2
    */
   maxRetries?: number;
   /**
-   * Whether to use the editor selection for the LLM call
+   * 是否使用编辑器选择范围作为大语言模型调用的上下文
    *
    * @default true
    */
   useSelection?: boolean;
   /**
-   * Defines whether the LLM can add, update, or delete blocks
+   * 定义大语言模型是否允许添加、更新或删除区块
    *
    * @default { add: true, update: true, delete: true }
    */
   defaultStreamTools?: {
-    /** Enable the add tool (default: true) */
+    /** 是否启用添加工具（默认：true） */
     add?: boolean;
-    /** Enable the update tool (default: true) */
+    /** 是否启用更新工具（默认：true） */
     update?: boolean;
-    /** Enable the delete tool (default: true) */
+    /** 是否启用删除工具（默认：true） */
     delete?: boolean;
   };
   /**
-   * Whether to stream the LLM response or not
+   * 是否对大语言模型响应进行流式传输
    *
-   * When streaming, we use the AI SDK `streamObject` function,
-   * otherwise, we use the AI SDK `generateObject` function.
+   * 流式时，使用 AI SDK 的 `streamObject` 函数；
+   * 非流式时，使用 AI SDK 的 `generateObject` 函数。
    *
    * @default true
    */
   stream?: boolean;
   /**
-   * If the user's cursor is in an empty paragraph, automatically delete it when the AI
-   * is starting to write.
+   * 如果用户光标位于空段落，当 AI 开始书写时自动删除该段落
    *
-   * (This is used when a user starts typing `/ai` in an empty block)
+   * （用于用户在空白块内输入 `/ai` 命令时）
    *
    * @default true
    */
   deleteEmptyCursorBlock?: boolean;
   /**
-   * Callback when a specific block is updated by the LLM
+   * 当大语言模型更新特定区块时的回调
    *
-   * (used by `AIExtension` to update the `AIMenu` position)
+   * （由 `AIExtension` 使用，用于更新 `AIMenu` 位置）
    */
   onBlockUpdate?: (blockId: string) => void;
   /**
-   * Callback when the AI Agent starts writing
+   * 当 AI 代理开始书写时的回调
    */
   onStart?: () => void;
   /**
-   * Whether to add delays between text update operations, to make the AI simulate a human typing
+   * 是否在文本更新操作之间添加延迟，使 AI 模拟人类打字
    *
    * @default true
    */
   withDelays?: boolean;
   /**
-   * Additional options to pass to the AI SDK `generateObject` function
-   * (only used when `stream` is `false`)
+   * 传递给 AI SDK `generateObject` 函数的附加选项
+   * （仅在 `stream` 为 false 时使用）
    */
   _generateObjectOptions?: Partial<Parameters<typeof generateObject<any>>[0]>;
   /**
-   * Additional options to pass to the AI SDK `streamObject` function
-   * (only used when `stream` is `true`)
+   * 传递给 AI SDK `streamObject` 函数的附加选项
+   * （仅在 `stream` 为 true 时使用）
    */
   _streamObjectOptions?: Partial<Parameters<typeof streamObject<any>>[0]>;
 };
 ```
 
-## `doLLMRequest` (advanced)
+## `doLLMRequest`（高级）
 
-The `CallLLM` function automatically passes the default options set in the `AIExtension` to the LLM request.
-It also handles the LLM response and updates the state of the AI menu accordingly.
+`callLLM` 函数会自动将 `AIExtension` 中设置的默认选项传递给大语言模型请求。
+它还会处理大语言模型响应并相应地更新 AI 菜单的状态。
 
-For advanced use cases, you can also directly use the lower-level `doLLMRequest` function to issue an LLM request directly.
-In this case, you will need to manually handle the response.
+对于高级用例，您也可以直接使用底层的 `doLLMRequest` 函数直接发起大语言模型请求，
+此时需要您手动处理响应。
 
 ```typescript
 /**
- * Execute an LLM call
+ * 执行一次大语言模型调用
  *
- * @param editor - The BlockNoteEditor the LLM should operate on
- * @param opts - The options for the LLM call (@link {CallLLMOptions})
- * @returns A `LLMResponse` object containing the LLM response which can be applied to the editor
+ * @param editor - 需要操作的大语言模型的 BlockNoteEditor
+ * @param opts - 大语言模型调用的选项（@link {CallLLMOptions}）
+ * @returns 一个包含大语言模型响应的 `LLMResponse` 对象，可应用到编辑器
  */
 function doLLMRequest(
   editor: BlockNoteEditor<any, any, any>,
@@ -288,21 +286,21 @@ function doLLMRequest(
 ): Promise<LLMResponse>;
 ```
 
-Call `execute` on the `LLMResponse` object to apply the changes to the editor.
+调用 `LLMResponse` 对象的 `execute` 方法可以将变化应用到编辑器。
 
-## PromptBuilder (advanced)
+## PromptBuilder（高级）
 
-The `PromptBuilder` is a function that takes a BlockNoteEditor and details about the user's prompt
-and turns it into an array of CoreMessage objects (AI SDK) to be passed to the LLM.
+`PromptBuilder` 是一个函数，接受一个 BlockNoteEditor 和用户提示相关的详细信息，
+将其转换为一组 CoreMessage（AI SDK）数组传递给大语言模型。
 
-Providing a custom `PromptBuilder` allows fine-grained control over the instructions sent to the LLM.
-To implement a custom `PromptBuilder`, you can use the `promptHelpers` provided by the LLM format.
-We recommend looking at the [default PromptBuilder](https://github.com/TypeCellOS/BlockNote/blob/main/packages/xl-ai/src/api/formats/html-blocks/defaultHTMLPromptBuilder.ts) implementations as a starting point to implement your own.
+提供自定义的 `PromptBuilder` 可以精细控制发送给大语言模型的指令。
+可以使用 LLM 格式中提供的 `promptHelpers` 来实现自定义的 `PromptBuilder`。
+建议参考 [默认 PromptBuilder](https://github.com/TypeCellOS/BlockNote/blob/main/packages/xl-ai/src/api/formats/html-blocks/defaultHTMLPromptBuilder.ts) 实现来着手定制属于自己的。
 
 ```typescript
 /**
- * A PromptBuilder is a function that takes a BlockNoteEditor and details about the user's promot
- * and turns it into an array of CoreMessage (AI SDK) to be passed to the LLM.
+ * PromptBuilder 是一个函数，接受 BlockNoteEditor 和用户提示相关信息，
+ * 并将其构造成一组 CoreMessage (AI SDK)，传给大语言模型。
  */
 type PromptBuilder = (
   editor: BlockNoteEditor<any, any, any>,
@@ -310,41 +308,41 @@ type PromptBuilder = (
 ) => Promise<Array<CoreMessage>>;
 
 /**
- * The input passed to a PromptBuilder
+ * 传递给 PromptBuilder 的输入参数
  */
 type PromptBuilderInput = {
   /**
-   * The user's prompt
+   * 用户的提示内容
    */
   userPrompt: string;
   /**
-   * The selection of the editor which the LLM should operate on
+   * 大语言模型应针对的编辑器所选区块
    */
   selectedBlocks?: Block<any, any, any>[];
   /**
-   * The ids of blocks that should be excluded from the prompt
-   * (e.g.: if `deleteEmptyCursorBlock` is true in the LLMRequest,
-   * this will be the id of the block that should be ignored)
+   * 应排除在提示之外的区块 ID
+   * （例如：如果 LLMRequest 中设置了 `deleteEmptyCursorBlock` 为 true，
+   * 这里会包含要忽略的区块 ID）
    */
   excludeBlockIds?: string[];
   /**
-   * When following a multi-step conversation, or repairing a previous error,
-   * the previous messages that have been sent to the LLM
+   * 在多步骤对话或前次出现错误修复时，
+   * 之前发送给大语言模型的信息列表
    */
   previousMessages?: Array<CoreMessage>;
 };
 ```
 
-## Formats
+## 格式
 
-When a LLM is called, the LLM needs to interpret the document, and invoke operations to modify the document.
-Different models might be able to understand different data formats better.
-By default, BlockNote and LLM models interoperate using a HTML based format. We also provide experimental JSON and Markdown based formats.
+调用大语言模型时，大语言模型需要解析文档并执行操作来修改文档。
+不同的模型可能更好地理解不同的数据格式。
+默认情况下，BlockNote 和大语言模型采用基于 HTML 的格式进行交互。同时我们还提供实验性的 JSON 和 Markdown 格式。
 
 ```typescript
 type LLMFormat = {
   /**
-   * Function to get th format specific stream tools that the LLM can choose to invoke
+   * 获取该格式特定的流式操作工具列表，大语言模型可以选择调用
    */
   getStreamTools: (
     editor: BlockNoteEditor<any, any, any>,
@@ -361,18 +359,17 @@ type LLMFormat = {
     onBlockUpdate?: (blockId: string) => void,
   ) => StreamTool<any>[];
   /**
-   * The default PromptBuilder that determines how a userPrompt is converted to an array of
-   * LLM Messages (CoreMessage[])
+   * 默认的 PromptBuilder，用于将用户提示转换为一组大语言模型消息 (CoreMessage[])
    */
   defaultPromptBuilder: PromptBuilder;
   /**
-   * Helper functions which can be used when implementing a custom PromptBuilder.
-   * The signature depends on the specific format
+   * 实现自定义 PromptBuilder 时可用的辅助函数。
+   * 函数签名依赖于具体格式
    */
   promptHelpers: any;
 };
 
-// The default LLMFormats are exported under `llmFormats`:
+// 默认的 LLMFormat 导出为 `llmFormats`:
 
 export const llmFormats = {
   _experimental_json,

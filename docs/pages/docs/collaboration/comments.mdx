@@ -1,66 +1,66 @@
 ---
-title: Comments
-description: Learn how to enable comments in your BlockNote editor
-imageTitle: Comments
+title: 评论
+description: 了解如何在你的 BlockNote 编辑器中启用评论功能
+imageTitle: 评论
 ---
 
 import {Example} from "@/components/example";
 
-# Comments
+# 评论
 
-BlockNote supports Comments, Comment Threads (replies) and emoji reactions out of the box.
+BlockNote 原生支持评论、评论线程（回复）和表情反应。
 
-To enable comments in your editor, you need to:
+要在编辑器中启用评论，你需要：
 
-- provide a `resolveUsers` so BlockNote can retrieve and display user information (names and avatars).
-- provide a `ThreadStore` so BlockNote can store and retrieve comment threads.
-- enable real-time collaboration (see [Real-time collaboration](/docs/collaboration/real-time-collaboration))
+- 提供一个 `resolveUsers` 函数，使 BlockNote 能检索并显示用户信息（姓名和头像）。
+- 提供一个 `ThreadStore`，使 BlockNote 能存储和检索评论线程。
+- 启用实时协作（参见 [实时协作](/docs/collaboration/real-time-collaboration)）
 
 ```tsx
 const editor = useCreateBlockNote({
   resolveUsers: async (userIds: string[]) => {
-    // return user information for the given userIds (see below)
+    // 返回给定 userIds 的用户信息（见下文）
   },
   comments: {
-    threadStore: yourThreadStore, // see below
+    threadStore: yourThreadStore, // 见下文
   },
   // ...
   collaboration: {
-    // ... // see real-time collaboration docs
+    // ... // 参见实时协作文档
   },
 });
 ```
 
-**Demo**
+**示例**
 
 <Example name="collaboration/comments"/>
 
 ## ThreadStores
 
-A ThreadStore is used to store and retrieve comment threads. BlockNote is backend agnostic, so you can use any database or backend to store the threads.
-BlockNote comes with several built-in ThreadStore implementations:
+ThreadStore 用于存储和检索评论线程。BlockNote 与后端无关，所以你可以使用任何数据库或后端来存储线程。  
+BlockNote 提供了几种内置的 ThreadStore 实现：
 
 ### `YjsThreadStore`
 
-The `YjsThreadStore` provides direct Yjs-based storage for comments, storing thread data directly in the Yjs document. This implementation is ideal for simple collaborative setups where all users have write access to the document.
+`YjsThreadStore` 提供了基于 Yjs 的直接存储评论的功能，在线程数据直接存储于 Yjs 文档中。此实现适合所有用户拥有文档写权限的简单协作场景。
 
 ```tsx
 import { YjsThreadStore } from "@blocknote/core/comments";
 
 const threadStore = new YjsThreadStore(
-  userId, // The active user's ID
-  yDoc.getMap("threads"), // Y.Map to store threads
-  new DefaultThreadStoreAuth(userId, "editor"), // Authorization information, see below
+  userId, // 当前用户 ID
+  yDoc.getMap("threads"), // 用于存储线程的 Y.Map
+  new DefaultThreadStoreAuth(userId, "editor"), // 授权信息，详见下文
 );
 ```
 
-_Note: While this is the easiest to implement, it requires users to have write access to the Yjs document to leave comments. Also, without proper server-side validation, any user could technically modify other users' comments._
+_注意：这是最简单的实现方式，但要求用户必须对 Yjs 文档有写权限才能发表评论。此外，如果没有适当的服务器端验证，任何用户理论上都可以修改其他用户的评论。_
 
 ### `RESTYjsThreadStore`
 
-The `RESTYjsThreadStore` combines Yjs storage with a REST API backend, providing secure comment management while maintaining real-time collaboration. This implementation is ideal when you have strong authentication requirements, but is a little more work to set up.
+`RESTYjsThreadStore` 将 Yjs 存储与 REST API 后端结合，在保持实时协作的同时提供安全的评论管理。此实现适合有严格身份认证需求的场景，但配置稍复杂。
 
-In this implementation, data is written to the Yjs document via a REST API which can handle access control. Data is still retrieved from the Yjs document directly (after it's been updated by the REST API), this way all comment information automatically syncs between clients using the existing collaboration provider.
+本实现通过 REST API 将数据写入 Yjs 文档，并由 REST API 处理访问控制。数据读取仍直接从 Yjs 文档获取（在 REST API 更新后），这样所有评论信息会自动通过已有协作提供者同步到客户端。
 
 ```tsx
 import {
@@ -69,22 +69,22 @@ import {
 } from "@blocknote/core/comments";
 
 const threadStore = new RESTYjsThreadStore(
-  "https://api.example.com/comments", // Base URL for the REST API
+  "https://api.example.com/comments", // REST API 基础 URL
   {
-    Authorization: "Bearer your-token", // Optional headers to add to requests
+    Authorization: "Bearer your-token", // 请求可选添加的头部
   },
-  yDoc.getMap("threads"), // Y.Map to retrieve commend data from
-  new DefaultThreadStoreAuth(userId, "editor"), // Authorization rules (see below)
+  yDoc.getMap("threads"), // 从该 Y.Map 获取评论数据
+  new DefaultThreadStoreAuth(userId, "editor"), // 授权规则（见下文）
 );
 ```
 
-An example implementation of the REST API can be found in the [example repository](https://github.com/TypeCellOS/BlockNote-demo-nextjs-hocuspocus).
+REST API 的示例实现可见于[示例仓库](https://github.com/TypeCellOS/BlockNote-demo-nextjs-hocuspocus)。
 
-_Note: Because writes are executed via a REST API, the `RESTYjsThreadStore` is not suitable for local-first applications that should be able to add and edit comments offline._
+_注意：由于写操作通过 REST API 执行，`RESTYjsThreadStore` 不适合本地优先应用，后者需要支持离线添加和编辑评论。_
 
 ### `TiptapThreadStore`
 
-The `TiptapThreadStore` integrates with Tiptap's collaboration provider for comment management. This implementation is designed specifically for use with Tiptap's collaborative editing features.
+`TiptapThreadStore` 集成了 Tiptap 的协作提供者用于评论管理。此实现专门设计用于 Tiptap 协作编辑功能。
 
 ```tsx
 import {
@@ -93,7 +93,7 @@ import {
 } from "@blocknote/core/comments";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 
-// Create a TiptapCollabProvider (you probably have this already)
+// 创建一个 TiptapCollabProvider（你可能已经有了）
 const provider = new TiptapCollabProvider({
   name: "test",
   baseUrl: "https://collab.yourdomain.com",
@@ -101,29 +101,29 @@ const provider = new TiptapCollabProvider({
   document: doc,
 });
 
-// Create a TiptapThreadStore
+// 创建一个 TiptapThreadStore
 const threadStore = new TiptapThreadStore(
-  userId, // The active user's ID
-  provider, // Tiptap collaboration provider
-  new DefaultThreadStoreAuth(userId, "editor"), // Authorization rules (see below)
+  userId, // 当前用户 ID
+  provider, // Tiptap 协作提供者
+  new DefaultThreadStoreAuth(userId, "editor"), // 授权规则（见下文）
 );
 ```
 
 ### ThreadStoreAuth
 
-The `ThreadStoreAuth` class defines the authorization rules for interacting with comments. Every ThreadStore implementation requires a `ThreadStoreAuth` instance. BlockNote uses the `ThreadStoreAuth` instance to deterine which interactions are allowed for the current user (for example, whether they can create a new comment, edit or delete a comment, etc.).
+`ThreadStoreAuth` 类定义了对评论操作的授权规则。每个 ThreadStore 实现都需要一个 `ThreadStoreAuth` 实例。BlockNote 使用该实例判断当前用户允许的操作（例如，是否可以创建新评论、编辑或删除评论等）。
 
-The `DefaultThreadStoreAuth` class provides a basic implementation of the `ThreadStoreAuth` class. It takes a user ID and a role ("comment" or "editor") and implements the rules. See the [source code](https://github.com/TypeCellOS/BlockNote/blob/main/packages/core/src/comments/threadstore/DefaultThreadStoreAuth.ts) for more details.
+`DefaultThreadStoreAuth` 类是 `ThreadStoreAuth` 的基础实现。它接受用户 ID 和角色（"comment" 或 "editor"）并实现对应规则。详情请参见[源码](https://github.com/TypeCellOS/BlockNote/blob/main/packages/core/src/comments/threadstore/DefaultThreadStoreAuth.ts)。
 
-_Note: The `ThreadStoreAuth` only used to show / hide options in the UI. To secure comment related data, you still need to implement your own server-side validation (e.g. using `RESTYjsThreadStore` and a secure REST API)._
+_注意：`ThreadStoreAuth` 只用于在 UI 中显示或隐藏操作选项。要确保评论相关数据安全，仍需实现自己的服务器端验证（例如结合 `RESTYjsThreadStore` 和安全的 REST API）。_
 
-## `resolveUsers` function
+## `resolveUsers` 函数
 
-When a user interacts with a comment, the data is stored in the ThreadStore, along with the active user ID (as specified when initiating the ThreadStore).
+当用户与评论交互时，数据会与激活用户 ID 一起存储于 ThreadStore（此 ID 由你初始化 ThreadStore 时指定）。
 
-To display comments, BlockNote needs to retrieve user information (such as the username and avatar) based on the user ID. To do this, you need to provide a `resolveUsers` function in the editor options.
+要显示评论，BlockNote 需要根据用户 ID 获取用户信息（例如用户名和头像），因此你需要在编辑器选项中提供一个 `resolveUsers` 函数。
 
-This function is called with an array of user IDs, and should return an array of `User` objects in the same order.
+该函数接收一个用户 ID 数组，应该返回对应顺序的 `User` 对象数组。
 
 ```tsx
 type User = {
@@ -133,30 +133,30 @@ type User = {
 };
 
 async function myResolveUsers(userIds: string[]): Promise<User[]> {
-  // fetch user information from your database / backend
-  // and return an array of User objects
+  // 从你的数据库或后端获取用户信息
+  // 并返回 User 对象数组
 
   return await callYourBackend(userIds);
 
-  // Return a list of users
+  // 返回用户列表
   return users;
 }
 ```
 
-## Sidebar View
+## 侧边栏视图
 
-BlockNote also offers a different way of viewing and interacting with comments, via a sidebar instead of floating in the editor, using the `ThreadsSidebar` component:
+BlockNote 还提供了另一种查看和操作评论的方式，通过侧边栏而非在编辑器中悬浮，使用 `ThreadsSidebar` 组件：
 
 <Example name="collaboration/comments-with-sidebar"/>
 
-The only requirement for `ThreadsSidebar` is that it should be placed somewhere within your `BlockNoteView`, other than that you can position and style it however you want.
+`ThreadsSidebar` 唯一要求是必须放置于你的 `BlockNoteView` 内部，除此之外位置和样式均可自由定制。
 
-`ThreadsSidebar` also takes 2 props:
+`ThreadsSidebar` 接收 2 个属性：
 
-**`filter`**: Filter the comments in the sidebar. Can pass `"open"`, `"resolved"`, or `"all"`, to only show open, resolved, or all comments. Defaults to `"all"`.
+**`filter`**：过滤侧边栏中的评论。可传 `"open"`、`"resolved"` 或 `"all"`，分别只显示未解决、已解决或所有评论。默认值为 `"all"`。
 
-**`sort`**: Sort the comments in the sidebar. Can pass `"position"`, `"recent-activity"`, or `"oldest"`. Sorting by `"recent-activity"` uses the most recently added comment to sort threads, while `"oldest"` uses the thread creation date. Sorting by `"position"` puts comments in the same order as their reference text in the editor. Defaults to `"position"`.
+**`sort`**：侧边栏评论排序。可传 `"position"`、`"recent-activity"` 或 `"oldest"`。按 `"recent-activity"` 使用最近添加的评论排序线程，`"oldest"` 使用线程创建时间排序。按 `"position"` 则根据评论在编辑器中参考文本的位置排序。默认值为 `"position"`。
 
-**`maxCommentsBeforeCollapse`**: The maximum number of comments that can be in a thread before the replies get collapsed. Defaults to 5.
+**`maxCommentsBeforeCollapse`**：线程中文本回复数超过该值后自动折叠回复。默认值为 5。
 
-See [here](https://playground.blocknotejs.org/collaboration/comments-with-sidebar?hideMenu=true) for a standalone example of the `ThreadsSidebar` component.
+`ThreadsSidebar` 组件的独立示例见[此处](https://playground.blocknotejs.org/collaboration/comments-with-sidebar?hideMenu=true)。

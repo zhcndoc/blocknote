@@ -1,31 +1,28 @@
 ---
-title: Export to ODT (Open Document Text)
-description: Export BlockNote documents to an ODT (Open Document Text) file.
-imageTitle: Export to ODT
+title: 导出为 ODT（开放文档文本）
+description: 将 BlockNote 文档导出为 ODT（开放文档文本）文件。
+imageTitle: 导出为 ODT
 path: /docs/export-to-odt
 ---
 
 import { Example } from "@/components/example";
 import { Callout } from "nextra/components";
 
-# Exporting blocks to ODT
+# 导出区块为 ODT
 
-It's possible to export BlockNote documents to ODT, completely client-side.
+可以将 BlockNote 文档导出为 ODT 文件，完全在客户端完成。
 
 <Callout type={"info"}>
-  This feature is provided by the `@blocknote/xl-odt-exporter`. `xl-` packages
-  are fully open source, but released under a copyleft license. A commercial
-  license for usage in closed source, proprietary products comes as part of the
-  [Business subscription](/pricing).
+  该功能由 `@blocknote/xl-odt-exporter` 提供。`xl-` 系列包完全开源，但采用了Copyleft许可证发布。对于在闭源专有产品中的商业使用，商业许可证包含在[商务订阅](/pricing)中。
 </Callout>
 
-First, install the `@blocknote/xl-odt-exporter` package:
+首先，安装 `@blocknote/xl-odt-exporter` 包：
 
 ```bash
 npm install @blocknote/xl-odt-exporter
 ```
 
-Then, create an instance of the `ODTExporter` class. This exposes the following methods:
+接着，创建一个 `ODTExporter` 类的实例。它暴露了以下方法：
 
 ```typescript
 import {
@@ -33,26 +30,26 @@ import {
   odtDefaultSchemaMappings,
 } from "@blocknote/xl-odt-exporter";
 
-// Create the exporter
+// 创建导出器
 const exporter = new ODTExporter(editor.schema, odtDefaultSchemaMappings);
 
-// Convert the blocks to a ODT document (Blob)
+// 将区块转换为 ODT 文档（Blob）
 const odtDocument = await exporter.toODTDocument(editor.document);
 ```
 
-See the [full example](/examples/interoperability/converting-blocks-to-odt) below:
+请参阅下面的[完整示例](/examples/interoperability/converting-blocks-to-odt)：
 
 <Example name="interoperability/converting-blocks-to-odt" />
 
-### Customizing the ODT output file
+### 自定义 ODT 输出文件
 
-`toODTDocument` takes an optional `options` parameter, which allows you to customize different options (like headers and footers).
+`toODTDocument` 接受一个可选的 `options` 参数，可用于自定义不同的选项（如页眉和页脚）。
 
-Example usage:
+示例用法：
 
 ```typescript
 const odt = await exporter.toODTDocument(testDocument, {
-  // XML string
+  // XML 字符串
   footer: "<text:p>FOOTER</text:p>",
   // XMLDocument
   header: new DOMParser().parseFromString(
@@ -62,13 +59,13 @@ const odt = await exporter.toODTDocument(testDocument, {
 });
 ```
 
-### Custom mappings / custom schemas
+### 自定义映射 / 自定义模式
 
-The `ODTExporter` constructor takes a `schema`, `mappings` and `options` parameter.
-A _mapping_ defines how to convert a BlockNote schema element (a Block, Inline Content, or Style) to the [ODT](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html) XML element.
-If you're using a [custom schema](/docs/custom-schemas) in your editor, or if you want to overwrite how default BlockNote elements are converted to ODT XML elements, you can pass your own `mappings`:
+`ODTExporter` 构造函数接收 `schema`、`mappings` 和 `options` 参数。
+映射（mapping）定义了如何将 BlockNote 模式元素（区块、内联内容或样式）转换为 [ODT](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html) 的 XML 元素。
+如果你在编辑器中使用了[自定义模式](/docs/custom-schemas)，或者你想覆盖默认 BlockNote 元素转换为 ODT XML 元素的方式，可以传入你自己的 `mappings`：
 
-For example, use the following code in case your schema has an `extraBlock` type:
+例如，若你的模式包含一个 `extraBlock` 类型，可以使用如下代码：
 
 ```tsx
 import {
@@ -88,17 +85,17 @@ new ODTExporter(schema, {
 });
 ```
 
-### Exporter options
+### 导出器选项
 
-The `ODTExporter` constructor takes an optional `options` parameter.
-While conversion happens on the client-side, the default setup uses a server hosted proxy to resolve files:
+`ODTExporter` 构造函数接受一个可选的 `options` 参数。
+虽然转换在客户端完成，默认配置使用了一个服务器端代理来解析文件：
 
 ```typescript
 const defaultOptions = {
-  // a function to resolve external resources in order to avoid CORS issues
-  // by default, this calls a BlockNote hosted server-side proxy to resolve files
+  // 用于解析外部资源以避免 CORS 问题的函数
+  // 默认情况下，这会调用 BlockNote 托管的服务器端代理来解析文件
   resolveFileUrl: corsProxyResolveFileUrl,
-  // the colors to use in the ODT for things like highlighting, background colors and font colors.
-  colors: COLORS_DEFAULT, // defaults from @blocknote/core
+  // ODT 中用于高亮、背景色和字体颜色等的颜色配置
+  colors: COLORS_DEFAULT, // 来自 @blocknote/core 的默认值
 };
 ```

@@ -1,14 +1,14 @@
 import { Example } from "@/components/example";
 
-## Custom Style Types
+## 自定义样式类型
 
-In addition to the default style types that BlockNote offers, you can also make your own custom styles using React components. Take a look at the demo below, in which we add a custom font style to a BlockNote editor, as well as a custom [Formatting Toolbar button](/docs/ui-components/formatting-toolbar) to set it.
+除了 BlockNote 提供的默认样式类型外，您还可以使用 React 组件创建自己的自定义样式。请看下面的演示，我们在 BlockNote 编辑器中添加了一个自定义字体样式，以及一个用于设置该样式的自定义[格式化工具栏按钮](/docs/ui-components/formatting-toolbar)。
 
 <Example name="custom-schema/font-style" />
 
-### Creating a Custom Style Type
+### 创建自定义样式类型
 
-Use the `createReactStyleSpec` function to create a custom style type. This function takes two arguments:
+使用 `createReactStyleSpec` 函数来创建自定义样式类型。该函数接收两个参数：
 
 ```typescript
 function createReactStyleSpec(
@@ -17,7 +17,7 @@ function createReactStyleSpec(
 );
 ```
 
-Let's look at our custom font style from the demo, and go over each field to explain how it works:
+让我们来看演示中的自定义字体样式，并逐一解释每个字段的作用：
 
 ```typescript
 export const Font = createReactStyleSpec(
@@ -33,9 +33,9 @@ export const Font = createReactStyleSpec(
 );
 ```
 
-#### Style Config (`CustomStyleConfig`)
+#### 样式配置（`CustomStyleConfig`）
 
-The Style Config describes the shape of your custom style. Use it to specify the type, and whether the style should take a string value:
+样式配置描述了自定义样式的结构。使用它来指定类型，以及样式是否应该接受字符串值：
 
 ```typescript
 type CustomStyleConfig = {
@@ -46,17 +46,17 @@ type CustomStyleConfig = {
 
 **`type`**
 
-Defines the identifier of the custom style.
+定义自定义样式的标识符。
 
 **`propSchema`**
 
-The `PropSchema` specifies whether the style can only be toggled (`"boolean"`), or whether it can take a string value (`"string"`). Having a string value is useful for e.g. setting a color on the style.
+`propSchema` 指定样式是仅能切换开启/关闭的（`"boolean"`），还是可以接受字符串值的（`"string"`）。支持字符串值对于例如设置样式的颜色非常有用。
 
-_In the font style demo, we set this to `"string"` so we can store the font family._
+_在字体样式演示中，我们将其设置为 `"string"`，以便存储字体族名称。_
 
-#### Style Implementation (`ReactCustomStyleImplementation`)
+#### 样式实现（`ReactCustomStyleImplementation`）
 
-The Style Implementation defines how the style should be rendered to HTML.
+样式实现定义了样式如何被呈现为 HTML。
 
 ```typescript
 type ReactCustomStyleImplementation = {
@@ -69,28 +69,28 @@ type ReactCustomStyleImplementation = {
 
 **`render`**
 
-This is your React component which defines how your custom style should be rendered, and takes two React props:
+这是您的 React 组件，用于定义自定义样式的渲染方式，并接受两个 React 属性：
 
-`value:` The string value of the style, this is only available if your style config contains `propSchema: "string"`.
+`value:` 样式的字符串值，仅当您的样式配置包含 `propSchema: "string"` 时可用。
 
-`contentRef:` A React `ref` to mark the editable element.
+`contentRef:` 一个 React `ref`，用于标记可编辑元素。
 
-_Note that in contrast to Custom Blocks and Inline Content, the `render` function of Custom Styles cannot access React Context or other state. They should be plain React functions analogous to the example._
+_注意，与自定义块和内联内容不同，自定义样式的 `render` 函数无法访问 React 上下文或其他状态。它们应当是普通的 React 函数组件，类似示例所示。_
 
-### Adding Custom Style to the Editor
+### 将自定义样式添加到编辑器中
 
-Finally, create a BlockNoteSchema using the definition of your custom style:
+最后，使用您的自定义样式定义来创建一个 BlockNoteSchema：
 
 ```typescript
 const schema = BlockNoteSchema.create({
   styleSpecs: {
-    // enable the default styles if desired
+    // 如有需要，可启用默认样式
     ...defaultStyleSpecs,
 
-    // Add your own custom style:
+    // 添加您自己的自定义样式：
     font: Font,
   },
 });
 ```
 
-You can then instantiate your editor with this custom schema, as explained on the [Custom Schemas](/docs/custom-schemas) page.
+然后，您可以使用这个自定义 schema 实例化编辑器，详见[自定义 Schema](/docs/custom-schemas)页面。

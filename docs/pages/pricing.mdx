@@ -9,62 +9,62 @@ export default function Pricing() {
   const tiers = [
     // {
     //   id: "tier-free",
-    //   title: "Community",
-    //   description: "Everything necessary to get started for individuals and non-commercial projects.",
-    //   price: "Free",
+    //   title: "社区版",
+    //   description: "为个人和非商业项目提供入门所需的一切。",
+    //   price: "免费",
     //   features: [
-    //     "Use BlockNote for free (open source license)",
-    //     "Community Discord for help & feedback",
+    //     "免费使用 BlockNote（开源许可）",
+    //     "社区 Discord 提供帮助与反馈",
     //   ],
     //   href: "/docs/",
     // },
     {
       id: "starter",
       mostPopular: false,
-      title: "Starter",
+      title: "入门版",
       description:
-        "Best for companies and organizations building products with BlockNote.",
+        "适合使用 BlockNote 构建产品的公司和组织。",
       price: { month: 90, year: 24 },
       features: [
-        "Access to all Pro Examples",
-        "Prioritized Bug Reports on GitHub",
-        "Keep the open source library running and maintained",
-        "XL packages available for open source projects under AGPL-3.0"
+        "访问所有 Pro 示例",
+        "GitHub 上优先处理错误报告",
+        "支持开源库的运行和维护",
+        "AGPL-3.0 许可下的开源项目可使用 XL 套餐"
       ],
     },
     {
       id: "business",
-      title: "Business",
+      title: "企业版",
       mostPopular: true,
       description:
-        "Best for companies that want a direct line to the team.",
+        "适合希望与团队直接对接的公司。",
       price: { month: 390, year: 48 },
       features: [
-        "Commercial license for XL packages:",
-        "XL: Multi-column layouts",
-        "XL: Export to PDF, Docx",
-        "Access to all Pro Examples",
-        "Prioritized Bug Reports on GitHub",
-        "Keep the open source library running and maintained",
-        "Logo on our website and repositories",
-        "Access to a private Discord channel with the maintainers",
-        "Up to 2 hours of individual support per month",
+        "XL 套餐商业许可：",
+        "XL：多栏布局",
+        "XL：导出为 PDF、Docx",
+        "访问所有 Pro 示例",
+        "GitHub 上优先处理错误报告",
+        "支持开源库的运行和维护",
+        "在我们的网站和代码仓库展示您的 Logo",
+        "可访问与维护者的私人 Discord 频道",
+        "每月最多 2 小时的个别支持",
       ],
     },
     {
       id: "enterprise",
-      title: "Enterprise",
+      title: "企业定制版",
       description:
-        "Collaborate directly with the BlockNote team on integrating and extending the editor.",
-      price: "Tailored pricing",
+        "与 BlockNote 团队直接合作，集成并扩展编辑器。",
+      price: "定制价格",
       features: [
-        "Access to all Pro Examples",
-        "Prioritized Bug Reports and Feature Requests on GitHub",
-        "Keep the open source library running and maintained",
-        "Access to a private Discord or Slack channel with the maintainers",
-        "Guidance on integrating BlockNote into your project",
-        "Development of BlockNote features required for your organization",
-        "Dedicated consulting and support",
+        "访问所有 Pro 示例",
+        "GitHub 上优先处理错误报告和功能请求",
+        "支持开源库的运行和维护",
+        "可访问与维护者的私人 Discord 或 Slack 频道",
+        "指导将 BlockNote 集成到您的项目中",
+        "开发符合贵组织需求的 BlockNote 功能",
+        "专属咨询与支持",
       ],
       href: "/about/",
     },
@@ -79,16 +79,13 @@ return (
     <h2 className="max-w-6xl tracking-tight text-5xl md:text-7xl mb-2 text-center font-bold leading-20 text-indigo-600">
       BlockNote Pro
     </h2>
-    <SectionSubHeader>Upgrade your BlockNote experience</SectionSubHeader>
+    <SectionSubHeader>升级您的 BlockNote 体验</SectionSubHeader>
     <p className="mt-8 max-w-screen-md text-center text-lg text-[#00000080] dark:text-[#FFFFFFB2]">
-      Your subscription helps maintain and develop BlockNote while giving you
-      access to direct support, priority features, and Pro Examples.
+      您的订阅将帮助维护和开发 BlockNote，同时为您提供直接支持、优先功能和专业示例。
     </p>
     <Tiers tiers={tiers} frequency={frequency} />
      <p className="mt-8 max-w-screen-md text-center text-lg text-[#00000080] dark:text-[#FFFFFFB2]">
-      Thanks for checking out BlockNote Pro! <br /> BlockNote is free and open source
-      software that organizations of all sizes are using to add polished editing
-      experiences to their apps.
+      感谢您关注 BlockNote Pro！ <br /> BlockNote 是一款免费且开源的软件，各类组织都在使用它为应用程序添加精致的编辑体验。
     </p>
     <FAQ />
   </div>

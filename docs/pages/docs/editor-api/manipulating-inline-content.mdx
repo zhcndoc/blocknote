@@ -1,17 +1,17 @@
 ---
-title: Manipulating Inline Content
-imageTitle: Manipulating Inline Content
+title: 操作行内内容
+imageTitle: 操作行内内容
 path: /docs/block-content
 ---
 
-# Manipulating Inline Content
+# 操作行内内容
 
-`BlockNoteEditor` exposes a number of functions to interact with the currently selected content.
+`BlockNoteEditor` 提供了多种函数用于与当前选中的内容交互。
 
-## Partial Inline Content
+## 部分行内内容
 
-When retrieving inline content from the editor, you always receive complete `InlineContent` objects.
-For updating or creating inline content, you don't need to pass all properties, and you can use a `PartialInlineContent` type instead:
+从编辑器获取行内内容时，您总是会收到完整的 `InlineContent` 对象。
+在更新或创建行内内容时，无需传递所有属性，您可以使用 `PartialInlineContent` 类型：
 
 ```typescript
 type PartialLink = {
@@ -23,99 +23,99 @@ type PartialLink = {
 type PartialInlineContent = string | (string | PartialLink | StyledText)[];
 ```
 
-## Inserting Inline Content
+## 插入行内内容
 
-You can insert inline content using the following function:
+您可以使用以下函数插入行内内容：
 
 ```typescript
 insertInlineContent(content: PartialInlineContent)
 
-// Usage
+// 用法
 editor.insertInlineContent([
   "Hello ",
   { type: "text", text: "World", styles: { bold: true } }
 ]);
 ```
 
-## Accessing Styles
+## 获取样式
 
-You can get the styles at the current [Text Cursor Position](/docs/editor-api/cursor-selections#text-cursor) using the following function:
+您可以使用以下函数获取当前位置[文本光标](/docs/editor-api/cursor-selections#text-cursor)的样式：
 
 ```typescript
 getActiveStyles(): Styles;
 
-// Usage
+// 用法
 const styles = editor.getActiveStyles();
 ```
 
-If a [Selection](/docs/editor-api/cursor-selections#selections) is active, this function returns the active styles at the end of the selection.
+如果有[选区](/docs/editor-api/cursor-selections#selections)处于激活状态，此函数返回选区末尾处的样式。
 
-## Adding Styles
+## 添加样式
 
-You can add styles to the currently selected text using the following function:
+您可以使用以下函数为当前选中文本添加样式：
 
 ```typescript
 addStyles(styles: Styles): void;
 
-// Usage
+// 用法
 editor.addStyles({ textColor: "red" });
 ```
 
-## Removing Styles
+## 移除样式
 
-You can remove styles from the currently selected text using the following function:
+您可以使用以下函数移除当前选中文本的样式：
 
 ```typescript
 removeStyles(styles: Styles): void;
 
-// Usage
+// 用法
 editor.removeStyles({ bold: true });
 ```
 
-## Toggling Styles
+## 切换样式
 
-You can toggle styles on the currently selected text using the following function:
+您可以使用以下函数切换当前选中文本的样式：
 
 ```typescript
 toggleStyles(styles: Styles): void;
 
-// Usage
+// 用法
 editor.toggleStyles({ bold: true, italic: true });
 ```
 
-## Accessing Selected Text
+## 获取选中文本
 
-You can get the currently selected text using the following function:
+您可以使用以下函数获取当前选中的文本：
 
 ```typescript
 getSelectedText(): string;
 
-// Usage
+// 用法
 const text = editor.getSelectedText();
 ```
 
-## Accessing Selected Link
+## 获取选中链接
 
-You can get the URL of the link in the current selection the following function:
+您可以使用以下函数获取当前选区中链接的 URL：
 
 ```typescript
 getSelectedLink(): string | undefined;
 
-// Usage
+// 用法
 const linkUrl = editor.getSelectedLink();
 ```
 
-If there are multiple links in the selection, this function only returns the last one's URL. If there are no links, returns `undefined`.
+如果选区中包含多个链接，此函数仅返回最后一个链接的 URL。若无链接，则返回 `undefined`。
 
-## Creating a Link
+## 创建链接
 
-You can create a new link using the following function:
+您可以使用以下函数创建一个新链接：
 
 ```typescript
 createLink(url: string, text?: string): void;
 
-// Usage
+// 用法
 editor.createLink("https://www.blocknotejs.org/", "BlockNote");
 ```
 
-If a [Selection](/docs/editor-api/cursor-selections#selections) is active, the new link will replace the currently selected content.
+如果有[选区](/docs/editor-api/cursor-selections#selections)处于激活状态，新链接将替换当前选中的内容。

@@ -1,54 +1,54 @@
 ---
-title: Overriding CSS
-description: You can change any styles applied to the editor by setting your own CSS styles.
-imageTitle: Overriding CSS
+title: 覆盖 CSS
+description: 你可以通过设置自定义的 CSS 样式来更改应用于编辑器的任何样式。
+imageTitle: 覆盖 CSS
 path: /docs/styling-theming/overriding-css
 ---
 
 import { Example } from "@/components/example";
 
-# Overriding CSS
+# 覆盖 CSS
 
-In the demo below, we create additional CSS rules to make the editor text and hovered slash menu items blue:
+在下面的演示中，我们创建了额外的 CSS 规则，使编辑器文本和悬停的斜杠菜单项变为蓝色：
 
 <Example name="theming/theming-css" />
 
-In this page you'll find the main selectors which are useful to create your own CSS rules, including the ones seen in the demo. However, if you want to target a specific DOM element, it's easiest to just inspect the DOM tree using your browser's dev tools.
+在本页中，你将找到主要的选择器，这些选择器对于创建你自己的 CSS 规则非常有用，包括演示中看到的选择器。然而，如果你想针对特定的 DOM 元素，最简单的方法是使用浏览器的开发者工具检查 DOM 树。
 
-## BlockNote CSS Classes
+## BlockNote CSS 类
 
-Within the editor's DOM structure, you'll find many elements have classes with the `bn-` prefix. BlockNote uses these to apply CSS styles to the editor, which you can override with your own. Here are some of the most useful BlockNote classes that you can use for your CSS rules:
+在编辑器的 DOM 结构中，你会发现许多元素具有 `bn-` 前缀的类。BlockNote 使用这些类向编辑器应用 CSS 样式，你可以用自己的样式覆盖它们。以下是一些最有用的 BlockNote 类，供你在 CSS 规则中使用：
 
-`.bn-container`: Container element for the editor, as well as all menus and toolbars.
+`.bn-container`：编辑器的容器元素，以及所有菜单和工具栏的容器。
 
-`.bn-editor`: Element for only the editor.
+`.bn-editor`：仅针对编辑器的元素。
 
-`.bn-block`: Element for a block, including nested blocks.
+`.bn-block`：表示一个区块元素，包括嵌套区块。
 
-`.bn-block-group`: Container element for nested blocks.
+`.bn-block-group`：嵌套区块的容器元素。
 
-`.bn-block-content`: Element for a block's content.
+`.bn-block-content`：区块内容的元素。
 
-`.bn-inline-content`: Element for only the block's editable, rich text content.
+`.bn-inline-content`：仅表示区块可编辑的富文本内容的元素。
 
-`.bn-toolbar`: Element for the formatting & link toolbars.
+`.bn-toolbar`：格式化和链接工具栏的元素。
 
-`.bn-side-menu`: Element for the side menu.
+`.bn-side-menu`：侧边菜单的元素。
 
-`.bn-drag-handle-menu`: Element for the drag handle menu.
+`.bn-drag-handle-menu`：拖动手柄菜单的元素。
 
-`.bn-suggestion-menu`: Element for suggestion menu.
+`.bn-suggestion-menu`：建议菜单的元素。
 
-## BlockNote CSS Attributes
+## BlockNote CSS 属性
 
-In addition to classes, BlockNote also uses the following attributes to target a specific block type & props:
+除了类之外，BlockNote 还使用以下属性来定位特定的区块类型和属性：
 
-`[data-content-type="blockType"]`: Element for a block's content, but only for blocks of type `blockType`.
+`[data-content-type="blockType"]`：区块内容的元素，但只针对类型为 `blockType` 的区块。
 
-`[data-propName="propValue"]`: Element for a block's content, but only for blocks with the `propName` prop with value `propValue`.
+`[data-propName="propValue"]`：区块内容的元素，但只针对具有值为 `propValue` 的 `propName` 属性的区块。
 
-For example, `[data-content-type="heading"][data-level="2"]` will select all heading blocks with heading level 2.
+例如，`[data-content-type="heading"][data-level="2"]` 会选择所有等级为 2 的标题区块。
 
-## Mantine Classes
+## Mantine 类
 
-Because BlockNote uses [Mantine](https://mantine.dev/) for its UI, you can also write CSS rules using any of the default Mantine component classes.
+由于 BlockNote 使用 [Mantine](https://mantine.dev/) 作为其 UI 框架，你也可以使用任何默认的 Mantine 组件类来编写 CSS 规则。

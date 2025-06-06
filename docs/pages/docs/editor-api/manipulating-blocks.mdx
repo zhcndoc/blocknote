@@ -1,13 +1,13 @@
 ---
-title: Manipulating Blocks
-description: How to read Blocks from the editor, and how to create / remove / update Blocks.
-imageTitle: Manipulating Blocks
+title: 操作块
+description: 如何从编辑器读取块，以及如何创建 / 删除 / 更新块。
+imageTitle: 操作块
 path: /docs/manipulating-blocks
 ---
 
-# Manipulating Blocks
+# 操作块
 
-Below, we explain the methods on `editor` you can use to read Blocks from the editor, and how to create / remove / update Blocks:
+下面，我们介绍 `editor` 上的方法，你可以使用它们从编辑器读取块，以及如何创建 / 删除 / 更新块：
 
 - [`document`](/docs/editor-api/manipulating-blocks#getting-the-document)
 - [`getBlock`](/docs/editor-api/manipulating-blocks#single-specific-block)
@@ -26,120 +26,120 @@ Below, we explain the methods on `editor` you can use to read Blocks from the ed
 - [`canUnnestBlock`](/docs/editor-api/manipulating-blocks#un-nesting-blocks)
 - [`unnestBlock`](/docs/editor-api/manipulating-blocks#un-nesting-blocks)
 
-## Common types
+## 常用类型
 
-Before we dive into the methods, let's discuss some common types used in parameters:
+在深入方法之前，先讨论一些参数中常用的类型：
 
-### Block Identifiers
+### 块标识符
 
-The methods to access, insert, update, remove, or replace blocks, can require a `BlockIdentifier` as reference to an existing block in the document.
-This is either a `string` representing the block ID, or a `Block` object from which the ID is taken:
+访问、插入、更新、删除或替换块的方法，可能需要一个 `BlockIdentifier` 作为文档中已有块的引用。
+这可以是表示块 ID 的字符串，或者是包含该 ID 的 `Block` 对象：
 
 ```typescript
 type BlockIdentifier = string | Block;
 ```
 
-### Partial Blocks
+### 部分块（Partial Blocks）
 
-When retrieving blocks from the editor, you always receive complete `Block` objects.
-For updating or creating blocks, you don't need to pass all properties, and you can use a `PartialBlock` type instead:
+当从编辑器获取块时，始终返回完整的 `Block` 对象。
+对于更新或创建块，你不需要传递所有属性，可以使用 `PartialBlock` 类型：
 
 ```typescript
 type PartialBlock = {
   id?: string;
   type?: string;
-  props?: Partial<Record<string, any>>; // exact type depends on "type"
+  props?: Partial<Record<string, any>>; // 精确类型依赖于 "type"
   content?: string | InlineContent[] | TableContent;
   children?: PartialBlock[];
 };
 ```
 
-`PartialBlock` objects are almost the same as regular `Block` objects, but with all members optional and partial `props`. This makes updating or creating simpler blocks much easier. We'll see this below.
+`PartialBlock` 对象与普通 `Block` 对象非常相似，但所有成员都是可选的，且 `props` 是部分的。这样可以简化更新或创建简单块的操作。我们后面会看到示例。
 
-## Accessing Blocks
+## 访问块
 
-There are a few different ways to retrieve Blocks from the editor:
+有几种不同的方法可以从编辑器中检索块：
 
-### Getting the Document
+### 获取文档
 
-Retrieve a snapshot of the document (all top-level, non-nested blocks) in the editor using the following call:
+使用以下调用获取编辑器中文档的快照（所有顶层、非嵌套块）：
 
 ```typescript
 document: Block[];
 
-// Usage
+// 用法
 const blocks = editor.document;
 ```
 
-`returns:` The document; a snapshot of all top-level (non-nested) blocks in the editor.
+`returns:` 文档；编辑器中所有顶层（非嵌套）块的快照。
 
-We already used this for the [Document JSON](/docs/editor-basics/document-structure#document-json) demo.
+我们曾在 [Document JSON](/docs/editor-basics/document-structure#document-json) 示例中使用过它。
 
-### Getting Specific Blocks
+### 获取特定块
 
-#### Single Specific Block
+#### 单个特定块
 
-Use `getBlock` to retrieve a snapshot of a specific block in the editor:
+使用 `getBlock` 获取编辑器中特定块的快照：
 
 ```typescript
 getBlock(blockIdentifier: BlockIdentifier): Block | undefined;
 
-// Usage
+// 用法
 const block = editor.getBlock(blockIdentifier);
 ```
 
-`blockIdentifier:` The [identifier](/docs/editor-api/manipulating-blocks#block-identifiers) of an existing block that should be retrieved.
+`blockIdentifier:` 要检索的现有块的[标识符](/docs/editor-api/manipulating-blocks#block-identifiers)。
 
-`returns:` The block that matches the identifier, or `undefined` if no matching block was found.
+`returns:` 具有相应标识符的块，如果未找到匹配块则返回 `undefined`。
 
-#### Previous Block
+#### 上一个块
 
-Use `getPrevBlock` to retrieve a snapshot of a block's previous sibling in the editor:
+使用 `getPrevBlock` 获取指定块的前一个同级块的快照：
 
 ```typescript
 getPrevBlock(blockIdentifier: BlockIdentifier): Block | undefined;
 
-// Usage
+// 用法
 const prevBlock = editor.getPrevBlock(blockIdentifier);
 ```
 
-`blockIdentifier:` The [identifier](/docs/editor-api/manipulating-blocks#block-identifiers) of an existing block for which the previous sibling should be retrieved.
+`blockIdentifier:` 要获取前一个同级块的现有块的[标识符](/docs/editor-api/manipulating-blocks#block-identifiers)。
 
-`returns:` The previous sibling of the block that matches the identifier, or `undefined` if no matching block was found. Also `undefined` when the matching block is the first in the document, or the first child of a parent block.
+`returns:` 该块的前一个同级块，若未找到匹配块，或者该块是文档中的第一个块或父块的第一个子块，则返回 `undefined`。
 
-#### Next Block
+#### 下一个块
 
-Use `getNextBlock` to retrieve a snapshot of a block's next sibling in the editor:
+使用 `getNextBlock` 获取指定块的下一个同级块的快照：
 
 ```typescript
 getNextBlock(blockIdentifier: BlockIdentifier): Block | undefined;
 
-// Usage
+// 用法
 const nextBlock = editor.getNextBlock(blockIdentifier);
 ```
 
-`blockIdentifier:` The [identifier](/docs/editor-api/manipulating-blocks#block-identifiers) of an existing block for which the next sibling should be retrieved.
+`blockIdentifier:` 要获取下一个同级块的现有块的[标识符](/docs/editor-api/manipulating-blocks#block-identifiers)。
 
-`returns:` The next sibling of the block that matches the identifier, or `undefined` if no matching block was found. Also `undefined` when the matching block is the last in the document, or the last child of a parent block.
+`returns:` 该块的下一个同级块，若未找到匹配块，或者该块是文档中的最后一个块或父块的最后一个子块，则返回 `undefined`。
 
-#### Parent Block
+#### 父块
 
-Use `getParentBlock` to retrieve a snapshot of a block's parent in the editor:
+使用 `getParentBlock` 获取指定块的父块快照：
 
 ```typescript
 getParentBlock(blockIdentifier: BlockIdentifier): Block | undefined;
 
-// Usage
+// 用法
 const parentBlock = editor.getParentBlock(blockIdentifier);
 ```
 
-`blockIdentifier:` The [identifier](/docs/editor-api/manipulating-blocks#block-identifiers) of an existing block for which the parent should be retrieved.
+`blockIdentifier:` 要获取父块的现有块的[标识符](/docs/editor-api/manipulating-blocks#block-identifiers)。
 
-`returns:` The parent of the block that matches the identifier, or `undefined` if no matching block was found. Also `undefined` when the matching block is not nested in a parent block.
+`returns:` 该块的父块，若未找到匹配块，或者该块不嵌套在任何父块中，则返回 `undefined`。
 
-### Traversing All Blocks
+### 遍历所有块
 
-Use `forEachBlock` to traverse all blocks in the editor depth-first, and execute a callback for each block:
+使用 `forEachBlock` 深度优先遍历编辑器中的所有块，并对每个块执行回调：
 
 ```typescript
 forEachBlock(
@@ -147,21 +147,21 @@ forEachBlock(
   reverse: boolean = false
 ): void;
 
-// Usage
+// 用法
 editor.forEachBlock((block) => {...});
 ```
 
-`callback:` The callback to execute for each block. Returning `false` stops the traversal.
+`callback:` 对每个块执行的回调函数。返回 `false` 可以停止遍历。
 
-`reverse:` Whether the blocks should be traversed in reverse order.
+`reverse:` 是否反向遍历块。
 
-### Getting the hovered / selected Block
+### 获取鼠标悬停 / 选中的块
 
-See [Cursor & Selections](/docs/editor-api/cursor-selections) to learn how to retrieve the block a user is interacting with.
+查看 [光标与选择](/docs/editor-api/cursor-selections) 以了解如何获取用户正在交互的块。
 
-## Inserting New Blocks
+## 插入新块
 
-Use `insertBlocks` to insert new blocks into the document:
+使用 `insertBlocks` 将新块插入文档：
 
 ```typescript
 insertBlocks(
@@ -170,23 +170,23 @@ insertBlocks(
   placement: "before" | "after" = "before"
 ): void;
 
-// Usage
+// 用法
 editor.insertBlocks([{type: "paragraph", content: "Hello World"}], referenceBlock, placement)
 ```
 
-`blocksToInsert:` An array of [partial blocks](/docs/editor-api/manipulating-blocks#partial-blocks) that should be inserted.
+`blocksToInsert:` 要插入的一组[部分块](/docs/editor-api/manipulating-blocks#partial-blocks)。
 
-`referenceBlock:` An [identifier](/docs/editor-api/manipulating-blocks#block-identifiers) for an existing block, at which the new blocks should be inserted.
+`referenceBlock:` 用作插入位置参考的现有块的[标识符](/docs/editor-api/manipulating-blocks#block-identifiers)。
 
-`placement:` Whether the blocks should be inserted just before or just after the `referenceBlock`.
+`placement:` 新块是插入在 `referenceBlock` 之前还是之后。
 
-If a block's `id` is undefined, BlockNote generates one automatically.
+如果块的 `id` 未定义，BlockNote 会自动生成一个。
 
-The method throws an error if the reference block could not be found.
+如果找不到参考块，该方法会抛出错误。
 
-## Updating Blocks
+## 更新块
 
-Use `updateBlock` to update an existing block:
+使用 `updateBlock` 更新现有块：
 
 ```typescript
 updateBlock(
@@ -194,38 +194,38 @@ updateBlock(
   update: PartialBlock
 ): void;
 
-// Example to change a block type to paragraph
+// 示例：将块类型改为段落
 editor.updateBlock(blockToUpdate, { type: "paragraph" });
 ```
 
-`blockToUpdate:` The [identifier](/docs/editor-api/manipulating-blocks#block-identifiers) of an existing block that should be updated.
+`blockToUpdate:` 要更新的现有块的[标识符](/docs/editor-api/manipulating-blocks#block-identifiers)。
 
-`update:` A [partial blocks](/docs/editor-api/manipulating-blocks#partial-blocks) which defines how the existing block should be changed.
+`update:` 一个定义了如何更改现有块的[部分块](/docs/editor-api/manipulating-blocks#partial-blocks)。
 
-Since `blockToUpdate` is a `PartialBlock` object, some fields might not be defined. These undefined fields are kept as-is from the existing block.
+因为 `blockToUpdate` 是 `PartialBlock` 对象，某些字段可能未定义，这些未定义字段会保持现有块的值。
 
-Throws an error if the block to update could not be found.
+如果未找到要更新的块，会抛出错误。
 
-## Removing Blocks
+## 删除块
 
-Use `removeBlocks` to remove existing blocks from the document:
+使用 `removeBlocks` 删除文档中的现有块：
 
 ```typescript
 removeBlocks(
   blocksToRemove: BlockIdentifier[],
 ): void;
 
-// Usage
+// 用法
 editor.removeBlocks(blocksToRemove)
 ```
 
-`blocksToRemove:` An array of [identifier](/docs/editor-api/manipulating-blocks#block-identifiers) for existing blocks that should be removed.
+`blocksToRemove:` 要删除的现有块的[标识符](/docs/editor-api/manipulating-blocks#block-identifiers)数组。
 
-Throws an error if any of the blocks could not be found.
+如果找不到任一需要删除的块，方法会抛出错误。
 
-## Replacing Blocks
+## 替换块
 
-Use `replaceBlocks` to replace existing blocks in the editor with new blocks:
+使用 `replaceBlocks` 用新块替换编辑器中的现有块：
 
 ```typescript
 replaceBlocks(
@@ -233,145 +233,145 @@ replaceBlocks(
   blocksToInsert: PartialBlock[],
 ): void;
 
-// Usage
+// 用法
 editor.replaceBlocks(blocksToRemove, blocksToInsert)
 ```
 
-`blocksToRemove:` An array of [identifier](/docs/editor-api/manipulating-blocks#block-identifiers) for existing blocks that should be replaced.
+`blocksToRemove:` 要替换的现有块的[标识符](/docs/editor-api/manipulating-blocks#block-identifiers)数组。
 
-`blocksToInsert:` An array of [partial blocks](/docs/editor-api/manipulating-blocks#partial-blocks) that the existing ones should be replaced with.
+`blocksToInsert:` 替换用的新块数组，元素是[部分块](/docs/editor-api/manipulating-blocks#partial-blocks)。
 
-If the blocks that should be removed are not adjacent or are at different nesting levels, `blocksToInsert` will be inserted at the position of the first block in `blocksToRemove`.
+若要删除的块不相邻或处于不同嵌套层级，`blocksToInsert` 会插入到 `blocksToRemove` 中第一个块的位置。
 
-Throws an error if any of the blocks to remove could not be found.
+如果找不到任一要删除的块，会抛出错误。
 
-## Moving Blocks Up/Down
+## 向上 / 向下移动块
 
-### Moving Up
+### 向上移动
 
-Use `moveBlocksUp` to move the selected blocks up:
+使用 `moveBlocksUp` 向上移动选中的块：
 
 ```typescript
 moveBlocksUp(): void;
 
-// Usage
+// 用法
 editor.moveBlocksUp();
 ```
 
-### Moving Down
+### 向下移动
 
-Use `moveBlocksDown` to move the selected blocks down:
+使用 `moveBlocksDown` 向下移动选中的块：
 
 ```typescript
 moveBlocksDown(): void;
 
-// Usage
+// 用法
 editor.moveBlocksDown();
 ```
 
-## Nesting & Un-nesting Blocks
+## 嵌套与取消嵌套块
 
-BlockNote also provides functions to nest & un-nest the block containing the [Text Cursor](/docs/editor-api/cursor-selections#text-cursor).
+BlockNote 还提供了函数，可以对包含[文本光标](/docs/editor-api/cursor-selections#text-cursor)的块进行嵌套和取消嵌套。
 
-### Nesting Blocks
+### 嵌套块
 
-Use `canNestBlock` to check whether the block containing the [Text Cursor](/docs/editor-api/cursor-selections#text-cursor) can be nested (i.e. if there is a block above it at the same nesting level):
+使用 `canNestBlock` 检查包含[文本光标](/docs/editor-api/cursor-selections#text-cursor)的块是否可以嵌套 （即其上方在相同嵌套层级存在一个块）：
 
 ```typescript
 canNestBlock(): boolean;
 
-// Usage
+// 用法
 const canNestBlock = editor.canNestBlock();
 ```
 
-Then, use `nestBlock` to actually nest (indent) the block:
+然后，使用 `nestBlock` 实际对该块进行嵌套（缩进）：
 
 ```typescript
 nestBlock(): void;
 
-// Usage
+// 用法
 editor.nestBlock();
 ```
 
-### Un-nesting Blocks
+### 取消嵌套块
 
-Use `canUnnestBlock` to check whether the block containing the [Text Cursor](/docs/editor-api/cursor-selections#text-cursor) can be un-nested (i.e. if it's nested in another block):
+使用 `canUnnestBlock` 检查包含[文本光标](/docs/editor-api/cursor-selections#text-cursor)的块是否可以取消嵌套（即是否嵌套在另一个块中）：
 
 ```typescript
 canUnnestBlock(): boolean;
 
-// Usage
+// 用法
 const canUnnestBlock = editor.canUnnestBlock();
 ```
 
-Then, use `unnestBlock` to un-nest the block:
+然后，使用 `unnestBlock` 对该块取消嵌套：
 
 ```typescript
 unnestBlock(): void;
 
-// Usage
+// 用法
 editor.unnestBlock();
 ```
 
-## Low-level APIs
+## 低阶 API
 
-### BlockNote Transactions
+### BlockNote 事务
 
-The `transact` method is used to perform a series of changes to the editor. It can group multiple changes into a single undo/redo operation. And it also provides a low-level API to read state and perform changes to the editor.
+`transact` 方法用于对编辑器执行一系列更改。它可以将多个更改合并为单个撤销/重做操作。它也提供了读取状态和执行编辑器更改的低级 API。
 
 ```typescript
 transact<T>(callback: (tr: Transaction) => T): T;
 ```
 
-`callback:` A function that receives a `Transaction` object, and returns a value.
+`callback:` 一个接收 `Transaction` 对象并返回值的函数。
 
-#### Multiple editor operations
+#### 多个编辑器操作
 
-The `transact` method can be used to group multiple editor operations into a single undo/redo operation.
+`transact` 方法可以将多个编辑器操作分组为单个撤销/重做操作。
 
 ```typescript
 editor.transact(() => {
-  // Both of these changes are grouped into a single undo/redo operation
+  // 这两个更改被合并为一个撤销/重做操作
   editor.insertBlocks([{ type: "paragraph", content: "Hello World" }], "root");
   editor.updateBlock("root", { type: "heading" });
 });
 ```
 
-#### Reading state
+#### 读取状态
 
-The `transact` method can also be used to read the state of the editor.
+`transact` 方法也可以用来读取编辑器状态。
 
 ```typescript
 const isSelectionEmpty = editor.transact((tr) => {
-  // What you return here will be returned from the transact method
+  // 这里返回的值将作为 transact 的返回值
   return tr.selection.empty
 });
 ```
 
-#### Performing changes
+#### 执行更改
 
-The `transact` method can also be used to perform changes to the editor.
+`transact` 方法还可以用来对编辑器执行更改。
 
 ```typescript
 editor.transact((tr) => {
-  // This tr is automatically applied to the editor when the transact method returns
+  // 当 transact 方法返回时，这个 tr 会自动应用到编辑器
   tr.insertText("Hello World");
 });
 ```
 
-### Executing ProseMirror Commands
+### 执行 ProseMirror 命令
 
-The `exec` method can be used to execute a ProseMirror command. This is mostly for backwards compatibility with ProseMirror commands.
+`exec` 方法可用于执行一个 ProseMirror 命令。这主要是为了与 ProseMirror 命令的向后兼容。
 
-When possible, you should prefer the [`transact`](#transact) method, as it will automatically handle the dispatching of the transaction and work across blocknote transactions. Also, the `exec` method cannot be used within a `transact` call since they will conflict with each other.
+尽可能应优先使用 [`transact`](#transact) 方法，因为它会自动处理事务的分发，并能配合 BlockNote 事务工作。此外 `exec` 方法不能在 `transact` 调用内部使用，因为两者会相互冲突。
 
 ```typescript
 exec(command: (state: EditorState, dispatch?: (tr: Transaction) => void, view?: EditorView) => boolean): boolean;
 ```
 
-`command:` A function that receives the current editor state, and a dispatch function to apply a transaction.
+`command:` 一个接收当前编辑器状态和可选分发函数的命令函数。
 
-Returns `true` if the command was executed, `false` otherwise.
+返回 `true` 表示命令被执行，`false` 表示未执行。
 
 ```typescript
 editor.exec((state, dispatch, view) => {
@@ -384,21 +384,21 @@ editor.exec((state, dispatch, view) => {
 });
 ```
 
-This will insert the text "Hello World" into the editor at the current cursor position.
+这将在光标当前位置插入文本 "Hello World"。
 
-### Checking if a ProseMirror command can be executed
+### 检查 ProseMirror 命令是否可执行
 
-The `canExec` method can be used to check whether a ProseMirror command can be executed.
+`canExec` 方法用来检查 ProseMirror 命令是否可以执行。
 
-When possible, you should prefer the [`transact`](#transact) method, as it will automatically handle the dispatching of the transaction and work across blocknote transactions. Also, the `exec` method cannot be used within a `transact` call since they will conflict with each other.
+同样，尽可能应优先使用 [`transact`](#transact) 方法，因为它自动处理事务分发，且支持 BlockNote 事务。`exec` 不能在 `transact` 内部使用，避免冲突。
 
 ```typescript
 canExec(command: (state: EditorState, dispatch?: (tr: Transaction) => void, view?: EditorView) => boolean): boolean;
 ```
 
-`command:` A function that receives the current editor state, and a dispatch function to apply a transaction.
+`command:` 接收当前编辑器状态和可选分发函数的命令函数。
 
-Returns `true` if the command can be executed, `false` otherwise.
+返回 `true` 表示命令可以执行，`false` 表示不能执行。
 
 ```typescript
 const canReplaceSelection = editor.canExec((state, dispatch, view) => {
@@ -413,5 +413,4 @@ const canReplaceSelection = editor.canExec((state, dispatch, view) => {
 });
 ```
 
-This will insert the text "Hello World" into the editor at the current cursor position only if the cursor is not empty.
-
+仅当光标不为空时，这将在编辑器中插入文本 "Hello World"。

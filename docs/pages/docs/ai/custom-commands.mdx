@@ -1,6 +1,6 @@
 ---
-title: Custom AI Commands
-description: Customize the AI menu items (commands) in your BlockNote rich text editor
+title: 自定义 AI 命令
+description: 在你的 BlockNote 富文本编辑器中自定义 AI 菜单项（命令）
 imageTitle: BlockNote AI
 path: /docs/ai/custom-commands
 ---
@@ -9,9 +9,9 @@ import { Example } from "@/components/example";
 import { ThemedImage } from "@/components/ThemedImage";
 import { Callout } from "nextra/components";
 
-# Custom AI Menu Items (commands)
+# 自定义 AI 菜单项（命令）
 
-A central part when users are interacting with the AI agent is the _AI Suggestion Menu_ where users can enter a custom prompt or select a pre-defined command:
+用户与 AI 代理交互的核心部分是 _AI 建议菜单_，用户可以在这里输入自定义提示或选择预定义命令：
 
 <ThemedImage
   src="/img/screenshots/ai-menu.png"
@@ -21,30 +21,30 @@ A central part when users are interacting with the AI agent is the _AI Suggestio
   height={177}
 />
 
-This menu is easy to customize so you can expose commands fine-tuned to your application.
+这个菜单易于自定义，因此你可以暴露针对你的应用程序微调的命令。
 
-## Defining your own commands
+## 定义你自己的命令
 
-First, we define a new AI command. Let's create one that makes selected text more informal.
+首先，我们定义一个新的 AI 命令。让我们创建一个让选中文本变得更随意的命令。
 
 ```tsx
 import { AIMenuSuggestionItem, getAIExtension } from "@blocknote/xl-ai";
 
-// Custom item to make the text more informal.
+// 自定义命令：让文本更随意（非正式）。
 export const makeInformal = (
   editor: BlockNoteEditor,
 ): AIMenuSuggestionItem => ({
   key: "make_informal",
-  title: "Make Informal",
+  title: "使文本更随意",
   aliases: ["informal", "make informal", "casual"],
   icon: <RiEmotionHappyFill size={18} />,
   onItemClick: async () => {
     await getAIExtension(editor).callLLM({
-      // The prompt to send to the LLM:
-      userPrompt: "Give the selected text a more informal (casual) tone",
-      // Tell the LLM to specifically use the selected content as context (instead of the whole document)
+      // 发送给大语言模型的提示：
+      userPrompt: "给选中文本赋予更随意（非正式）的语气",
+      // 告诉大语言模型具体使用选中的内容作为上下文（而非整个文档）
       useSelection: true,
-      // We only want the LLM to update selected text, not to add / delete blocks
+      // 我们只希望大语言模型更新选中文本，不添加或删除区块
       defaultStreamTools: {
         add: false,
         delete: false,
@@ -56,7 +56,7 @@ export const makeInformal = (
 });
 ```
 
-Now, we create a customized AI Menu to show this command when the user has selected some text and opened the AI menu:
+现在，我们创建一个自定义的 AI 菜单，当用户选中部分文本并打开 AI 菜单时显示此命令：
 
 ```tsx
 import { AIMenu, getDefaultAIMenuItems } from "@blocknote/xl-ai";
@@ -76,8 +76,8 @@ function CustomAIMenu() {
       ) => {
         if (aiResponseStatus === "user-input") {
           if (editor.getSelection()) {
-            // When a selection is active (so when the AI Menu is opened via the Formatting Toolbar),
-            // we add our `makeInformal` command to the default items.
+            // 当存在选区时（即通过格式工具栏打开 AI 菜单），
+            // 在默认命令基础上添加我们自定义的 `makeInformal` 命令。
             return [
               ...getDefaultAIMenuItems(editor, aiResponseStatus),
               makeInformal(editor),
@@ -87,7 +87,7 @@ function CustomAIMenu() {
           }
         }
 
-        // for other states, return the default items
+        // 其它状态，返回默认命令项
         return getDefaultAIMenuItems(editor, aiResponseStatus);
       }}
     />
@@ -95,7 +95,7 @@ function CustomAIMenu() {
 }
 ```
 
-Now, let's use this custom AI Menu in our app:
+接下来，在我们的应用中使用这个自定义 AI 菜单：
 
 ```tsx
 <BlockNoteView
@@ -103,24 +103,22 @@ Now, let's use this custom AI Menu in our app:
         formattingToolbar={false}
         slashMenu={false}
       >
-    {/* Creates a new AIMenu with the default items, as well as our custom
-    ones. */}
+    {/* 创建一个新的 AIMenu，其中包含默认命令和我们的自定义命令。 */}
     <AIMenuController aiMenu={CustomAIMenu} />
 
-    {/* ...other UI Elements... */}
+    {/* ...其它 UI 元素... */}
      <FormattingToolbarWithAI />
     <SuggestionMenuWithAI editor={editor} />
 </BlockNoteView>
 ```
 
-# Full example
+# 完整示例
 
-Have a look at the full example below, where we also add an AI menu item when no selection is open
-(e.g., when the editor is opened by typing `/ai` in the editor).
+请查看下面的完整示例，我们还在没有选区时（例如在编辑器中输入 `/ai` 打开时）添加了 AI 菜单项。
 
 <Example name="ai/custom-ai-menu-items" />
 
-# Reference
+# 参考
 
-So far, we've added basic commands to the editor, but it's possible to completely customize low level prompts sent to the LLM.
-To learn in detail about the `callLLM` method used in this guide, continue to the [AI reference docs](/docs/ai/reference).
+到目前为止，我们仅向编辑器添加了基础命令，但你可以完全自定义发给大语言模型的低级提示。
+要详细了解本指南中使用的 `callLLM` 方法，请继续阅读 [AI 参考文档](/docs/ai/reference)。

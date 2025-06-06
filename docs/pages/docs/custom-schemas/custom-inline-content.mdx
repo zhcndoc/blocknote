@@ -1,14 +1,14 @@
 import { Example } from "@/components/example";
 
-## Custom Inline Content Types
+## 自定义内联内容类型
 
-In addition to the default inline content types that BlockNote offers, you can also make your own custom inline content using React components. Take a look at the demo below, in which we add a custom mention tag to a BlockNote editor, as well as a custom [Suggestion Menu](/docs/ui-components/suggestion-menus#creating-suggestion-menus) to insert it.
+除了 BlockNote 提供的默认内联内容类型外，你还可以使用 React 组件创建自己的自定义内联内容。请看下面的演示，我们在 BlockNote 编辑器中添加了一个自定义的提及标签（mention tag），以及一个用于插入该标签的自定义[建议菜单](/docs/ui-components/suggestion-menus#creating-suggestion-menus)。
 
 <Example name="custom-schema/suggestion-menus-mentions" />
 
-### Creating a Custom Inline Content Type
+### 创建自定义内联内容类型
 
-Use the `createReactInlineContentSpec` function to create a custom inline content type. This function takes two arguments:
+使用 `createReactInlineContentSpec` 函数来创建自定义内联内容类型。该函数接受两个参数：
 
 ```typescript
 function createReactInlineContentSpec(
@@ -17,7 +17,7 @@ function createReactInlineContentSpec(
 );
 ```
 
-Let's look at our custom mentions tag from the demo, and go over each field to explain how it works:
+让我们看看演示中的自定义提及标签，并逐个字段解释其作用：
 
 ```typescript
 const Mention = createReactInlineContentSpec(
@@ -38,9 +38,9 @@ const Mention = createReactInlineContentSpec(
 );
 ```
 
-#### Inline Content Config (`CustomInlineContentConfig`)
+#### 内联内容配置 (`CustomInlineContentConfig`)
 
-The Inline Content Config describes the shape of your custom inline content. Use it to specify the type, properties (props) and content your custom inline content should support:
+内联内容配置描述你的自定义内联内容的结构。用它来指定自定义内联内容应该支持的类型、属性（props）和内容：
 
 ```typescript
 type CustomInlineContentConfig = {
@@ -52,17 +52,17 @@ type CustomInlineContentConfig = {
 
 **`type`**
 
-Defines the identifier of the custom inline content.
+定义自定义内联内容的标识符。
 
 **`content`**
 
-`styled` if your custom inline content should contain [`StyledText`](/docs/editor-basics/document-structure#inline-content-objects), `none` if not.
+如果你的自定义内联内容应包含 [`StyledText`](/docs/editor-basics/document-structure#inline-content-objects)，则设置为 `styled`，否则为 `none`。
 
-_In the mentions demo, we want each mention to be a single, non-editable element, so we set it to `"none"`._
+_在提及示例中，我们希望每个提及是一个单独的、不可编辑的元素，所以设置为 `"none"`。_
 
 **`propSchema`**
 
-The `PropSchema` specifies the props that the inline content supports. Inline content props (properties) are data stored with your inline content in the document, and can be used to customize its appearance or behavior.
+`PropSchema` 指定内联内容支持的 props。内联内容的 props（属性）是在文档中随内联内容存储的数据，可以用来定制其外观或行为。
 
 ```typescript
 type PropSchema<
@@ -76,17 +76,17 @@ type PropSchema<
 >
 ```
 
-`[key: string]` is the name of the prop, and the value is an object with two fields:
+`[key: string]` 是 prop 的名称，值是包含两个字段的对象：
 
-- `default`: Specifies the prop's default value
+- `default`：指定该 prop 的默认值
 
-- `values` (optional): Specifies an array of values that the prop can take, for example, to limit the value to a list of pre-defined strings. If `values` is not defined, BlockNote assumes the prop can be any value of `PrimitiveType`
+- `values`（可选）：指定该 prop 可以取的值的数组，例如限制该值为预定义字符串列表。如果未定义 `values`，BlockNote 认为该 prop 可以是任何 `PrimitiveType` 的值
 
-_In the mentions demo, we add a `user` prop for the user that's being mentioned._
+_在提及演示中，我们添加了一个 `user` prop，用于指定被提及的用户。_
 
-#### Inline Content Implementation (`ReactCustomInlineContentImplementation`)
+#### 内联内容实现 (`ReactCustomInlineContentImplementation`)
 
-The Inline Content Implementation defines how the inline content should be rendered to HTML.
+内联内容实现定义了内联内容如何渲染为 HTML。
 
 ```typescript
 type ReactCustomInlineContentImplementation = {
@@ -99,28 +99,28 @@ type ReactCustomInlineContentImplementation = {
 
 **`render`**
 
-This is your React component which defines how your custom inline content should be rendered, and takes three React props:
+这是你的 React 组件，用于定义自定义内联内容的渲染方式，接受两个 React props：
 
-`inlineContent:` The inline content that should be rendered. Its type and props will match the type and PropSchema defined in the Inline Content Config.
+`inlineContent:` 需要渲染的内联内容。其类型和 props 会匹配内联内容配置中定义的类型和 `PropSchema`。
 
-`contentRef:` A React `ref` you can use to mark which element in your inline content is editable, this is only available if your inline content config contains `content: "styled"`.
+`contentRef:` React `ref`，用于标记内联内容中可编辑的元素，仅当你的内联内容配置中包含 `content: "styled"` 时提供。
 
-_Note that since inline content is, by definition, inline, your component should also return an HTML inline element._
+_注意，由于内联内容本质上是内联的，你的组件也应返回一个 HTML 内联元素。_
 
-### Adding Custom Inline Content to the Editor
+### 向编辑器添加自定义内联内容
 
-Finally, create a BlockNoteSchema using the definition of your custom inline content:
+最后，使用你自定义内联内容的定义创建一个 BlockNoteSchema：
 
 ```typescript
 const schema = BlockNoteSchema.create({
   inlineContentSpecs: {
-    // enable the default inline content if desired
+    // 如果需要，可以启用默认内联内容
     ...defaultInlineContentSpecs,
 
-    // Add your own custom inline content:
+    // 添加你自己的自定义内联内容：
     mention: Mention,
   },
 });
 ```
 
-You can then instantiate your editor with this custom schema, as explained on the [Custom Schemas](/docs/custom-schemas) page.
+然后如[自定义 Schema](/docs/custom-schemas) 页面所述，用该自定义 schema 实例化编辑器即可。

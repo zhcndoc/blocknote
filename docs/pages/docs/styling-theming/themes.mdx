@@ -1,23 +1,23 @@
 ---
-title: Themes
-description: Themes let you quickly change the basic look of the editor UI, including colors, borders, shadows, and font.
-imageTitle: Themes
+title: 主题
+description: 主题让你能够快速更改编辑器 UI 的基本外观，包括颜色、边框、阴影和字体。
+imageTitle: 主题
 path: /docs/styling-theming/theming
 ---
 
 import { Example } from "@/components/example";
 
-# Themes
+# 主题
 
-Themes let you quickly change the basic look of the editor UI, including colors, borders, shadows, and font. If you want to set more complex styles on the editor, see [Overriding CSS](/docs/styling-theming/overriding-css).
+主题让你能够快速更改编辑器 UI 的基本外观，包括颜色、边框、阴影和字体。如果你想在编辑器上设置更复杂的样式，请参阅[覆盖 CSS](/docs/styling-theming/overriding-css)。
 
-_Themes are only available when using the default Mantine components. ShadCN / Ariakit components can be styled differently._
+_主题仅在使用默认的 Mantine 组件时可用。ShadCN / Ariakit 组件的样式方式不同。_
 
-## Theme CSS Variables
+## 主题 CSS 变量
 
-A theme is made up of a set of CSS variables, which can be overwritten to change the editor theme. BlockNote comes with two default themes, one for light and one for dark mode, which are selected based on system preference.
+主题由一组 CSS 变量组成，可以通过覆盖这些变量来改变编辑器主题。BlockNote 提供了两个默认主题：一个是浅色模式主题，一个是深色模式主题，系统偏好将决定使用哪一个。
 
-Here are each of the theme CSS variables you can set, with values from the default light theme:
+以下是你可以设置的每个主题 CSS 变量，值取自默认浅色主题：
 
 ```
 --bn-colors-editor-text: #3f3f3f;
@@ -62,15 +62,15 @@ Here are each of the theme CSS variables you can set, with values from the defau
 --bn-border-radius: 6px;
 ```
 
-Setting these variables on the `.bn-container[data-color-scheme]` selector will overwrite them for both default light & dark themes. To overwrite variables separately for light & dark themes, use the `.bn-container[data-color-scheme="light"]` and `.bn-container[data-color-scheme="dark"]` selectors.
+在 `.bn-container[data-color-scheme]` 选择器上设置这些变量将覆盖默认的浅色和深色主题。若要分别覆盖浅色和深色主题，使用 `.bn-container[data-color-scheme="light"]` 和 `.bn-container[data-color-scheme="dark"]` 选择器。
 
-In the demo below, we set a red theme for the editor which changes based on if light or dark mode is selected (see this in action by changing the website theme in the footer):
+下面的演示中，我们设置了一个红色主题，编辑器主题会根据浅色或深色模式自动切换。（通过切换网站页脚的主题即可看到效果）：
 
 <Example name="theming/theming-css-variables" />
 
-## Changing CSS Variables Through Code
+## 通过代码更改 CSS 变量
 
-You can also set the theme CSS variables using the `theme` prop in [`BlockNoteView`](/docs/editor-basics/setup#rendering-the-editor-with-blocknoteview). Passing a `Theme` object will overwrite CSS variables for both light & dark themes with values from the object:
+你也可以通过 [`BlockNoteView`](/docs/editor-basics/setup#rendering-the-editor-with-blocknoteview) 的 `theme` 属性设置主题 CSS 变量。传入一个 `Theme` 对象将使用该对象中的值覆盖浅色和深色主题的 CSS 变量：
 
 ```ts
 type CombinedColor = Partial<{
@@ -108,7 +108,7 @@ type Theme = Partial<{
 }>;
 ```
 
-Alternatively, you can overwrite CSS variables the light & dark theme separately by passing the following object type:
+或者，你也可以通过传入以下类型的对象分别覆盖浅色和深色主题的 CSS 变量：
 
 ```ts
 type LightAndDarkThemes = {
@@ -117,10 +117,10 @@ type LightAndDarkThemes = {
 };
 ```
 
-In the demo below, we create the same red theme as from the previous demo, but this time we set it using the `theme` prop in `BlockNoteView`:
+下面的演示中，我们创建了与前一个演示中相同的红色主题，但这次我们通过在 `BlockNoteView` 里设置 `theme` 属性来应用它：
 
 <Example name="theming/theming-css-variables-code" />
 
-### Forcing Light/Dark Mode
+### 强制使用浅色/深色模式
 
-By passing `"light"` or `"dark"` to the `theme` prop instead of a `Theme` object, you can also force BlockNote to always use the light or dark theme.
+将 `theme` 属性设置为 `"light"` 或 `"dark"`（而非一个 `Theme` 对象），你也可以强制 BlockNote 总是使用浅色或深色主题。

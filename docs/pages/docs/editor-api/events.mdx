@@ -1,76 +1,76 @@
 ---
-title: Events
-description: BlockNote emits events when certain actions occur.
-imageTitle: Events
+title: 事件
+description: 当特定操作发生时，BlockNote 会触发事件。
+imageTitle: 事件
 path: /docs/events
 ---
 
 import { Example } from "@/components/example";
 
-# Events
+# 事件
 
-BlockNote emits events when certain actions occur.
+当特定操作发生时，BlockNote 会触发事件。
 
 ## `onCreate`
 
-The `onCreate` callback is called when the editor is initialized.
+当编辑器初始化时，会调用 `onCreate` 回调。
 
 ```typescript
 editor.onCreate(() => {
-  console.log("Editor created");
+  console.log("编辑器已创建");
 });
 ```
 
 ## `onChange`
 
-The `onChange` callback is called when the editor content changes.
+当编辑器内容变化时，会调用 `onChange` 回调。
 
 ```typescript
 editor.onChange((editor, { getChanges }) => {
-  console.log("Editor updated");
+  console.log("编辑器已更新");
   const changes = getChanges();
   console.log(changes);
 });
 ```
 
-You can see what specific changes occurred in the editor by calling `getChanges()` in the callback. This function returns an array of block changes which looks like:
+在回调中调用 `getChanges()` 可以查看编辑器中具体发生了哪些变化。该函数返回一个块变化数组，结构如下：
 
 ```typescript
 /**
- * The changes that occurred in the editor.
+ * 编辑器中发生的变化。
  */
 type BlocksChanged = Array<
   | {
-      // The affected block
+      // 受影响的块
       block: Block;
-      // The source of the change
+      // 变化来源
       source: BlockChangeSource;
       type: "insert" | "delete";
-      // Insert and delete changes don't have a previous block
+      // 插入和删除变化没有之前的块
       prevBlock: undefined;
     }
   | {
-      // The affected block
+      // 受影响的块
       block: Block;
-      // The source of the change
+      // 变化来源
       source: BlockChangeSource;
       type: "update";
-      // The block before the update
+      // 更新前的块
       prevBlock: Block;
     }
 )>;
 
 /**
- * This attributes the changes to a specific source.
+ * 该类型将变化归因于具体来源。
  */
 type BlockChangeSource = {
   /**
-   * The type of change source:
-   * - "local": Triggered by local user (default)
-   * - "paste": From paste operation
-   * - "drop": From drop operation
-   * - "undo"/"redo"/"undo-redo": From undo/redo operations
-   * - "yjs-remote": From remote user
+   * 变更来源类型：
+   * - "local"：本地用户触发（默认）
+   * - "paste"：粘贴操作触发
+   * - "drop"：拖放操作触发
+   * - "undo"/"redo"/"undo-redo"：撤销/重做操作触发
+   * - "yjs-remote"：远程用户触发
    */
   type:
     | "local"
@@ -86,10 +86,10 @@ type BlockChangeSource = {
 
 ## `onSelectionChange`
 
-The `onSelectionChange` callback is called when the editor selection changes.
+当编辑器选区发生变化时，会调用 `onSelectionChange` 回调。
 
 ```typescript
 editor.onSelectionChange(() => {
-  console.log("Editor selection changed");
+  console.log("编辑器选区已改变");
 });
 ```

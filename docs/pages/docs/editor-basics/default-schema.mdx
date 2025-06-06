@@ -1,32 +1,32 @@
 ---
-title: Default Content Types
-description: BlockNote supports a variety on built-in block and inline content types that are included in the editor by default.
-imageTitle: Default Content Types
+title: 默认内容类型
+description: BlockNote 支持多种内置的块和内联内容类型，这些内容类型默认包含在编辑器中。
+imageTitle: 默认内容类型
 ---
 
 
 
 import { Example } from "@/components/example";
 
-# Default Content Types
+# 默认内容类型
 
-BlockNote supports a number of built-in blocks, inline content types, and styles that are included in the editor by default. This is called the Default Schema. To create your own content types, see [Custom Schemas](/docs/custom-schemas).
+BlockNote 支持许多内置的块、内联内容类型和样式，这些内容默认包含在编辑器中。这称为默认架构。要创建您自己的内容类型，请参阅[自定义架构](/docs/custom-schemas)。
 
-The demo below showcases each of BlockNote's built-in block and inline content types:
+下面的演示展示了 BlockNote 的每一种内置块和内联内容类型：
 
 <Example name="basic/default-blocks" />
 
-## Default Blocks
+## 默认块
 
-BlockNote's built-in blocks range from basic paragraphs to tables and images.
+BlockNote 的内置块从基本段落到表格和图片应有尽有。
 
-### Reference
+### 参考
 
-Let's look more in-depth at the default blocks and the properties they support:
+让我们更深入地了解默认块及其支持的属性：
 
-#### Paragraph
+#### 段落
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type ParagraphBlock = {
@@ -38,9 +38,9 @@ type ParagraphBlock = {
 };
 ```
 
-#### Heading
+#### 标题
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type HeadingBlock = {
@@ -54,11 +54,11 @@ type HeadingBlock = {
 };
 ```
 
-`level:` The heading level, representing a title (`level: 1`), heading (`level: 2`), and subheading (`level: 3`).
+`level:` 标题等级，表示标题（`level: 1`），副标题（`level: 2`）和子标题（`level: 3`）。
 
-#### Quote
+#### 引用
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type QuoteBlock = {
@@ -70,9 +70,9 @@ type QuoteBlock = {
 };
 ```
 
-#### Bullet List Item
+#### 无序列表项
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type BulletListItemBlock = {
@@ -84,9 +84,9 @@ type BulletListItemBlock = {
 };
 ```
 
-#### Numbered List Item
+#### 有序列表项
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type NumberedListItemBlock = {
@@ -98,9 +98,9 @@ type NumberedListItemBlock = {
 };
 ```
 
-#### Image
+#### 图片
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type ImageBlock = {
@@ -116,15 +116,15 @@ type ImageBlock = {
 };
 ```
 
-`url:` The image URL.
+`url:` 图片 URL。
 
-`caption:` The image caption.
+`caption:` 图片说明。
 
-`previewWidth:` The image previewWidth in pixels.
+`previewWidth:` 图片预览宽度，单位为像素。
 
-#### Table
+#### 表格
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type TableBlock = {
@@ -136,9 +136,9 @@ type TableBlock = {
 };
 ```
 
-### Default Block Properties
+### 默认块属性
 
-There are some default block props that BlockNote uses for the built-in blocks:
+BlockNote 为内置块使用了一些默认块属性：
 
 ```typescript
 type DefaultProps = {
@@ -148,23 +148,23 @@ type DefaultProps = {
 };
 ```
 
-`backgroundColor:` The background color of the block, which also applies to nested blocks.
+`backgroundColor:` 块的背景颜色，也适用于嵌套块。
 
-`textColor:` The text color of the block, which also applies to nested blocks.
+`textColor:` 块的文本颜色，也适用于嵌套块。
 
-`textAlignment:` The text alignment of the block.
+`textAlignment:` 块的文本对齐方式。
 
-## Default Inline Content
+## 默认内联内容
 
-By default, `InlineContent` (the content of text blocks like paragraphs) in BlockNote can either be a `StyledText` or a `Link` object.
+默认情况下，BlockNote 中的 `InlineContent`（如段落等文本块的内容）可以是 `StyledText` 或 `Link` 对象。
 
-### Reference
+### 参考
 
-Here's an overview of all default inline content and the properties they support:
+下面是所有默认内联内容及其支持的属性概览：
 
-#### Styled Text
+#### 样式文本
 
-`StyledText` is a type of `InlineContent` used to display pieces of text with styles:
+`StyledText` 是一种用于显示带样式文本片段的 `InlineContent` 类型：
 
 ```typescript
 type StyledText = {
@@ -174,9 +174,9 @@ type StyledText = {
 };
 ```
 
-#### Link
+#### 链接
 
-`Link` objects represent links to a URL:
+`Link` 对象表示指向 URL 的链接：
 
 ```typescript
 type Link = {
@@ -186,9 +186,9 @@ type Link = {
 };
 ```
 
-## Default Styles
+## 默认样式
 
-The default text formatting options in BlockNote are represented by the `Styles` in the default schema:
+BlockNote 中的默认文本格式选项由默认架构中的 `Styles` 表示：
 
 ```typescript
 type Styles = {
@@ -201,7 +201,7 @@ type Styles = {
 };
 ```
 
-## Creating New Block or Inline Content Types
+## 创建新的块或内联内容类型
 
-You can also extend your editor and create your own Blocks, Inline Content or Styles using React.
-Skip to [Custom Schemas (advanced)](/docs/custom-schemas) to learn how to do this.
+您也可以通过 React 扩展您的编辑器，创建自己的块、内联内容或样式。
+跳转到[自定义架构（高级）](/docs/custom-schemas)了解如何操作。

@@ -1,16 +1,16 @@
 ---
-description: Learn how to setup your BlockNote editor using the `useCreateBlockNote` hook and the ``BlockNoteView` component.
+description: 学习如何使用 `useCreateBlockNote` 钩子和 `BlockNoteView` 组件来设置你的 BlockNote 编辑器。
 ---
 
 import { Callout } from "nextra/components";
 
-# Editor Setup
+# 编辑器设置
 
-You can customize your editor when you instantiate it. Let's take a closer looks at the basic methods and components to set up your BlockNote editor.
+你可以在实例化编辑器时自定义它。让我们仔细看看设置 BlockNote 编辑器的基本方法和组件。
 
-## `useCreateBlockNote` hook
+## `useCreateBlockNote` 钩子
 
-Create a new `BlockNoteEditor` by calling the `useCreateBlockNote` hook. This instantiates a new editor and its required state. You can later interact with the editor using the Editor API and pass it to the `BlockNoteView` component.
+通过调用 `useCreateBlockNote` 钩子创建一个新的 `BlockNoteEditor`。这会实例化一个新的编辑器及其所需的状态。之后你可以使用编辑器 API 与编辑器交互，并将其传递给 `BlockNoteView` 组件。
 
 ```ts
 function useCreateBlockNote(
@@ -51,65 +51,60 @@ type BlockNoteEditorOptions = {
 };
 ```
 
-The hook takes two optional parameters:
+该钩子接受两个可选参数：
 
-**options:** An object containing options for the editor:
+**options:** 一个包含编辑器选项的对象：
 
-`animations`: Whether changes to blocks (like indentation, creating lists, changing headings) should be animated or not. Defaults to `true`.
+`animations`：是否对块的更改（如缩进、创建列表、修改标题）进行动画处理。默认值为 `true`。
 
-`collaboration`: Options for enabling real-time collaboration. See [Real-time Collaboration](/docs/advanced/real-time-collaboration) for more info.
+`collaboration`：启用实时协作的选项。详情请参见[实时协作](/docs/advanced/real-time-collaboration)。
 
-`comments`: Configuration for the comments feature, requires a `threadStore`. See [Comments](/docs/collaboration/comments) for more.
+`comments`：评论功能配置，需提供 `threadStore`。详情请参见[评论](/docs/collaboration/comments)。
 
-`defaultStyles`: Whether to use the default font and reset the styles of `<p>`, `<li>`, `<h1>`, etc. elements that are used in BlockNote. Defaults to true if undefined.
+`defaultStyles`：是否使用默认字体并重置 BlockNote 中使用的 `<p>`, `<li>`, `<h1>` 等元素的样式。如果未定义，默认为 true。
 
-`dictionary`: Provide strings for localization. See the [Localization / i18n example](/examples/basic/localization) and [Custom Placeholders](/examples/basic/custom-placeholder).
+`dictionary`：用于本地化的字符串。查看[本地化 / 国际化示例](/examples/basic/localization)和[自定义占位符](/examples/basic/custom-placeholder)。
 
-`disableExtensions` (_advanced_): Disables TipTap extensions used in BlockNote by default, based on their names.
+`disableExtensions`（_高级_）：基于名称禁用 BlockNote 默认使用的 TipTap 扩展。
 
-`domAttributes:` An object containing HTML attributes that should be added to various DOM elements in the editor. See [Adding DOM Attributes](/docs/theming#adding-dom-attributes) for more.
+`domAttributes:` 一个对象，包含应添加到编辑器中各 DOM 元素的 HTML 属性。查看更多内容请见[添加 DOM 属性](/docs/theming#adding-dom-attributes)。
 
-`dropCursor`: A replacement indicator to use when dragging and dropping blocks. Uses the [ProseMirror drop cursor](https://github.com/ProseMirror/prosemirror-dropcursor), or a modified version when [Column Blocks](/docs/editor-basics/document-structure#column-blocks) are enabled.
+`dropCursor`：拖放块时使用的替代指示器。使用的是 [ProseMirror drop cursor](https://github.com/ProseMirror/prosemirror-dropcursor)，当启用[列块](/docs/editor-basics/document-structure#column-blocks)时使用修改版。
 
-`initialContent:` The content that should be in the editor when it's created, represented as an array of [Partial Blocks](/docs/manipulating-blocks#partial-blocks).
+`initialContent:` 编辑器创建时应包含的内容，表示为[部分块](/docs/manipulating-blocks#partial-blocks)数组。
 
-`pasteHandler`: A function that can be used to override the default paste behavior. See [Paste Handling](/docs/advanced/paste-handling) for more.
+`pasteHandler`：可用于覆盖默认粘贴行为的函数。详情请见[粘贴处理](/docs/advanced/paste-handling)。
 
-`resolveFileUrl:` Function to resolve file URLs for display/download. Useful for creating authenticated URLs or implementing custom protocols.
+`resolveFileUrl:` 解析文件 URL 以进行显示/下载的函数。用于创建受认证的 URL 或实现自定义协议。
 
-`resolveUsers`: Function to resolve user information for comments. See [Comments](/docs/collaboration/comments) for more.
+`resolveUsers`：解析评论用户信息的函数。详情请见[评论](/docs/collaboration/comments)。
 
-`schema`: The editor schema if you want to extend your editor with custom blocks, styles, or inline content [Custom Schemas](/docs/custom-schemas).
+`schema`：如果你想通过自定义块、样式或内联内容扩展编辑器，提供编辑器的 schema，详见[自定义 Schema](/docs/custom-schemas)。
 
-`setIdAttribute`: Whether to render an `id` HTML attribute on blocks as well as a `data-id` attribute. Defaults to `false`.
+`setIdAttribute`：是否在块上渲染 `id` HTML 属性以及 `data-id` 属性。默认值为 `false`。
 
-`sideMenuDetection`: Determines whether the mouse cursor position is locked to the editor bounding box for showing the [Block Side Menu](/docs/ui-components/side-menu) and block drag & drop. When set to `viewport`, the Side Menu will be shown next to the nearest block to the cursor, regardless of where it is in the viewport. Dropping blocks will also be locked to the editor bounding box. Otherwise, the Side Menu will only be shown when the cursor is within the editor bounds, and blocks can only be dropped when hovering the editor. In order to use multiple editors, must be set to `editor`. Defaults to `viewport`.
+`sideMenuDetection`：确定鼠标光标位置是否锁定在编辑器边界框内，用于显示[块侧边菜单](/docs/ui-components/side-menu)和块的拖放。设置为 `viewport` 时，侧边菜单会显示在光标附近的最近块旁，无论光标在视口的何处。放置块时也会锁定在编辑器边界框内。否则，侧边菜单仅在光标处于编辑器边界内时显示，块只能在悬停编辑器时放置。要使用多个编辑器，必须设置为 `editor`。默认值为 `viewport`。
 
-`tabBehavior`: Determines whether pressing the tab key should navigate toolbars for keyboard accessibility. When set to `"prefer-navigate-ui`, the user can navigate toolbars using Tab. Pressing Escape re-focuses the editor, and Tab now indents blocks. `"prefer-indent"` causes Tab to always indent blocks. Defaults to `prefer-navigate-ui`.
+`tabBehavior`：确定按 Tab 键时是否应导航工具栏以实现键盘无障碍。设置为 `"prefer-navigate-ui"` 时，用户可以使用 Tab 键导航工具栏。按 Escape 键会重新聚焦编辑器，之后 Tab 则用于缩进块。`"prefer-indent"` 则使 Tab 始终缩进块。默认为 `prefer-navigate-ui`。
 
-`tables`: Configuration for table features. Allowing you to enable more advanced table features like `splitCells`, `cellBackgroundColor`, `cellTextColor`, and `headers`.
+`tables`：表格功能配置，允许启用更高级的表格功能，如 `splitCells`、`cellBackgroundColor`、`cellTextColor` 和表头。
 
-`trailingBlock`: An option which user can pass with `false` value to disable the automatic creation of a trailing new block on the next line when the user types or edits any block. Defaults to `true` if undefined.
+`trailingBlock`：用户可传入 `false` 来禁用在用户输入或编辑任意块时自动在下一行创建尾随新块的功能。如果未定义，默认为 `true`。
 
-`uploadFile`: A function which handles file uploads and eventually returns the URL to the uploaded file. Used for [Image blocks](/docs/editor-basics/default-schema#image).
+`uploadFile`：处理文件上传的函数，最终返回上传文件的 URL。用于[图片块](/docs/editor-basics/default-schema#image)。
 
-**deps:** Dependency array that's internally passed to `useMemo`. A new editor will only be created when this array changes.
+**deps:** 一个依赖数组，内部传递给 `useMemo`。仅当此数组发生变化时才会创建新的编辑器。
 
 <Callout type="info" emoji={"💡"}>
-  <strong>Manually creating the editor (`BlockNoteEditor.create`)</strong>
+  <strong>手动创建编辑器（`BlockNoteEditor.create`）</strong>
   <p>
-    The `useCreateBlockNote` hook is actually a simple `useMemo` wrapper around
-    the `BlockNoteEditor.create` method. You can use this method directly if you
-    want to control the editor lifecycle manually. For example, we do this in
-    the [Saving & Loading example](/examples/backend/saving-loading) to delay
-    the editor creation until some content has been fetched from an external
-    data source.
+    `useCreateBlockNote` 钩子实际上是对 `BlockNoteEditor.create` 方法的简单 `useMemo` 封装。如果你想手动控制编辑器的生命周期，可以直接使用此方法。例如，我们在[保存与加载示例](/examples/backend/saving-loading)中这样做，以延迟编辑器创建，直到从外部数据源获取到内容。
   </p>
 </Callout>
 
-## Rendering the Editor with `<BlockNoteView>`
+## 使用 `<BlockNoteView>` 渲染编辑器
 
-Use the `<BlockNoteView>` component to render the `BlockNoteEditor` instance you just created:
+使用 `<BlockNoteView>` 组件渲染你刚创建的 `BlockNoteEditor` 实例：
 
 ```tsx
 const editor = useCreateBlockNote();
@@ -117,9 +112,9 @@ const editor = useCreateBlockNote();
 return <BlockNoteView editor={editor} />;
 ```
 
-### Props
+### 属性
 
-There are a number of additional props you can pass to `BlockNoteView`. You can find the full list of these below:
+你可以向 `BlockNoteView` 传递许多额外的属性。以下是完整列表：
 
 ```typescript
 export type BlockNoteViewProps = {
@@ -147,43 +142,42 @@ export type BlockNoteViewProps = {
 } & HTMLAttributes<HTMLDivElement>;
 ```
 
-`editor`: The `BlockNoteEditor` instance to render.
+`editor`：要渲染的 `BlockNoteEditor` 实例。
 
-`editable`: Whether the editor should be editable.
+`editable`：编辑器是否可编辑。
 
-`onSelectionChange`: Callback fired when the editor selection changes.
+`onSelectionChange`：当编辑器选择更改时触发的回调。
 
-`onChange`: Callback fired when the editor content (document) changes.
+`onChange`：当编辑器内容（文档）更改时触发的回调。
 
-`theme`: The editor's theme, see [Themes](/docs/styling-theming/themes) for more about this.
+`theme`：编辑器主题，详见[主题](/docs/styling-theming/themes)。
 
-`formattingToolbar`: Whether the [Formatting Toolbar](/docs/ui-components/formatting-toolbar) should be enabled.
+`formattingToolbar`：是否启用[格式化工具栏](/docs/ui-components/formatting-toolbar)。
 
-`linkToolbar`: Whether the Link Toolbar should be enabled.
+`linkToolbar`：是否启用链接工具栏。
 
-`sideMenu`: Whether the [Block Side Menu](/docs/ui-components/side-menu) should be enabled.
+`sideMenu`：是否启用[块侧边菜单](/docs/ui-components/side-menu)。
 
-`slashMenu`: Whether the [Slash Menu](/docs/ui-components/suggestion-menus#slash-menu) should be enabled.
+`slashMenu`：是否启用[斜杠菜单](/docs/ui-components/suggestion-menus#slash-menu)。
 
-`emojiPicker`: Whether the [Emoji Picker](/docs/advanced/grid-suggestion-menus#emoji-picker) should be enabled.
+`emojiPicker`：是否启用[表情选择器](/docs/advanced/grid-suggestion-menus#emoji-picker)。
 
-`filePanel`: Whether the File Toolbar should be enabled.
+`filePanel`：是否启用文件工具栏。
 
-`tableHandles`: Whether the Table Handles should be enabled.
+`tableHandles`：是否启用表格操作柄。
 
-`comments`: Whether the default comments UI feature should be enabled.
+`comments`：是否启用默认评论 UI 功能。
 
-`children`: Pass child elements to the `BlockNoteView` to create or customize toolbars, menus, or other UI components. See [UI Components](/docs/ui-components) for more.
+`children`：向 `BlockNoteView` 传递子元素来创建或自定义工具栏、菜单或其他 UI 组件。详见[UI 组件](/docs/ui-components)。
 
-Additional props passed are forwarded to the HTML `div` element BlockNote renders internally.
+其它传入的属性会被转发给 BlockNote 内部渲染的 HTML `div` 元素。
 
 <Callout type="info" emoji={"💡"}>
-  <strong>Uncontrolled component</strong>
+  <strong>非受控组件</strong>
   <p>
-    Note that the `BlockNoteView` component is an [uncontrolled component](https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components). 
-    This means you don't pass in the editor content directly as a prop. You can use the `initialContent` option in the `useCreateBlockNote` hook to set the initial content of the editor (similar to the `defaultValue` prop in a regular React `<textarea>`).
+    注意，`BlockNoteView` 组件是一个[非受控组件](https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components)。这意味着你不用通过属性直接传入编辑器内容。你可以使用 `useCreateBlockNote` 钩子中的 `initialContent` 选项来设置编辑器的初始内容（类似于常规 React `<textarea>` 的 `defaultValue` 属性）。
   </p>
   <p>
-    BlockNote handles the complexities and performance optimizations of managing editor state internally. You can interact with the editor content using the [Editor API](/docs/editor-api).
+    BlockNote 在内部处理管理编辑器状态的复杂性和性能优化。你可以使用[编辑器 API](/docs/editor-api)来与编辑器内容交互。
   </p>
 </Callout>

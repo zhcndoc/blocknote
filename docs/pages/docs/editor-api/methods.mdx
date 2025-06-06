@@ -1,19 +1,19 @@
 ---
-title: Methods
-description: BlockNote provides a number of methods to interact with the editor.
-imageTitle: Methods
+title: 方法
+description: BlockNote 提供了多种方法与编辑器进行交互。
+imageTitle: 方法
 path: /docs/methods
 ---
 
 import { Example } from "@/components/example";
 
-# Methods
+# 方法
 
-BlockNote provides a number of methods to interact with the editor.
+BlockNote 提供了多种方法与编辑器进行交互。
 
 ## `undo`
 
-The `undo` method is used to undo the last action.
+`undo` 方法用于撤销上一个操作。
 
 ```typescript
 editor.undo();
@@ -21,7 +21,7 @@ editor.undo();
 
 ## `redo`
 
-The `redo` method is used to redo the last action.
+`redo` 方法用于重做上一个操作。
 
 ```typescript
 editor.redo();
@@ -29,12 +29,12 @@ editor.redo();
 
 ## `exec`
 
-The `exec` method executes a prosemirror command. This is mostly for backwards compatibility with older code.
+`exec` 方法执行一个 prosemirror 命令。 这主要是为了向后兼容旧代码。
 
-You should prefer the `transact` method when possible, as it will automatically handle the dispatching of the transaction and work across blocknote transactions.
+建议尽可能使用 `transact` 方法，因为它会自动处理事务的分发，并且能在 blocknote 事务中工作。
 
 ```typescript
-// Example of a custom command
+// 自定义命令示例
 function insertTextCommand(state: EditorState, dispatch: EditorDispatch, view: EditorView) {
   if (dispatch) {
     dispatch(state.tr.insertText("Hello, world!"));
@@ -46,7 +46,7 @@ editor.exec(insertTextCommand);
 
 ## `canExec`
 
-The `canExec` method checks if a prosemirror command can be executed.
+`canExec` 方法检查一个 prosemirror 命令是否可以执行。
 
 ```typescript
 const canExecute = editor.canExec(insertTextCommand);
@@ -54,7 +54,7 @@ const canExecute = editor.canExec(insertTextCommand);
 
 ## `transact`
 
-The `transact` method executes a prosemirror transaction. See the [low-level APIs](/docs/editor-api/manipulating-blocks#blocknote-transactions) section for more information.
+`transact` 方法执行一个 prosemirror 事务。更多信息请参见[底层 API](/docs/editor-api/manipulating-blocks#blocknote-transactions)部分。
 
 ```typescript
 editor.transact((tr) => {
@@ -64,7 +64,7 @@ editor.transact((tr) => {
 
 ## `pasteHTML`
 
-The `pasteHTML` method pastes HTML into the editor.
+`pasteHTML` 方法将 HTML 粘贴到编辑器中。
 
 ```typescript
 editor.pasteHTML("<p>Hello, world!</p>");
@@ -72,7 +72,7 @@ editor.pasteHTML("<p>Hello, world!</p>");
 
 ## `pasteText`
 
-The `pasteText` method pastes text into the editor.
+`pasteText` 方法将文本粘贴到编辑器中。
 
 ```typescript
 editor.pasteText("Hello, world!");
@@ -80,7 +80,7 @@ editor.pasteText("Hello, world!");
 
 ## `pasteMarkdown`
 
-The `pasteMarkdown` method pastes markdown into the editor.
+`pasteMarkdown` 方法将 markdown 粘贴到编辑器中。
 
 ```typescript
 editor.pasteMarkdown("**Hello, world!**");

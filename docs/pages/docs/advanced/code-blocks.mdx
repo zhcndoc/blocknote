@@ -1,66 +1,66 @@
 ---
-title: Code Block Syntax Highlighting
-description: This section explains how to add syntax highlighting to code blocks.
-imageTitle: Code Block Syntax Highlighting
+title: 代码块语法高亮
+description: 本节讲解如何为代码块添加语法高亮。
+imageTitle: 代码块语法高亮
 ---
 
 import { Example } from "@/components/example";
 
-# Code Block Syntax Highlighting
+# 代码块语法高亮
 
-To enable code block syntax highlighting, you can use the `codeBlock` option in the `useCreateBlockNote` hook. This is excluded by default to reduce bundle size.
+要启用代码块语法高亮，可以在 `useCreateBlockNote` 钩子中使用 `codeBlock` 选项。该选项默认被排除以减小打包体积。
 
-We've created a default setup which automatically includes some of the most common languages in the most optimized way possible. The language syntaxes are loaded on-demand to ensure the smallest bundle size for your users.
+我们创建了一个默认配置，自动包含了一些最常用的语言，并以最优化的方式加载。语言语法会按需加载，确保为用户提供最小的包体积。
 
-To use it, you can do the following:
+使用方法如下：
 
 ```sh
 npm install @blocknote/code-block
 ```
 
-And then you can use it like this:
+然后你可以这样使用：
 
 ```tsx
 import { codeBlock } from "@blocknote/code-block";
 
 export default function App() {
-  // Creates a new editor instance.
+  // 创建一个新的编辑器实例。
   const editor = useCreateBlockNote({
     codeBlock,
   });
 
-  // Renders the editor instance using a React component.
+  // 使用 React 组件渲染编辑器实例。
   return <BlockNoteView editor={editor} />;
 }
 ```
 
-See the code block example for a more detailed example.
+详见代码块示例以获取更详细的示例。
 
 <Example name="theming/code-block" />
 
-## Custom Themes & Languages
+## 自定义主题与语言
 
-To configure a code block highlighting theme and language, you can use the `codeBlock` option in the `useCreateBlockNote` hook.
+要配置代码块高亮的主题和语言，可以在 `useCreateBlockNote` 钩子中使用 `codeBlock` 选项。
 
-This allows you to configure a [shiki](https://shiki.style) highlighter for the code blocks of your editor, allowing you to tailor the themes and languages you would like to use.
+这允许你为编辑器的代码块配置一个 [shiki](https://shiki.style) 高亮器，从而定制你想使用的主题和语言。
 
-To create a syntax highlighter, you can use the [shiki-codegen](https://shiki.style/packages/codegen) CLI for generating the code to create a syntax highlighter for your languages and themes.
+要创建一个语法高亮器，你可以使用 [shiki-codegen](https://shiki.style/packages/codegen) CLI 来生成创建语法高亮器的代码，支持你的语言和主题。
 
-For example to create a syntax highlighter using the optimized javascript engine, javascript, typescript, vue, with light and dark themes, you can run the following command:
+例如，若要使用优化过的 javascript 引擎，指定 javascript、typescript、vue 三种语言，并包含亮色与暗色主题，可以运行以下命令：
 
 ```bash
 npx shiki-codegen --langs javascript,typescript,vue --themes light,dark --engine javascript --precompiled ./shiki.bundle.ts
 ```
 
-This will generate a `shiki.bundle.ts` file that you can use to create a syntax highlighter for your editor.
+该命令将生成一个 `shiki.bundle.ts` 文件，你可以用它来为编辑器创建语法高亮器。
 
-Like this:
+示例如下：
 
 ```ts
 import { createHighlighter } from "./shiki.bundle.js";
 
 export default function App() {
-  // Creates a new editor instance.
+  // 创建一个新的编辑器实例。
   const editor = useCreateBlockNote({
     codeBlock: {
       indentLineWithTab: true,
@@ -83,6 +83,6 @@ export default function App() {
 }
 ```
 
-See the custom code block example for a more detailed example.
+详见自定义代码块示例以获取更详细的示例。
 
 <Example name="theming/custom-code-block" />

@@ -1,30 +1,30 @@
 ---
-title: Link Toolbar
-description: The Link Toolbar appears whenever you hover a link in the editor.
-imageTitle: Link Toolbar
+title: 链接工具栏
+description: 当你在编辑器中悬停链接时，链接工具栏会出现。
+imageTitle: 链接工具栏
 path: /docs/link-toolbar
 ---
 
 import { Example } from "@/components/example";
 
-# Link Toolbar
+# 链接工具栏
 
-The Link Toolbar appears whenever you hover a link in the editor.
+当你在编辑器中悬停链接时，链接工具栏会出现。
 
-TODO Image
+TODO 图片
 
 [//]: # '<img style={{maxWidth: "600px"}} src="/img/screenshots/link_toolbar.png" alt="image" />'
 
-## Changing the Link Toolbar
+## 更改链接工具栏
 
-You can change or replace the Link Toolbar with your own React component. In the demo below, a button is added to the default Link Toolbar, which opens a browser alert.
+你可以用你自己的 React 组件更改或替换链接工具栏。在下面的演示中，默认的链接工具栏中添加了一个按钮，点击该按钮会弹出浏览器提示框。
 
 [//]: # '<Example name="ui-components/link-toolbar-buttons" />'
 
-We first define our custom `AlertButton`. The `useComponentsContext` hook gets all components used internally by BlockNote, so we want to use `Components.LinkToolbar.Button` for this.
+我们首先定义自定义的 `AlertButton`。`useComponentsContext` 钩子获取 BlockNote 内部使用的所有组件，因此我们这里使用 `Components.LinkToolbar.Button`。
 
-We use the `LinkToolbar` component to create a custom Link Toolbar. By specifying its children, we can replace the default buttons in the toolbar with our own.
+我们使用 `LinkToolbar` 组件创建自定义链接工具栏。通过指定其子元素，我们可以用自己的按钮替换工具栏中的默认按钮。
 
-This custom Link Toolbar is passed to a `LinkToolbarController`, which controls its position and visibility (above or below the hovered link).
+这个自定义链接工具栏被传递给 `LinkToolbarController`，该控制器控制其位置和可见性（悬停链接的上方或下方）。
 
-Setting `linkToolbar={false}` on `BlockNoteView` tells BlockNote not to show the default Link Toolbar.
+在 `BlockNoteView` 上设置 `linkToolbar={false}` 告诉 BlockNote 不显示默认的链接工具栏。

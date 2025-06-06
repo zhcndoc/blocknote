@@ -1,6 +1,6 @@
 ---
-title: AI Rich Text Editing
-description: Add AI functionality to your BlockNote rich text editor
+title: AI 富文本编辑
+description: 为您的 BlockNote 富文本编辑器添加 AI 功能
 imageTitle: BlockNote AI
 path: /docs/ai
 ---
@@ -8,63 +8,59 @@ path: /docs/ai
 import { Example } from "@/components/example";
 import { Callout } from "nextra/components";
 
-# BlockNote AI integration
+# BlockNote AI 集成
 
-With BlockNote AI, you can add AI functionality to your rich text editor.
-Users can work with an AI agent to edit, write and format their documents.
+通过 BlockNote AI，您可以为富文本编辑器添加 AI 功能。  
+用户可以与 AI 代理协作，编辑、撰写和格式化他们的文档。
 
 <video
   style={{ marginTop: "2rem" }}
   src="/img/screenshots/blocknote-ai.mp4"
-  aria-label="BlockNote AI Video demo"
+  aria-label="BlockNote AI 视频演示"
   controls
 />
 
 <Callout>
-  BlockNote AI is now in early preview - we'd love to hear your feedback!
-  We also collaborate with companies to help with the integration or implement
-  more advanced AI related functionality. [Get in touch](/about).
+  BlockNote AI 现处于早期预览阶段——我们非常期待您的反馈！  
+  我们也与企业合作，协助集成或实现更高级的 AI 相关功能。[联系我们](/about)。
 </Callout>
 
-## Features
+## 功能
 
-BlockNote AI has been designed to be fully customizable.
-BlockNote shows exactly what the AI agent is doing - making it easy for users to
-work hand in hand with AI agents.
+BlockNote AI 设计为完全可定制。  
+BlockNote 精确展示 AI 代理的操作——让用户轻松与 AI 代理协同工作。
 
-### User Experience
+### 用户体验
 
-- **Interactive AI Suggestions**: Users can accept or reject AI suggestions with a simple click, maintaining full control over their content
-- **Real-time Feedback**: Streaming support provides immediate responses, making the AI interaction feel natural and responsive
-- **Transparent Operations**: See exactly what the AI is doing at each step, with clear visual indicators of AI actions
+- **交互式 AI 建议**：用户可以通过简单点击接受或拒绝 AI 建议，保持对内容的完全控制
+- **实时反馈**：流式支持即时响应，使 AI 交互感觉自然且富有响应性
+- **透明操作**：清晰的视觉指示，展示 AI 在每一步的具体操作
 
-### Technical Capabilities
+### 技术能力
 
-- **Flexible Command System**: Customize commands to write or update existing content and formatting
-- **Multi-step Workflows**: Support for "Human in the Loop" workflows where users can guide the AI
-- **Model Agnostic**: Connect any LLM model (from Llama to OpenAI, Mistral or Anthropic)
-- **Customizable Prompts**: Fine-tune AI behavior with custom prompts and instructions
-- **No Backend Required**: Use your own infrastructure or connect directly to a hosted LLM API
+- **灵活的命令系统**：自定义命令以撰写或更新现有内容和格式
+- **多步工作流程**：“人类在环”工作流程支持，允许用户引导 AI
+- **模型无关**：连接任意大型语言模型（从 Llama 到 OpenAI、Mistral 或 Anthropic）
+- **可定制提示**：通过自定义提示和指令微调 AI 行为
+- **无需后端**：使用您自己的基础设施或直接连接到托管的 LLM API
 
-### Integration
+### 集成
 
-- **Built on Vercel AI SDK**: Leverages the power of the [Vercel AI SDK](https://sdk.vercel.ai) for reliable AI integration
-- **Easy Setup**: Get started quickly with minimal configuration
-- **Completely Customizable**: Fully customizable commands and UI elements
+- **基于 Vercel AI SDK 构建**：利用 [Vercel AI SDK](https://sdk.vercel.ai) 的强大功能实现可靠的 AI 集成
+- **轻松设置**：最小配置即可快速上手
+- **完全可定制**：命令和 UI 元素均可完全定制
 
 <Callout type={"info"}>
-  This feature is provided by the `@blocknote/xl-ai` package. `xl-` packages are fully
-  open source, but released under a copyleft license. A commercial license for
-  usage in closed source, proprietary products comes as part of the [Business
-  subscription](/pricing).
+  该功能由 `@blocknote/xl-ai` 包提供。`xl-` 系列包完全开源，但采用强制开源许可。  
+  若需在闭源专有产品中商业使用，许可证包含在 [企业订阅](/pricing) 中。
 </Callout>
 
-### Next Steps
+### 下一步
 
-- Try the [basic AI demo](/examples/ai/minimal) to see it in action
-- Explore different models in the [AI playground](/examples/ai/playground)
-- Check out the [setup documentation](/docs/ai/getting-started)
-- Learn about [customizing commands](/docs/ai/custom-commands)
-- Review the [API Reference](/docs/ai/reference)
+- 试用 [基本 AI 演示](/examples/ai/minimal)，体验其实时效果
+- 在 [AI 试验场](/examples/ai/playground) 探索不同模型
+- 查看 [安装文档](/docs/ai/getting-started)
+- 学习 [自定义命令](/docs/ai/custom-commands)
+- 参考 [API 文档](/docs/ai/reference)
 
-Have a feature request or need help with integration? [Get in touch](/about) with our team.
+有功能需求或需要集成帮助？请与我们的团队[联系](/about)。

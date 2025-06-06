@@ -1,27 +1,27 @@
 ---
-title: Real-time Collaborative rich text editor
-description: Let's see how you can add Multiplayer capabilities to your BlockNote setup, and allow real-time collaboration between users (similar to Google Docs)
-imageTitle: Real-time Collaboration
+title: 实时协作富文本编辑器
+description: 让我们看看如何为你的 BlockNote 配置添加多人协作功能，实现用户之间的实时协作（类似于 Google Docs）
+imageTitle: 实时协作
 ---
 
 import { ThemedImage } from "@/components/ThemedImage";
 
-# Real-time Collaboration (multiplayer text editor)
+# 实时协作（多人文本编辑器）
 
-Let's see how you can add Multiplayer capabilities to your BlockNote setup, and allow real-time collaboration between users (similar to Google Docs):
+让我们看看如何为你的 BlockNote 配置添加多人协作功能，实现用户之间的实时协作（类似于 Google Docs）：
 
 <ThemedImage
   style={{ border: "1px solid gray" }}
   src="/img/features/collaboration_light.gif"
   darkImage="/img/features/collaboration_dark.gif"
-  alt="text editing collaboration"
+  alt="文本编辑协作"
   width={300}
   height={300}
 />
 
-_Try the live demo on the [homepage](https://www.blocknotejs.org)_
+_在[首页](https://www.blocknotejs.org)试用实时演示_
 
-BlockNote uses [Yjs](https://github.com/yjs/yjs) for this, and you can set it up with the `collaboration` option:
+BlockNote 使用了 [Yjs](https://github.com/yjs/yjs) 来实现该功能，你可以通过 `collaboration` 选项进行设置：
 
 ```typescript
 import * as Y from "yjs";
@@ -30,44 +30,44 @@ import { WebrtcProvider } from "y-webrtc";
 
 const doc = new Y.Doc();
 
-const provider = new WebrtcProvider("my-document-id", doc); // setup a yjs provider (explained below)
+const provider = new WebrtcProvider("my-document-id", doc); // 设置 Yjs 提供者（如下所述）
 const editor = useCreateBlockNote({
   // ...
   collaboration: {
-    // The Yjs Provider responsible for transporting updates:
+    // 负责传输更新的 Yjs 提供者：
     provider,
-    // Where to store BlockNote data in the Y.Doc:
+    // 在 Y.Doc 中存储 BlockNote 数据的位置：
     fragment: doc.getXmlFragment("document-store"),
-    // Information (name and color) for this user:
+    // 此用户的信息（姓名和颜色）：
     user: {
       name: "My Username",
       color: "#ff0000",
     },
-    // When to show user labels on the collaboration cursor. Set by default to
-    // "activity" (show when the cursor moves), but can also be set to "always".
+    // 何时在协作光标上显示用户标签。默认设置为
+    // "activity"（光标移动时显示），也可以设置为 "always"。
     showCursorLabels: "activity"
   },
   // ...
 });
 ```
 
-## Yjs Providers
+## Yjs 提供者
 
-When a user edits the document, an incremental change (or "update") is captured and can be shared between users of your app. You can share these updates by setting up a _Yjs Provider_. In the snipped above, we use [y-webrtc](https://github.com/yjs/y-webrtc) which shares updates over WebRTC (and BroadcastChannel), but you might be interested in different providers for production-ready use cases.
+当用户编辑文档时，增量变化（或称“更新”）会被捕获并可在你的应用用户之间共享。你可以通过设置 _Yjs 提供者_ 来共享这些更新。在上面的示例中，我们使用了 [y-webrtc](https://github.com/yjs/y-webrtc) 来通过 WebRTC（和 BroadcastChannel）传输更新，但你可能会对其他更适合生产环境的提供者感兴趣。
 
-- [Liveblocks](https://liveblocks.io/yjs) A fully hosted WebSocket infrastructure and persisted data store for Yjs documents. Includes webhooks, REST API, and browser DevTools, all for Yjs
-- [PartyKit](https://www.partykit.io/) A serverless provider that runs on Cloudflare
-- [Y-Sweet](https://jamsocket.com/y-sweet) An open-source provider that runs fully managed on [Jamsocket](https://jamsocket.com) or self-hosted in your own cloud
-- [Hocuspocus](https://www.hocuspocus.dev/) open source and extensible Node.js server with pluggable storage (scales with Redis)
-- [y-websocket](https://github.com/yjs/y-websocket) provider that you can connect to your own websocket server
-- [y-indexeddb](https://github.com/yjs/y-indexeddb) for offline storage
-- [y-webrtc](https://github.com/yjs/y-webrtc) transmits updates over WebRTC
-- [Matrix-CRDT](https://github.com/yousefED/matrix-crdt) syncs updates over Matrix (experimental)
-- [Nostr-CRDT](https://github.com/yousefED/nostr-crdt) syncs updates over Nostr (experimental)
+- [Liveblocks](https://liveblocks.io/yjs) —— 为 Yjs 文档提供完全托管的 WebSocket 基础设施和持久化数据存储。包含 webhook、REST API 和浏览器开发工具，适用于 Yjs
+- [PartyKit](https://www.partykit.io/) —— 运行在 Cloudflare 上的无服务器提供者
+- [Y-Sweet](https://jamsocket.com/y-sweet) —— 开源提供者，完全托管于 [Jamsocket](https://jamsocket.com)，也可自托管
+- [Hocuspocus](https://www.hocuspocus.dev/) —— 开源且可扩展的 Node.js 服务器，支持插件式存储（可扩展至 Redis）
+- [y-websocket](https://github.com/yjs/y-websocket) —— 可连接至你自有 websocket 服务器的提供者
+- [y-indexeddb](https://github.com/yjs/y-indexeddb) —— 离线存储支持
+- [y-webrtc](https://github.com/yjs/y-webrtc) —— 通过 WebRTC 传输更新
+- [Matrix-CRDT](https://github.com/yousefED/matrix-crdt) —— 通过 Matrix 同步更新（实验性）
+- [Nostr-CRDT](https://github.com/yousefED/nostr-crdt) —— 通过 Nostr 同步更新（实验性）
 
 ## Liveblocks
 
-Liveblocks provides a hosted back-end for Yjs. You can create a fully-featured example project which uses Liveblocks with BlockNote by running the command below (you will need a Liveblocks account for this):
+Liveblocks 提供了 Yjs 的托管后端。你可以通过下面的命令创建一个使用 Liveblocks 和 BlockNote 的全功能示例项目（你需要一个 Liveblocks 账户）：
 
 ```shell
 npx create-liveblocks-app@latest --example nextjs-blocknote --api-key
@@ -77,18 +77,18 @@ npx create-liveblocks-app@latest --example nextjs-blocknote --api-key
   autoPlay
   loop
   src="/img/screenshots/liveblocks_blocknote_example.mp4"
-  aria-label="BlockNote example using Liveblocks Yjs, showing collaboration and DevTools"
+  aria-label="使用 Liveblocks 和 Yjs 的 BlockNote 示例，展示协作及开发工具"
 />
 
-You can also try the same example in a [live demo](https://liveblocks.io/examples/collaborative-text-editor/nextjs-blocknote).
+你也可以在 [在线演示](https://liveblocks.io/examples/collaborative-text-editor/nextjs-blocknote) 中体验相同的示例。
 
-For a simpler demo, check out [this example](/docs/examples/collaboration/liveblocks), which follows their [getting started guide](https://liveblocks.io/docs/get-started/react-blocknote).
+想要一个更简单的演示，可以参考[此示例](/docs/examples/collaboration/liveblocks)，它遵循了 Liveblocks 的[入门指南](https://liveblocks.io/docs/get-started/react-blocknote)。
 
-If you want more info on integrating Liveblocks, take a look at their [ready-made features for BlockNote](https://liveblocks.io/docs/ready-made-features/text-editor/blocknote) and [API reference](https://liveblocks.io/docs/api-reference/liveblocks-react-blocknote#AnchoredThreads).
+如果你想了解更多 Liveblocks 集成信息，请查看他们针对 BlockNote 的[现成功能](https://liveblocks.io/docs/ready-made-features/text-editor/blocknote)和[API 参考](https://liveblocks.io/docs/api-reference/liveblocks-react-blocknote#AnchoredThreads)。
 
 ## Partykit
 
-For development purposes, you can use our Partykit server to test collaborative features. Replace the `WebrtcProvider` provider in the example below with a `YPartyKitProvider`:
+在开发时，你可以使用我们的 Partykit 服务器来测试协作功能。在下面的示例中用 `YPartyKitProvider` 替换 `WebrtcProvider` ：
 
 ```typescript
 // npm install y-partykit
@@ -96,17 +96,17 @@ import YPartyKitProvider from "y-partykit/provider";
 
 const provider = new YPartyKitProvider(
   "blocknote-dev.yousefed.partykit.dev",
-  // use a unique name as a "room" for your application:
+  // 给你的应用使用的房间名称，需唯一：
   "your-project-name",
   doc,
 );
 ```
 
-To learn how to set up your own development / production servers, check out the [PartyKit docs](https://github.com/partykit/partykit) and the [BlockNote + Partykit example](https://github.com/partykit/partykit/tree/main/examples/blocknote).
+想了解如何搭建自己的开发或生产服务器，请查看 [PartyKit 文档](https://github.com/partykit/partykit) 和 [BlockNote + Partykit 示例](https://github.com/partykit/partykit/tree/main/examples/blocknote)。
 
-[//]: # "# Live demo"
+[//]: # "# 实时演示"
 [//]: #
-[//]: # "Below, two editors are connected to each other. Note that anything you type is shared live with other visitors of this webpage, so be friendly ;)"
+[//]: # "下面连接了两个编辑器。请注意你输入的任何内容都会实时共享给访问该网页的其他访客，所以请友好对待 ;) "
 [//]: #
 [//]: # "::: sandbox {template=react-ts}"
 [//]: #
@@ -120,13 +120,13 @@ To learn how to set up your own development / production servers, check out the 
 [//]: # "const doc = new Y.Doc();"
 [//]: # "const provider = new YPartyKitProvider("
 [//]: # '  "blocknote-dev.yousefed.partykit.dev",'
-[//]: # '  // use a unique name as a "room" for your application:'
+[//]: # '  // 给你的应用使用的房间名称：'
 [//]: # '  "docs-demo",'
 [//]: # "  doc"
 [//]: # ");"
 [//]: #
 [//]: # "export default function App() {"
-[//]: # "  // Creates a new editor instance."
+[//]: # "  // 创建一个新的编辑器实例。"
 [//]: # "  const editor: BlockNoteEditor | null = useBlockNote({"
 [//]: # "    collaboration: {"
 [//]: # "      provider,"
@@ -138,7 +138,7 @@ To learn how to set up your own development / production servers, check out the 
 [//]: # "    },"
 [//]: # "  });"
 [//]: #
-[//]: # "  // Renders the editor instance using a React component."
+[//]: # "  // 通过 React 组件渲染编辑器实例。"
 [//]: # '  return <BlockNoteView editor={editor} theme={"{{ getTheme(isDark) }}"} />;'
 [//]: # "}"
 [//]: # "```"
@@ -161,13 +161,13 @@ To learn how to set up your own development / production servers, check out the 
 [//]: # "const doc = new Y.Doc();"
 [//]: # "const provider = new YPartyKitProvider("
 [//]: # '  "blocknote-dev.yousefed.partykit.dev",'
-[//]: # '  // use a unique name as a "room" for your application:'
+[//]: # '  // 给你的应用使用的房间名称：'
 [//]: # '  "docs-demo",'
 [//]: # "  doc"
 [//]: # ");"
 [//]: #
 [//]: # "export default function App() {"
-[//]: # "  // Creates a new editor instance."
+[//]: # "  // 创建一个新的编辑器实例。"
 [//]: # "  const editor: BlockNoteEditor | null = useBlockNote({"
 [//]: # "    collaboration: {"
 [//]: # "      provider,"
@@ -179,7 +179,7 @@ To learn how to set up your own development / production servers, check out the 
 [//]: # "    },"
 [//]: # "  });"
 [//]: #
-[//]: # "  // Renders the editor instance using a React component."
+[//]: # "  // 通过 React 组件渲染编辑器实例。"
 [//]: # '  return <BlockNoteView editor={editor} theme={"{{ getTheme(isDark) }}"} />;'
 [//]: # "}"
 [//]: # "```"

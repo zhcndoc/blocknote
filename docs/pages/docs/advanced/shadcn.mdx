@@ -1,22 +1,22 @@
 ---
-title: BlockNote with ShadCN and Tailwind
-description: ShadCN + Tailwind rich text editor using BlockNote
-imageTitle: BlockNote with ShadCN and Tailwind
+title: 使用 ShadCN 和 Tailwind 的 BlockNote
+description: 使用 BlockNote 的 ShadCN + Tailwind 富文本编辑器
+imageTitle: 使用 ShadCN 和 Tailwind 的 BlockNote
 ---
 
 import { Example } from "@/components/example";
 import { Callout } from "nextra/components";
 
-## Using ShadCN, Radix and Tailwind with BlockNote
+## 在 BlockNote 中使用 ShadCN、Radix 和 Tailwind
 
-[shadcn/ui](https://ui.shadcn.com/) is an open-source collection of React components based on [Radix](https://radix-ui.com/) and Tailwind. To use BlockNote with shadcn, you can import `BlockNoteView` from `@blocknote/shadcn` (instead of from `@blocknote/mantine`) and the stylesheet from `@blocknote/shadcn/style.css`.
+[shadcn/ui](https://ui.shadcn.com/) 是一套基于 [Radix](https://radix-ui.com/) 和 Tailwind 的开源 React 组件集合。要将 BlockNote 与 shadcn 一起使用，可以从 `@blocknote/shadcn`（而非 `@blocknote/mantine`）导入 `BlockNoteView`，并且引入样式表 `@blocknote/shadcn/style.css`。
 
 <Example name="basic/shadcn" />
 
-## ShadCN Customization
+## ShadCN 自定义
 
-BlockNote comes with default shadcn components. However, it's likely that you have copied and possibly customized your own shadcn components in your project.
-To make BlockNote use the ShadCN components from your project instead of the default ones, you can pass them using the `shadCNComponents` prop of `BlockNoteView`:
+BlockNote 自带默认的 shadcn 组件，但你很可能已经复制并可能在项目中自定义了自己的 shadcn 组件。  
+为了让 BlockNote 使用你项目中的 ShadCN 组件，而非默认组件，可以通过 `BlockNoteView` 的 `shadCNComponents` 属性传入：
 
 ```tsx
 import * as Button from "@/components/ui/button"
@@ -31,7 +31,7 @@ return (
 );
 ```
 
-You can pass components from the following ShadCN modules:
+你可以从以下 ShadCN 模块传入组件：
 
 - Badge
 - Button
@@ -47,6 +47,6 @@ You can pass components from the following ShadCN modules:
 - Tooltip
 
 <Callout type="warning" emoji="⚠️">
-  To ensure compatibility, your ShadCN components should not use Portals
-  (comment these out from your DropdownMenu, Popover and Select components).
+  为了确保兼容性，你的 ShadCN 组件不应使用 Portals  
+  （请在你的 DropdownMenu、Popover 和 Select 组件中注释掉相关代码）。
 </Callout>

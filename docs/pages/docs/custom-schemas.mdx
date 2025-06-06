@@ -1,62 +1,62 @@
 ---
-title: Custom Schemas
-description: Learn how to create custom schemas for your BlockNote editor
+title: 自定义模式
+description: 学习如何为您的 BlockNote 编辑器创建自定义模式
 ---
 
-# Custom Schemas (advanced)
+# 自定义模式（高级）
 
-By default, BlockNote documents support different kind of blocks, inline content and text styles (see [default schema](/docs/editor-basics/default-schema)).
-However, you can extend BlockNote and create custom schemas to support your own blocks, inline content and text styles.
+默认情况下，BlockNote 文档支持不同类型的块、内联内容和文本样式（参见 [默认模式](/docs/editor-basics/default-schema)）。
+但是，您可以扩展 BlockNote，创建自定义模式以支持您自己的块、内联内容和文本样式。
 
-## Custom Blocks
+## 自定义块
 
-Blocks are the main elements of a document, such as paragraphs, headings, lists, etc.
+块是文档的主要元素，例如段落、标题、列表等。
 
-- [Learn how to create custom blocks for your BlockNote editor](/docs/custom-schemas/custom-blocks)
+- [学习如何为您的 BlockNote 编辑器创建自定义块](/docs/custom-schemas/custom-blocks)
 
-## Custom Inline Content
+## 自定义内联内容
 
-Inline Content are elements that can be inserted inside a text block, such as links, mentions, tags, etc.
+内联内容是可以插入到文本块中的元素，例如链接、提及、标签等。
 
-- [Learn how to create custom Inline Content for your BlockNote editor](/docs/custom-schemas/custom-inline-content)
+- [学习如何为您的 BlockNote 编辑器创建自定义内联内容](/docs/custom-schemas/custom-inline-content)
 
-## Custom Styles
+## 自定义样式
 
-Text Styles are properties that can be applied to a piece of text, such as bold, italic, underline, etc.
+文本样式是可以应用于一段文本的属性，例如加粗、斜体、下划线等。
 
-- [Learn how to add custom Styles to your BlockNote editor](/docs/custom-schemas/custom-styles)
+- [学习如何为您的 BlockNote 编辑器添加自定义样式](/docs/custom-schemas/custom-styles)
 
-## Creating your own schema
+## 创建您自己的模式
 
-Once you have defined your custom blocks (see the links above), inline content or styles, you can create a schema and pass this to the initialization of the editor.
+一旦您定义了自定义块（参见上面的链接）、内联内容或样式，就可以创建一个模式并将其传递给编辑器的初始化。
 
 ```typescript
 const schema = BlockNoteSchema.create({
   blockSpecs: {
-    // enable the default blocks if desired
+    // 如果需要，启用默认块
     ...defaultBlockSpecs,
 
-    // Add your own custom blocks:
+    // 添加您自己的自定义块：
     // customBlock: CustomBlock,
   },
   inlineContentSpecs: {
-    // enable the default inline content if desired
+    // 如果需要，启用默认内联内容
     ...defaultInlineContentSpecs,
 
-    // Add your own custom inline content:
+    // 添加您自己的自定义内联内容：
     // customInlineContent: CustomInlineContent,
   },
   styleSpecs: {
-    // enable the default styles if desired
+    // 如果需要，启用默认样式
     ...defaultStyleSpecs,
 
-    // Add your own custom styles:
+    // 添加您自己的自定义样式：
     // customStyle: CustomStyle
   },
 });
 ```
 
-You can then pass this to the instantiation of your BlockNoteEditor (`BlockNoteEditor.create` or `useCreateBlockNote`):
+然后可以将其传递给您的 BlockNoteEditor 实例化（`BlockNoteEditor.create` 或 `useCreateBlockNote`）：
 
 ```typescript
 const editor = useCreateBlockNote({
@@ -64,19 +64,19 @@ const editor = useCreateBlockNote({
 });
 ```
 
-## Usage with TypeScript
+## 在 TypeScript 中的使用
 
-In contrast to most other editors, BlockNote has been designed for full TypeScript compatibility. This means you can get full type safety and autocompletion _even when using a custom schema_.
+与大多数其他编辑器不同，BlockNote 设计为完全兼容 TypeScript。这意味着即使使用自定义模式，您也可以获得完整的类型安全和自动补全。
 
-By default, the methods, hooks, and types exposed by the API assume you're using the default, built-in schema. If you're using a custom schema, there are 3 ways to get full type safety:
+默认情况下，API 暴露的方法、hooks 和类型假设您正在使用默认的内置模式。如果您使用自定义模式，有三种方式可以获得完整的类型安全：
 
-### Methods that accept an optional `schema` parameter
+### 接受可选 `schema` 参数的方法
 
-Some methods, like the `useBlockNoteEditor` hook, take an optional `schema?: BlockNoteSchema` parameter. If you're using a custom schema, you should pass it here to make sure the return type is correctly typed.
+一些方法，如 `useBlockNoteEditor` hook，接受一个可选的 `schema?: BlockNoteSchema` 参数。如果您使用自定义模式，应在这里传入它，以确保返回类型正确。
 
-### Manual typing of types
+### 手动定义类型
 
-If you're using types like `BlockNoteEditor`, `Block`, `PartialBlock` directly, you can get the correctly typed variants like this:
+如果您直接使用像 `BlockNoteEditor`、`Block`、`PartialBlock` 这样的类型，可以这样获得正确类型的变体：
 
 ```typescript
 type MyBlock = Block<
@@ -86,7 +86,7 @@ type MyBlock = Block<
 >;
 ```
 
-Or even simpler, use the shorthands exposed by the schema:
+或者更简单地，使用模式暴露的简写：
 
 ```typescript
 type MyBlockNoteEditor = typeof schema.BlockNoteEditor;
@@ -94,6 +94,6 @@ type MyBlock = typeof schema.Block;
 type MyPartialBlock = typeof schema.PartialBlock;
 ```
 
-### Automatically override all default types (experimental)
+### 自动覆盖所有默认类型（实验性）
 
-Alternatively, the easiest way to get full type safety without any additional work is to override all default types with your custom schema, by using a custom type definition file. See this [example blocknote.d.ts](https://github.com/TypeCellOS/BlockNote/blob/main/examples/06-custom-schema/react-custom-styles/blocknote.d.ts.example). This is an experimental feature - we would love to hear your feedback on this approach.
+另外，获得完整类型安全而无需额外工作最简单的方法，是通过使用自定义类型定义文件覆盖所有默认类型为您的自定义模式。请参见此示例 [blocknote.d.ts](https://github.com/TypeCellOS/BlockNote/blob/main/examples/06-custom-schema/react-custom-styles/blocknote.d.ts.example)。这是一个实验性功能——我们非常期待您对此方法的反馈。

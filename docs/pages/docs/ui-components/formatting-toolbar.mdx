@@ -1,43 +1,43 @@
 ---
-title: Formatting Toolbar
-description: The Formatting Toolbar appears whenever you highlight text in the editor.
-imageTitle: Formatting Toolbar
+title: 格式化工具栏
+description: 当您在编辑器中高亮文本时，格式化工具栏会出现。
+imageTitle: 格式化工具栏
 path: /docs/formatting-toolbar
 ---
 
 import { Example } from "@/components/example";
 import { ThemedImage } from "@/components/ThemedImage";
 
-# Formatting Toolbar
+# 格式化工具栏
 
-The Formatting Toolbar appears whenever you highlight text in the editor.
+当您在编辑器中高亮文本时，格式化工具栏会出现。
 
 <ThemedImage
   src="/img/screenshots/formatting_toolbar.png"
   darkImage="/img/screenshots/formatting_toolbar_dark.png"
-  alt="image"
+  alt="图片"
   width={600}
   height={600}
 />
 
-## Changing the Formatting Toolbar
+## 更改格式化工具栏
 
-You can change or replace the Formatting Toolbar with your own React component. In the demo below, 2 buttons are added to the default Formatting Toolbar - one to add a blue text/background, and one to toggle code styles.
+您可以用自己的 React 组件更改或替换格式化工具栏。以下示例演示了如何在默认格式化工具栏中添加两个按钮——一个用于添加蓝色文本/背景，另一个用于切换代码样式。
 
 <Example name="ui-components/formatting-toolbar-buttons" />
 
-We first define our custom `BlueButton`. The `useComponentsContext` hook gets all components used internally by BlockNote, so we want to use `Components.FormattingToolbar.Button` for this.
+我们首先定义自定义的 `BlueButton`。`useComponentsContext` 钩子获取 BlockNote 内部使用的所有组件，因此我们想使用 `Components.FormattingToolbar.Button`。
 
-We use the `FormattingToolbar` component to create a custom Formatting Toolbar. By specifying its children, we can replace the default buttons in the toolbar with our own.
+我们使用 `FormattingToolbar` 组件创建自定义格式化工具栏。通过指定其子元素，我们可以用自己的按钮替换工具栏中的默认按钮。
 
-This custom Formatting Toolbar is passed to a `FormattingToolbarController`, which controls its position and visibility (above or below the highlighted text).
+这个自定义格式化工具栏被传递给一个 `FormattingToolbarController`，它控制工具栏的位置和可见性（在高亮文本的上方或下方）。
 
-Setting `formattingToolbar={false}` on `BlockNoteView` tells BlockNote not to show the default Formatting Toolbar.
+在 `BlockNoteView` 上设置 `formattingToolbar={false}` 告诉 BlockNote 不显示默认的格式化工具栏。
 
-## Changing Block Type Select (Dropdown) Items
+## 更改块类型选择（下拉菜单）项
 
-The first element in the default Formatting Toolbar is the Block Type Select, and you can change the items in it. The demo makes the Block Type Select work for image blocks by adding an item to it.
+默认格式化工具栏中的第一个元素是块类型选择，您可以更改其中的项。示例通过向其添加一个项目，使块类型选择支持图像块。
 
 <Example name="ui-components/formatting-toolbar-block-type-items" />
 
-Here, we use the `FormattingToolbar` component but keep the default buttons (we don't pass any children). Instead, we pass our customized Block Type Select items using the `blockTypeSelectItems` prop.
+这里，我们使用了 `FormattingToolbar` 组件，但保留了默认按钮（没有传递任何子元素）。相反，我们通过 `blockTypeSelectItems` 属性传入了自定义的块类型选择项。

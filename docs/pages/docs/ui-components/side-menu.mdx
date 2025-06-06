@@ -1,16 +1,16 @@
 ---
-title: Block Side Menu
-description: The Block Side Menu appears on the left side whenever you hover a block.
-imageTitle: Block Side Menu
+title: 区块侧边菜单
+description: 当你将鼠标悬停在区块上时，区块侧边菜单会出现在左侧。
+imageTitle: 区块侧边菜单
 path: /docs/side-menu
 ---
 
 import { Example } from "@/components/example";
 import { ThemedImage } from "@/components/ThemedImage";
 
-# Block Side Menu
+# 区块侧边菜单
 
-The Block Side Menu appears on the left side whenever you hover a block. By default, it consists of a `+` button and a drag handle (`⠿`):
+当你将鼠标悬停在区块上时，区块侧边菜单会出现在左侧。默认情况下，它由一个 `+` 按钮和一个拖动手柄（`⠿`）组成：
 
 <ThemedImage
   src="/img/screenshots/side_menu.png"
@@ -20,7 +20,7 @@ The Block Side Menu appears on the left side whenever you hover a block. By defa
   height={500}
 />
 
-Clicking the drag handle (`⠿`) in the Block Side Menu opens the Drag Handle Menu:
+点击区块侧边菜单中的拖动手柄（`⠿`）会打开拖动手柄菜单：
 
 <ThemedImage
   src="/img/screenshots/drag_handle_menu.png"
@@ -30,24 +30,24 @@ Clicking the drag handle (`⠿`) in the Block Side Menu opens the Drag Handle Me
   height={250}
 />
 
-## Changing the Block Side Menu
+## 更改区块侧边菜单
 
-You can change or replace the Block Side Menu with your own React component. In the demo below, the button to add a new block is replaced with one to remove the hovered block.
+你可以用自己的 React 组件更改或替换区块侧边菜单。在下面的演示中，添加新区块的按钮被替换成了一个删除当前悬停区块的按钮。
 
 <Example name="ui-components/side-menu-buttons" />
 
-We first define our custom `RemoveBlockButton`. The `useComponentsContext` hook gets all components used internally by BlockNote, so we want to use `Components.SideMenu.Button` for this.
+我们首先定义了自定义的 `RemoveBlockButton`。`useComponentsContext` 钩子可以获取 BlockNote 内部使用的所有组件，因此我们这里使用 `Components.SideMenu.Button`。
 
-We use the `SideMenu` component to create a custom Block Side Menu. By specifying its children, we can replace the default buttons in the menu with our own.
+我们使用 `SideMenu` 组件来创建自定义的区块侧边菜单。通过指定其子组件，我们可以用自己的按钮替换菜单中的默认按钮。
 
-This custom Side Menu is passed to a `SideMenuController`, which controls its position and visibility (on the left side when you hover a block).
+这个自定义侧边菜单被传递给一个 `SideMenuController`，它控制菜单的位置和可见性（当你悬停区块时，菜单会显示在左侧）。
 
-Setting `sideMenu={false}` on `BlockNoteView` tells BlockNote not to show the default Block Side Menu.
+在 `BlockNoteView` 上设置 `sideMenu={false}` 告诉 BlockNote 不显示默认的区块侧边菜单。
 
-## Changing Drag Handle Menu Items
+## 更改拖动手柄菜单项
 
-You can also change the items in the Drag Handle Menu. The demo below adds an item that resets the block type to a paragraph.
+你也可以更改拖动手柄菜单中的项目。下面的演示添加了一个将区块类型重置为段落的菜单项。
 
 <Example name="ui-components/side-menu-drag-handle-items" />
 
-Here, we use the `SideMenu` component but keep the default buttons (we don't pass any children). Instead, we pass our customized Drag Handle Menu using the `dragHandleMenu` prop.
+这里，我们使用了 `SideMenu` 组件但保留了默认按钮（没有传递任何子组件）。相反，我们通过 `dragHandleMenu` 属性传递了自定义的拖动手柄菜单。

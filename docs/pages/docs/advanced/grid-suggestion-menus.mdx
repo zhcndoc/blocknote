@@ -1,23 +1,23 @@
 ---
-title: Grid Suggestion Menus
-description: In addition to displaying Suggestion Menus as stacks, BlockNote also supports displaying them as grids.
-imageTitle: Grid Suggestion Menus
+title: 网格建议菜单
+description: 除了以堆叠形式显示建议菜单外，BlockNote 还支持以网格形式显示它们。
+imageTitle: 网格建议菜单
 ---
 
 import { Example } from "@/components/example";
 import { ThemedImage } from "@/components/ThemedImage";
 
-# Grid Suggestion Menus
+# 网格建议菜单
 
-Grid Suggestion Menus appear when the user enters a trigger character, and text after the character is used to filter the menu items.
+当用户输入触发字符时，会显示网格建议菜单，触发字符后输入的文本用于筛选菜单项。
 
-Grid Suggestion Menus are similar to regular Suggestion Menus, but results are organized in a grid, and users can use all arrow keys (including left, right) on their keyboard to navigate the results.
+网格建议菜单与普通建议菜单类似，但结果以网格形式组织，用户可以使用键盘上的所有方向键（包括左、右键）来导航结果。
 
-## Emoji Picker
+## 表情符号选择器
 
-The Emoji Picker is a Grid Suggestion Menu that opens with the `:` character (or when selecting emoji item in the Slash Menu).
+表情符号选择器是一个通过输入 `:` 字符打开的网格建议菜单（或在斜杠菜单中选择表情符号项时打开）。
 
-It only displays once the user types 2 non-whitespace characters a query, to minimize cases where the user only wants to enter the `:` character.
+只有当用户输入两个非空格字符的查询时才会显示，以减少用户仅想输入 `:` 字符的情况。
 
 <ThemedImage
   src="/img/screenshots/emoji_picker.png"
@@ -27,28 +27,28 @@ It only displays once the user types 2 non-whitespace characters a query, to min
   height={400}
 />
 
-### Changing Emoji Picker Columns
+### 更改表情符号选择器列数
 
-By default, the Emoji Picker is rendered with 10 columns, but you can change this to any amount. In the demo below, the Emoji Picker is changed to only display 5 columns.
+默认情况下，表情符号选择器渲染为 10 列，但你可以更改为任意列数。下面的示例中，表情符号选择器被设置为只显示 5 列。
 
 <Example name="ui-components/suggestion-menus-emoji-picker-columns" />
 
-Passing `emojiPicker={false}` to `BlockNoteView` tells BlockNote not to show the default Emoji Picker. Adding the `GridSuggestionMenuController` with `triggerCharacter={":"}` and `columns={5}` tells BlockNote to show one with 5 columns instead.
+向 `BlockNoteView` 传递 `emojiPicker={false}` 告诉 BlockNote 不显示默认的表情符号选择器。添加带有 `triggerCharacter={":"}` 和 `columns={5}` 的 `GridSuggestionMenuController` 则告知 BlockNote 显示一个 5 列的表情符号选择器。
 
-### Replacing the Emoji Picker Component
+### 替换表情符号选择器组件
 
-You can replace the React component used for the Emoji Picker with your own, as you can see in the demo below.
+你可以用自己的 React 组件替换表情符号选择器的默认组件，下面的示例演示了这一点。
 
 <Example name="ui-components/suggestion-menus-emoji-picker-component" />
 
-Again, we add a `GridSuggestionMenuController` component with `triggerCharacter={":"}` and set `emojiPicker={false}` to replace the default Emoji Picker.
+同样，我们添加了一个带有 `triggerCharacter={":"}` 的 `GridSuggestionMenuController` 组件，并设置 `emojiPicker={false}` 来替换默认的表情符号选择器。
 
-Now, we also pass a component to its `gridSuggestionMenuComponent` prop. The `gridSuggestionMenuComponent` we pass is responsible for rendering the filtered items. The `GridSuggestionMenuController` controls its position and visibility (below the trigger character), and it also determines which items should be shown. Since we don't specify which items to show (the `getItems` prop isn't defined), it will use the default items for a grid, which are the emojis.
+此外，我们还将一个组件传递给它的 `gridSuggestionMenuComponent` 属性。传入的 `gridSuggestionMenuComponent` 负责渲染筛选后的项目。`GridSuggestionMenuController` 控制其相对于触发字符的位置和可见性，并决定显示哪些项目。由于我们没有指定要显示哪些项目（未定义 `getItems` 属性），它将使用网格的默认项目，也就是表情符号。
 
-## Creating additional Grid Suggestion Menus
+## 创建额外的网格建议菜单
 
-You can add additional Grid Suggestion Menus to the editor, which can use any trigger character. The demo below adds an example Grid Suggestion Menu for mentions, where each item is the first character of the user's name, and opens with the `@` character.
+你可以向编辑器添加更多的网格建议菜单，触发字符可以是任意字符。下面的示例添加了一个用于提及的网格建议菜单，每个项目是用户名字的首字母，触发字符为 `@`。
 
 <Example name="ui-components/suggestion-menus-grid-mentions" />
 
-Changing the column count in the new Grid Suggestion Menu, or the component used to render it, is done the same way as for the [Emoji Picker](/docs/advanced/grid-suggestion-menus#emoji-picker). For more information about how the mentions elements work, see [Custom Inline Content](/docs/custom-schemas/custom-inline-content).
+新网格建议菜单中的列数或用于渲染的组件的更改方式与[表情符号选择器](/docs/advanced/grid-suggestion-menus#emoji-picker)相同。关于提及元素的工作原理的更多信息，请参见[自定义内联内容](/docs/custom-schemas/custom-inline-content)。

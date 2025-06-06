@@ -1,31 +1,29 @@
 ---
-title: Export to docx (Office Open XML)
-description: Export BlockNote documents to a docx word (Office Open XML) file.
-imageTitle: Export to docx
+title: 导出为 docx（Office Open XML）
+description: 将 BlockNote 文档导出为 docx Word（Office Open XML）文件。
+imageTitle: 导出为 docx
 path: /docs/export-to-docx
 ---
 
 import { Example } from "@/components/example";
 import { Callout } from "nextra/components";
 
-# Exporting blocks to docx
+# 导出区块为 docx
 
-It's possible to export BlockNote documents to docx, completely client-side.
+可以完全在客户端将 BlockNote 文档导出为 docx。
 
 <Callout type={"info"}>
-  This feature is provided by the `@blocknote/xl-docx-exporter`. `xl-` packages
-  are fully open source, but released under a copyleft license. A commercial
-  license for usage in closed source, proprietary products comes as part of the
-  [Business subscription](/pricing).
+  此功能由 `@blocknote/xl-docx-exporter` 提供。`xl-` 系列包是完全开源的，但采用了 copyleft 许可证。
+  在闭源专有产品中使用需购买 [商务订阅](/pricing) 中包含的商业许可证。
 </Callout>
 
-First, install the `@blocknote/xl-docx-exporter` and `docx` packages:
+首先，安装 `@blocknote/xl-docx-exporter` 和 `docx` 包：
 
 ```bash
 npm install @blocknote/xl-docx-exporter docx
 ```
 
-Then, create an instance of the `DOCXExporter` class. This exposes the following methods:
+然后，创建 `DOCXExporter` 类的实例。它提供以下方法：
 
 ```typescript
 import {
@@ -34,25 +32,25 @@ import {
 } from "@blocknote/xl-docx-exporter";
 import { Packer } from "docx";
 
-// Create the exporter
+// 创建导出器
 const exporter = new DOCXExporter(editor.schema, docxDefaultSchemaMappings);
 
-// Convert the blocks to a docxjs document
+// 将区块转换为 docxjs 文档
 const docxDocument = await exporter.toDocxJsDocument(editor.document);
 
-// Use docx to write to file:
+// 使用 docx 写入文件：
 await Packer.toBuffer(docxDocument);
 ```
 
-See the [full example](/examples/interoperability/converting-blocks-to-docx) below:
+请参阅下面的[完整示例](/examples/interoperability/converting-blocks-to-docx)：
 
 <Example name="interoperability/converting-blocks-to-docx" />
 
-### Customizing the Docx output file
+### 自定义 Docx 输出文件
 
-`toDocxJsDocument` takes an optional `options` parameter, which allows you to customize document metadata (like the author) and section options (like headers and footers).
+`toDocxJsDocument` 接受一个可选的 `options` 参数，允许你自定义文档元数据（比如作者）和节选项（比如页眉和页脚）。
 
-Example usage:
+示例用法：
 
 ```typescript
 import { Paragraph, TextRun } from "docx";
@@ -80,13 +78,13 @@ const doc = await exporter.toDocxJsDocument(testDocument, {
 });
 ```
 
-### Custom mappings / custom schemas
+### 自定义映射 / 自定义模式
 
-The `DOCXExporter` constructor takes a `schema`, `mappings` and `options` parameter.
-A _mapping_ defines how to convert a BlockNote schema element (a Block, Inline Content, or Style) to a [docxjs](https://docx.js.org/) element.
-If you're using a [custom schema](/docs/custom-schemas) in your editor, or if you want to overwrite how default BlockNote elements are converted to docx, you can pass your own `mappings`:
+`DOCXExporter` 构造函数接收 `schema`、`mappings` 和 `options` 参数。
+_mapping_ 定义了如何将 BlockNote 的模式元素（区块、行内内容或样式）转换为 [docxjs](https://docx.js.org/) 元素。
+如果你在编辑器中使用了[自定义模式](/docs/custom-schemas)，或者想覆盖默认 BlockNote 元素如何转换为 docx，可以传入你自己的 `mappings`：
 
-For example, use the following code in case your schema has an `extraBlock` type:
+例如，若你的模式包含一个 `extraBlock` 类型，可以用如下代码：
 
 ```typescript
 import {
@@ -113,17 +111,17 @@ new DOCXExporter(schema, {
 });
 ```
 
-### Exporter options
+### 导出器选项
 
-The `DOCXExporter` constructor takes an optional `options` parameter.
-While conversion happens on the client-side, the default setup uses a server hosted proxy to resolve files:
+`DOCXExporter` 构造函数接受一个可选的 `options` 参数。
+虽然转换在客户端进行，默认配置使用一个服务器端代理来解析文件：
 
 ```typescript
 const defaultOptions = {
-  // a function to resolve external resources in order to avoid CORS issues
-  // by default, this calls a BlockNote hosted server-side proxy to resolve files
+  // 用于解析外部资源以避免 CORS 问题的函数
+  // 默认情况下，这会调用 BlockNote 托管的服务器端代理来解析文件
   resolveFileUrl: corsProxyResolveFileUrl,
-  // the colors to use in the Docx for things like highlighting, background colors and font colors.
-  colors: COLORS_DEFAULT, // defaults from @blocknote/core
+  // Docx 中用于高亮、背景色和字体颜色的颜色配置
+  colors: COLORS_DEFAULT, // 来自 @blocknote/core 的默认值
 };
 ```

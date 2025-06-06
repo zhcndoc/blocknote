@@ -1,23 +1,23 @@
 ---
-title: Advanced Tables
-description: This section explains how to use more advanced features of tables.
-imageTitle: Advanced Tables
+title: 高级表格
+description: 本节介绍如何使用表格的更多高级功能。
+imageTitle: 高级表格
 ---
 
 import { Example } from "@/components/example";
 
-# Advanced Tables
+# 高级表格
 
-Tables by default are a simple way to display data in a grid. But, BlockNote also supports more advanced features like:
+表格默认是一种以网格形式显示数据的简单方式。但 BlockNote 也支持更多高级功能，比如：
 
-- Split cells
-- Cell background color
-- Cell text color
-- Header rows & columns
+- 拆分单元格
+- 单元格背景色
+- 单元格文本颜色
+- 表头行和列
 
-To keep the default table experience easy to use, these features are disabled by default.
+为了保持默认表格体验的简便性，这些功能默认是关闭的。
 
-You can enable them by passing the `tables` option when creating the editor.
+你可以在创建编辑器时通过传入 `tables` 选项来启用它们。
 
 ```ts
 const editor = new BlockNoteEditor({
@@ -30,15 +30,15 @@ const editor = new BlockNoteEditor({
 });
 ```
 
-You can choose to enable only certain features, or none at all. Giving you the flexibility to use tables how you need in your app.
+你可以选择只启用某些功能，也可以全部禁用。这样可以灵活地根据你的应用需求使用表格。
 
-Here's an example of the editor with all features enabled:
+下面是启用所有功能的编辑器示例：
 
 <Example name="ui-components/advanced-tables" />
 
-## Cell background color
+## 单元格背景色
 
-To enable cell background color, you need to pass `cellBackgroundColor: true` to the `tables` option.
+要启用单元格背景色，需要在 `tables` 选项中传入 `cellBackgroundColor: true`。
 
 ```ts
 const editor = new BlockNoteEditor({
@@ -48,9 +48,9 @@ const editor = new BlockNoteEditor({
 });
 ```
 
-## Cell text color
+## 单元格文本颜色
 
-To enable cell text color, you need to pass `cellTextColor: true` to the `tables` option.
+要启用单元格文本颜色，需要在 `tables` 选项中传入 `cellTextColor: true`。
 
 ```ts
 const editor = new BlockNoteEditor({
@@ -60,12 +60,11 @@ const editor = new BlockNoteEditor({
 });
 ```
 
+## 表头行和列
 
-## Header rows & columns
+BlockNote 支持表格中的表头，指的是表格的第一行和/或第一列。
 
-BlockNote supports headers in tables, which are the first row and/or first column of a table.
-
-To enable it, you need to pass `headers: true` to the `tables` option.
+要启用该功能，需要在 `tables` 选项中传入 `headers: true`。
 
 ```ts
 const editor = new BlockNoteEditor({
@@ -75,11 +74,11 @@ const editor = new BlockNoteEditor({
 });
 ```
 
-## Split cells
+## 拆分单元格
 
-Splitting and merging cells is a common feature of more advanced table editors.
+拆分和合并单元格是更高级表格编辑器的常见功能。
 
-To enable it, you need to pass `splitCells: true` to the `tables` option.
+要启用该功能，需要在 `tables` 选项中传入 `splitCells: true`。
 
 ```ts
 const editor = new BlockNoteEditor({
@@ -88,5 +87,3 @@ const editor = new BlockNoteEditor({
   },
 });
 ```
-
-

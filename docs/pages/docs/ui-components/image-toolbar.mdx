@@ -1,37 +1,37 @@
 ---
-title: Image Toolbar
-description: The Image Toolbar appears whenever you select an image that doesn't have a URL, or when you click the "Replace Image" button in the Formatting Toolbar when an image is selected.
-imageTitle: Image Toolbar
+title: 图片工具栏
+description: 当你选择一个没有 URL 的图片，或者在选择图片时点击格式工具栏中的“替换图片”按钮时，图片工具栏会出现。
+imageTitle: 图片工具栏
 path: /docs/image-toolbar
 ---
 
 import { Example } from "@/components/example";
 import { ThemedImage } from "@/components/ThemedImage";
 
-# Image Toolbar
+# 图片工具栏
 
-The Image Toolbar appears whenever you select an image that doesn't have a URL, or when you click the "Replace Image" button in the [Formatting Toolbar](/docs/formatting-toolbar) when an image is selected.
+当你选择一个没有 URL 的图片，或者在选择图片时点击 [格式工具栏](/docs/formatting-toolbar)中的“替换图片”按钮时，图片工具栏会出现。
 
 <ThemedImage
   src="/img/screenshots/image_toolbar.png"
   darkImage="/img/screenshots/image_toolbar_dark.png"
-  alt="image"
+  alt="图片"
   width={600}
   height={600}
 />
 
-## Image Upload
+## 图片上传
 
-You may notice that upon creating a new BlockNote editor, the "Upload" tab in the Image Toolbar is missing. This is because you must provide BlockNote with a function to handle file uploads using the `uploadFile` [Editor Option](/docs/editor):
+你可能会注意到，在新建 BlockNote 编辑器时，图片工具栏中的“上传”标签是缺失的。这是因为你必须为 BlockNote 提供一个处理文件上传的函数，使用 `uploadFile` [编辑器选项](/docs/editor)：
 
 ```ts
 type uploadFile = (file: File) => Promise<string>;
 ```
 
-`file:` The file to upload, in this case an image.
+`file:` 要上传的文件，此处指图片。
 
-`returns:` A `Promise`, which resolves to the URL that the image can be accessed at.
+`returns:` 一个 `Promise`，解析后返回图片可访问的 URL。
 
-You can use the provided `uploadToTempFilesOrg` function to as a starting point, which uploads files to [tmpfiles.org](https://tmpfiles.org/). However, it's not recommended to use this in a production environment - you should use your own backend:
+你可以使用提供的 `uploadToTempFilesOrg` 函数作为起点，该函数将文件上传到 [tmpfiles.org](https://tmpfiles.org/)。但不建议在生产环境中使用它，你应该使用自己的后端：
 
 <Example name="backend/file-uploading" />
