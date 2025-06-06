@@ -3,21 +3,17 @@ import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 const faqs = [
   {
-    question: "Is BlockNote Pro a different library than BlockNote?",
-    answer: `"BlockNote Pro" is not an additional library, but instead a subscription service built around the open-source BlockNote library.
-       With your subscription, you are ensuring the sustainable maintenance and development of BlockNote and make sure it stays up-to-date under an open source license. 
-       You'll also get prioritized support, feature requests, and access to Pro examples.`,
+    question: "BlockNote Pro 是与 BlockNote 不同的库吗？",
+    answer: `BlockNote Pro 不是一个额外的库，而是围绕开源 BlockNote 库构建的订阅服务。通过您的订阅，您确保了 BlockNote 的可持续维护和开发，并确保它在开源许可证下保持最新。您还将获得优先支持、功能请求和访问 Pro 示例的权限。`,
   },
   {
-    question: "What payment methods do you accept?",
-    answer: `BlockNote Pro is fully integrated with GitHub Sponsors, which means invoicing and payment is handled by GitHub.
-    If you require a different payment method, please contact us.`,
+    question: "您接受哪些支付方式？",
+    answer: `BlockNote Pro 与 GitHub 赞助商完全整合，这意味着发票和支付由 GitHub 处理。如果您需要其他支付方式，请联系我们。`,
   },
   {
     question:
-      "What License is BlockNote using? Can I use it for commercial projects?",
-    answer: `BlockNote is open source software licensed under the MPL 2.0 license, which allows you to use BlockNote in commercial (and closed-source) applications - even without a subscription. 
-    If you make changes to the BlockNote source files, you're expected to publish these changes so the wider community can benefit as well. \nThe XL packages are dual-licensed and available under AGPL-3.0, or - for closed-source projects - a commercial license as part of the BlockNote Business subscription or above.`,
+      "BlockNote 使用什么许可证？我可以将其用于商业项目吗？",
+    answer: `BlockNote 是一款开源软件，采用 MPL 2.0 许可证，这允许您在商业（和闭源）应用中使用 BlockNote - 即使没有订阅。如果您对 BlockNote 源文件进行了更改，您需要发布这些更改，以便更广泛的社区也能受益。XL 包是双重许可的，提供 AGPL-3.0 许可证，或者 - 对于闭源项目 - 作为 BlockNote 商业订阅或更高级别的一部分提供商业许可证。`,
   },
   // More questions...
 ];
@@ -27,7 +23,7 @@ export function FAQ() {
     <div className="w-full max-w-screen-lg px-6 py-24 sm:py-32 lg:px-8 lg:py-40">
       <div className="divide-y divide-gray-200 dark:divide-gray-800">
         <h2 className="text-2xl font-bold leading-10 tracking-tight">
-          Frequently asked questions
+          常见问题
         </h2>
         <dl className="mt-10 space-y-6 divide-y divide-gray-200 dark:divide-gray-800">
           {faqs.map((faq) => (

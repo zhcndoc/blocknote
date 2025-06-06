@@ -36,6 +36,12 @@ const nextConfig = withAnalyzer(
           port: "",
           pathname: "/**",
         },
+        {
+          protocol: "https",
+          hostname: "avatar.ikxin.com",
+          port: "",
+          pathname: "/**",
+        },
       ],
     },
     redirects: async () => [
