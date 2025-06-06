@@ -5,26 +5,23 @@ import { Link } from "nextra-theme-docs";
 const faqs = [
   {
     id: 1,
-    question: "Isn't it easier to use a Headless editor framework?",
-    answer: `There are a number of really powerful headless text editor frameworks available. In fact, BlockNote is built on Prosemirror and TipTap. 
-      However, even when using a headless library, it takes several months and requires deep expertise to build a fully-featured editor with a polished UI that your users expect.`,
+    question: "使用无头编辑器框架不是更简单吗？",
+    answer: `有许多强大的无头文本编辑器框架可供使用。事实上，BlockNote 是基于 Prosemirror 和 TipTap 构建的。然而，即使使用无头库，构建一个功能齐全、用户期望的精美 UI 编辑器也需要几个月的时间，并且需要深厚的专业知识。`,
   },
   {
     id: 2,
-    question: "Is BlockNote ready for production use?",
-    answer: `BlockNote is used by several companies in production. Also, we didn't reinvent the wheel. The core editor is built on top of Prosemirror - a battle tested framework that powers software from Atlassian, Gitlab, the New York Times, and many others.`,
+    question: "BlockNote 准备好用于生产环境了吗？",
+    answer: `BlockNote 被多家公司用于生产。此外，我们并没有重新发明轮子。核心编辑器建立在 Prosemirror 之上，这是一个经过实战检验的框架，支持来自 Atlassian、Gitlab、纽约时报等许多软件。`,
   },
   {
     id: 3,
-    question: "Can I add my own extensions to BlockNote?",
-    answer: `BlockNote comes with lot of functionality out-of-the-box, but we understand that every use case is different. You can easily customize the built-in UI Components, or create your own custom Blocks, Inline Content, and Styles. 
-      If you want to go even further, you can extend the core editor with additional Prosemirror or TipTap plugins.`,
+    question: "我可以向 BlockNote 添加我自己的扩展吗？",
+    answer: `BlockNote 开箱即用即具备丰富功能，但我们深知不同应用场景需求各异。您可轻松定制内置的 UI 组件，或创建专属的自定义区块、行内内容和样式。若需更深度扩展，还能通过添加 Prosemirror 或 TipTap 插件来增强核心编辑器功能。`,
   },
   {
     id: 4,
-    question: "Is BlockNote really free?",
-    answer: `100% of BlockNote is open source. While the library is free, we offer paid consultancy and support services to help sustain BlockNote.   
-    If you are using BlockNote in a commercial project, we encourage to sign up for BlockNote Pro!`,
+    question: "BlockNote 真的是免费的吗？",
+    answer: `BlockNote 的 100% 是开源的。虽然该库是免费的，但我们提供付费咨询和支持服务，以帮助维持 BlockNote。如果您在商业项目中使用 BlockNote，我们鼓励您注册 BlockNote Pro！`,
   },
 ];
 
@@ -33,10 +30,10 @@ export function FAQ() {
     <Section className="py-16 sm:py-16">
       <div className="z-20 flex max-w-full flex-col items-center gap-12 px-6 text-center md:max-w-7xl">
         <SectionIntro
-          header={"Frequently asked questions"}
+          header={"常见问题"}
           subtext={
             <>
-              More questions? <Link href="/about">Reach out to our team</Link>.
+              还有更多问题吗？<Link href="/about">联系我们的团队</Link>。
             </>
           }
         />

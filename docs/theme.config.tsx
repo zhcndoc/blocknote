@@ -34,9 +34,9 @@ const CTA = dynamic(
 const SITE_ROOT = "https://www.blocknotejs.org";
 
 const METADATA_DEFAULT = {
-  title: "BlockNote",
+  title: "BlockNote 中文文档",
   description:
-    "A beautiful text editor that just works. Easily add an editor to your app that users will love. Customize it with your own functionality like custom blocks or AI tooling.",
+    "一个美丽的文本编辑器，简单易用。轻松将编辑器添加到你的应用中，用户会喜欢。可以根据自己的需求进行定制，比如自定义模块或人工智能工具。",
   image: SITE_ROOT + "/api/og",
 };
 
@@ -65,7 +65,7 @@ const NavBarExtraContent = () => {
         <span className="sr-only">Discord</span>
         <DiscordIcon />
       </NextLink>
-      {session.data ? null : (
+      {/* {session.data ? null : (
         <NextLink
           href={`/signin?redirect=${encodeURIComponent(router.route || "")}&theme=${encodeURIComponent(theme.resolvedTheme || "")}`}
         >
@@ -76,7 +76,7 @@ const NavBarExtraContent = () => {
             Sign in
           </CTA>
         </NextLink>
-      )}
+      )} */}
       <AuthNavButton />
     </>
   );
@@ -98,7 +98,7 @@ const config: DocsThemeConfig = {
       if (title === "About") {
         return <>❓ {title}</>;
       }
-      return <>👉 {title}</>;
+      return <>{title}</>;
     },
   },
   docsRepositoryBase: "https://github.com/TypeCellOS/BlockNote/blob/main/docs",
@@ -123,8 +123,8 @@ const config: DocsThemeConfig = {
     const title = frontMatter.overrideTitle
       ? frontMatter.overrideTitle
       : nextraConfig.title
-        ? nextraConfig.title + " - BlockNote"
-        : "BlockNote";
+        ? nextraConfig.title + " - BlockNote 中文文档"
+        : "BlockNote 中文文档";
 
     const imageUrl = frontMatter.imageTitle
       ? `${SITE_ROOT}/api/og?title=${encodeURIComponent(
@@ -153,8 +153,8 @@ const config: DocsThemeConfig = {
             url: imageUrl,
           },
         ],
-        siteName: "BlockNote",
-        locale: "en_US",
+        siteName: "BlockNote 中文文档",
+        locale: "zh_CN",
       },
       additionalMetaTags: [
         {
@@ -213,7 +213,7 @@ const config: DocsThemeConfig = {
       }
     }, [timestamp]);
 
-    return <>Last updated on {dateString}</>;
+    return <>最后更新于：{dateString}</>;
   },
   toc: {
     float: true,
@@ -239,7 +239,7 @@ const config: DocsThemeConfig = {
   },
   i18n: [],
   editLink: {
-    text: "Edit this page on GitHub",
+    text: "在 GitHub 上编辑此页面",
   },
   navbar: {
     component: Navigation,
@@ -356,7 +356,7 @@ const config: DocsThemeConfig = {
   // main: (props) => <div>sdfdf </div>,
   search: {
     // component: Search,
-    placeholder: "Search documentation…",
+    placeholder: "搜索文档...",
   },
   footer: {
     component: Footer,

@@ -10,10 +10,10 @@ export function Navigation(props: any) {
   // return <div>hello</div>;
   return (
     <>
-      <div className="top-banner">
+      {/* <div className="top-banner">
         🚀 BlockNote AI is here!{" "}
         <a href="/docs/ai">Access the early preview.</a>
-      </div>
+      </div> */}
       <Navbar {...props} />
     </>
   );

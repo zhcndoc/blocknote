@@ -1,13 +1,13 @@
 {
-  "side-menu": "Block Side Menu",
-  "formatting-toolbar": "Formatting Toolbar",
+  "side-menu": "区块侧边菜单",
+  "formatting-toolbar": "格式化工具栏",
   "hyperlink-toolbar": {
-    "title": "Link Toolbar",
+    "title": "链接工具栏",
     "display": "hidden"
   },
   "image-toolbar": {
-    "title": "Image Toolbar",
+    "title": "图像工具栏",
     "display": "hidden"
   },
-  "suggestion-menus": "Suggestion Menus"
+  "suggestion-menus": "建议菜单"
 }

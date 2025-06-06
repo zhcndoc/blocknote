@@ -85,8 +85,8 @@ function fetchContributors(): { username: string; avatarUrl: string }[] {
 
 export const Contributors = () => (
   <div className="flex max-w-screen-md flex-col gap-4 lg:max-w-screen-lg">
-    <FadeIn>
-      <SectionSubHeader>Contributors</SectionSubHeader>
+    {/* <FadeIn>
+      <SectionSubHeader>贡献者</SectionSubHeader>
     </FadeIn>
     <FadeIn className="flex flex-wrap items-center justify-center gap-3">
       {fetchContributors().map((contributor) => (
@@ -107,24 +107,22 @@ export const Contributors = () => (
         </Link>
         // </Tooltip>
       ))}
-    </FadeIn>
+    </FadeIn> */}
     <FadeIn className={"flex flex-col gap-2 py-4"}>
       <JoinButton
-        text={"Become a GitHub contributor"}
-        subtext={
-          "Join the community of BlockNote developers by contributing code and supporting the project."
-        }
+        text={"成为 GitHub 贡献者"}
+        subtext={"通过贡献代码和支持项目，加入 BlockNote 开发者社区。"}
         icon={GitHubIcon}
-        linkTitle={"See our repository"}
+        linkTitle={"查看我们的仓库"}
         linkUrl={"https://github.com/TypeCellOS/BlockNote"}
       />
       <JoinButton
-        text={"Join the Discord community"}
+        text={"加入 Discord 社区"}
         subtext={
-          "Ask questions, discuss features, and share your work with other BlockNote users on Discord."
+          "在 Discord 上向其他 BlockNote 用户提问、讨论功能并分享您的作品。"
         }
         icon={DiscordIcon}
-        linkTitle={"Join our Server"}
+        linkTitle={"加入我们的服务器"}
         linkUrl={"https://discord.gg/Qc2QTTH5dF"}
       />
     </FadeIn>

@@ -26,10 +26,10 @@ function FooterHeader({ children }: { children: ReactNode }) {
 
 const navigation = {
   general: [
-    { name: "Documentation", href: "/docs" },
-    { name: "Examples", href: "/examples" },
+    { name: "文档", href: "/docs" },
+    { name: "示例", href: "/examples" },
     {
-      name: "Releases",
+      name: "发布版本",
       href: "https://github.com/TypeCellOS/BlockNote/releases",
     },
   ],
@@ -45,13 +45,13 @@ const navigation = {
     },
   ],
   collaborate: () => [
-    { name: "Partner with us", href: `/about#partner-with-us` },
+    { name: "与我们合作", href: `/about#partner-with-us` },
     {
-      name: "Sponsorships",
+      name: "赞助",
       href: `/about#sponsorships`,
     },
     {
-      name: "Contribute",
+      name: "贡献",
       href: `/about#contribute`,
     },
   ],
@@ -69,16 +69,16 @@ export function FooterContent() {
             {/* <FooterHeader>Subscribe to our newsletter</FooterHeader> */}
             <Logo />
             <p className="mt-4 text-sm text-gray-600 dark:text-[#888888]">
-              BlockNote is an extensible React rich text editor with support for
-              block-based editing, collaboration and comes with ready-to-use
-              customizable UI components.
+              BlockNote 是一款可扩展的 React
+              富文本编辑器，支持基于块的编辑、协作功能，并提供开箱即用的可定制
+              UI 组件。
             </p>
             {/* <SubmitForm /> */}
           </div>
           <div className="grid grid-cols-1 gap-8 xl:col-span-2">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 md:gap-8">
               <div className="mt-12 xl:!mt-0">
-                <FooterHeader>Learn</FooterHeader>
+                <FooterHeader>学习</FooterHeader>
                 <ul className="ml-0 mt-4 list-none space-y-1.5">
                   {navigation.general.map((item) => (
                     <li key={item.name}>
@@ -88,7 +88,7 @@ export function FooterContent() {
                 </ul>
               </div>
               <div className="mt-12 xl:!mt-0">
-                <FooterHeader>Collaborate</FooterHeader>
+                <FooterHeader>合作</FooterHeader>
                 <ul className="ml-0 mt-4 list-none space-y-1.5">
                   {navigation.collaborate().map((item) => (
                     <li key={item.name}>
@@ -98,7 +98,7 @@ export function FooterContent() {
                 </ul>
               </div>
               <div className="mt-12 xl:!mt-0">
-                <FooterHeader>Community</FooterHeader>
+                <FooterHeader>社区</FooterHeader>
                 <ul className="ml-0 mt-4 list-none space-y-1.5">
                   {navigation.community.map((item) => (
                     <li key={item.name}>
@@ -108,22 +108,22 @@ export function FooterContent() {
                 </ul>
               </div>
               <div className="mt-12 xl:!mt-0">
-                <FooterHeader>Legal</FooterHeader>
+                <FooterHeader>法律</FooterHeader>
                 <ul className="ml-0 mt-4 list-none space-y-1.5">
                   <li key={"terms-and-conditions"}>
                     <FooterLink href={"/legal/terms-and-conditions"}>
-                      Terms & Conditions
+                      使用条款
                     </FooterLink>
                   </li>
                   <li key={"privacy-policy"}>
                     <FooterLink href={"/legal/privacy-policy"}>
-                      Privacy Policy
+                      隐私政策
                     </FooterLink>
                   </li>
                 </ul>
               </div>
               <div className="mt-12 xl:!mt-0">
-                <FooterHeader>Theme</FooterHeader>
+                <FooterHeader>主题</FooterHeader>
                 <ul className="ml-0 mt-4 list-none space-y-1.5">
                   <li>
                     <ThemeSwitch />
@@ -138,8 +138,17 @@ export function FooterContent() {
         <div className="mt-8 pt-8 sm:flex sm:items-center sm:justify-between">
           <div>
             <p className="mt-4 text-xs text-gray-500 dark:text-[#888888]">
-              &copy; {new Date().getFullYear()} BlockNote maintainers. All
-              rights reserved.
+              <a target="_blank" href="https://www.zhcndoc.com">
+                简中文档
+              </a>
+              ｜
+              <a
+                rel="nofollow"
+                target="_blank"
+                href="https://beian.miit.gov.cn"
+              >
+                沪ICP备2024070610号-3
+              </a>
             </p>
           </div>
         </div>

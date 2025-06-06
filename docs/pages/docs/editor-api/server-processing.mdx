@@ -10,8 +10,7 @@ import { Callout } from "nextra/components";
 
 # 服务器端处理
 
-虽然你可以在客户端使用 `BlockNoteEditor`，  
-但也可以使用来自 `@blocknote/server-util` 的 `ServerBlockNoteEditor` 在服务器端处理 BlockNote 文档。
+虽然你可以在客户端使用 `BlockNoteEditor`，但也可以使用来自 `@blocknote/server-util` 的 `ServerBlockNoteEditor` 在服务器端处理 BlockNote 文档。
 
 例如，使用以下代码在服务器端将 BlockNote 文档转换为 HTML：
 
@@ -22,8 +21,7 @@ const editor = ServerBlockNoteEditor.create();
 const html = await editor.blocksToFullHTML(blocks);
 ```
 
-`ServerBlockNoteEditor.create` 接受与 `useCreateBlockNote` 和 `BlockNoteEditor.create` 相同的 BlockNoteEditorOptions（[查看文档](/docs/editor-basics/setup)），  
-所以你可以将相同的配置（例如，你的自定义 schema）传递给服务器端的 BlockNote 编辑器，就像客户端一样。
+`ServerBlockNoteEditor.create` 接受与 `useCreateBlockNote` 和 `BlockNoteEditor.create` 相同的 BlockNoteEditorOptions（[查看文档](/docs/editor-basics/setup)），所以你可以将相同的配置（例如，你的自定义 schema）传递给服务器端的 BlockNote 编辑器，就像客户端一样。
 
 ## 转换 Blocks 的函数
 
@@ -37,7 +35,7 @@ const html = await editor.blocksToFullHTML(blocks);
 
 此外，`ServerBlockNoteEditor` 提供了处理 Yjs 文档的函数，适用于你使用 Yjs 协作时：
 
-- `yDocToBlocks` 或 `yXmlFragmentToBlocks`：用于将 Yjs 文档或 XML Fragment 转换为 BlockNote blocks  
+- `yDocToBlocks` 或 `yXmlFragmentToBlocks`：用于将 Yjs 文档或 XML Fragment 转换为 BlockNote blocks
 - `blocksToYDoc` 或 `blocksToYXmlFragment`：用于将 BlockNote 文档（blocks）转换为 Yjs 文档或 XML Fragment
 
 ## React 兼容性

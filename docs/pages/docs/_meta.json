@@ -1,16 +1,16 @@
 {
-  "index": "Introduction",
-  "quickstart": "Quickstart",
-  "editor-basics": "Editor Basics",
-  "editor-api": "Editor API",
-  "styling-theming": "Styling & Theming",
-  "ui-components": "UI Components",
-  "custom-schemas": "Custom Schemas",
-  "collaboration": "Collaboration",
-  "advanced": "Advanced",
+  "index": "介绍",
+  "quickstart": "快速入门",
+  "editor-basics": "编辑器基础",
+  "editor-api": "编辑器 API",
+  "styling-theming": "样式与主题",
+  "ui-components": "UI 组件",
+  "custom-schemas": "自定义模式",
+  "collaboration": "协作",
+  "advanced": "高级",
   "ai": "AI",
   "discord-link": {
-    "title": "Community ↗",
+    "title": "社区",
     "href": "https://discord.gg/Qc2QTTH5dF",
     "newWindow": true
   }

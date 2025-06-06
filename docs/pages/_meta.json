@@ -13,7 +13,7 @@
   },
 
   "docs": {
-    "title": "Docs",
+    "title": "文档",
     "display": "children"
   },
   "ai": {
@@ -22,10 +22,11 @@
     "route": "/needs-fake-route-otherwise-menu-shows-bold"
   },
   "examples": {
-    "title": "Examples",
+    "title": "示例",
     "display": "children"
   },
   "pricing": {
+    "title": "定价",
     "type": "page",
     "theme": {
       "layout": "raw",
@@ -33,9 +34,9 @@
       "toc": true
     }
   },
-  "about": "About",
+  "about": "关于",
   "legal": {
-    "title": "Legal",
+    "title": "法律",
     "display": "hidden",
     "theme": {
       "sidebar": false,

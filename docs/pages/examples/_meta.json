@@ -1,12 +1,12 @@
 {
-  "index": "Overview",
-  "basic": "Basic",
-  "backend": "Backend",
-  "ui-components": "UI Components",
-  "theming": "Theming",
-  "interoperability": "Interoperability",
-  "custom-schema": "Custom Schemas",
-  "collaboration": "Collaboration",
-  "extensions": "Extensions",
+  "index": "概述",
+  "basic": "基础",
+  "backend": "后端",
+  "ui-components": "UI 组件",
+  "theming": "主题化",
+  "interoperability": "互操作性",
+  "custom-schema": "自定义模式",
+  "collaboration": "协作",
+  "extensions": "扩展",
   "ai": "AI"
 }

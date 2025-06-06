@@ -107,7 +107,7 @@ export default function DemoEditor(props: { theme?: "light" | "dark" }) {
   const focus = useCallback(() => {
     if (!warningShown) {
       alert(
-        "Text you enter in this demo is displayed publicly on the internet to show multiplayer features. Be kind :)",
+        "您在此演示中输入的内容，将公开显示在互联网上以展示多人协作功能，请友善互动。",
       );
       setWarningShown(true);
     }

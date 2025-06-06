@@ -28,9 +28,9 @@ import collaborationDark from "../../../../public/img/features/collaboration_dar
 
 export const featuresCardData: FeatureCardProps[] = [
   {
-    title: "Works out of the box",
+    title: "开箱即用",
     description:
-      "Built-in components like menus and toolbars instantly provide a familiar, Notion-style user experience - but are also fully customizable.",
+      "内置组件如菜单和工具栏瞬间提供了熟悉的 Notion 风格用户体验，但也完全可定制。",
     icon: RiSettings3Fill,
     thumbnail: {
       light: worksOutOfTheBoxLight,
@@ -38,9 +38,9 @@ export const featuresCardData: FeatureCardProps[] = [
     },
   },
   {
-    title: "Block-based design",
+    title: "基于区块的设计",
     description:
-      "Drag, drop, or nest blocks. The block-based design enables users to create beautiful docs and unlocks a powerful API for engineers.",
+      "拖放或嵌套区块。基于模块的设计让用户能够创建精美的文档，并为工程师解锁强大的API接口。",
     icon: RiIndentIncrease,
     thumbnail: {
       light: blockBasedDesignLight,
@@ -48,9 +48,8 @@ export const featuresCardData: FeatureCardProps[] = [
     },
   },
   {
-    title: "Collaboration",
-    description:
-      "Craft beautiful multiplayer experiences with support for real-time collaboration.",
+    title: "协作",
+    description: "通过支持实时协作，打造精彩的多人互动与协作体验。",
     icon: RiTeamFill,
     thumbnail: {
       light: collaborationLight,
@@ -58,39 +57,38 @@ export const featuresCardData: FeatureCardProps[] = [
     },
   },
   {
-    title: "Extensibility",
-    description:
-      "Want to go next level? Extend the editor with custom blocks, schemas, and plugins.",
+    title: "可扩展性",
+    description: "想要更进一步吗？通过自定义块、架构和插件扩展编辑器。",
     icon: RiMenuAddFill,
   },
   {
-    title: "First-class Typescript support",
+    title: "一流的 TypeScript 支持",
     description:
-      "Get full type safety and autocompletion even when extending your editor with custom blocks and schemas.",
+      "即使在使用自定义块和模式扩展编辑器时，也能获得完整的类型安全和自动补全。",
     icon: BiLogoTypescript,
   },
   {
-    title: "Theming",
+    title: "主题化",
     description:
-      "Customize the look and feel of your editor to match your brand. Built-in support for light & dark modes.",
+      "自定义编辑器外观以匹配您的品牌风格，内置支持浅色与深色主题模式。",
     icon: RiPaintBrushFill,
   },
   {
-    title: "Markdown & HTML",
+    title: "Markdown 和 HTML",
     description:
-      "Convert documents from BlockNote JSON to and from Markdown and HTML.",
+      "将文档从 BlockNote JSON 转换为 Markdown 和 HTML，并从 Markdown 和 HTML 转换为 BlockNote JSON。",
     icon: BiLogoMarkdown,
   },
   {
-    title: "Prosemirror based",
+    title: "基于 Prosemirror",
     description:
-      "Builds on top of the battle-tested Prosemirror, but without the steep learning curve.",
+      "建立在经过战斗考验的 Prosemirror 之上，但没有陡峭的学习曲线。",
     icon: BiSolidWrench,
   },
   {
-    title: "Vanilla JS",
+    title: "原生 JS",
     description:
-      "Not using React? BlockNote also works with vanilla JS for use with other frameworks.",
+      "不使用 React？BlockNote 同样支持原生 JavaScript，可与其他框架配合使用。",
     icon: BiLogoJavascript,
   },
 ];
@@ -104,9 +102,9 @@ export function Features() {
         }
       >
         <SectionIntro
-          header={"Why BlockNote?"}
+          header={"为什么选择 BlockNote？"}
           subtext={
-            "Whether you want extensive customization or a great out-of-the-box experience, BlockNote has you covered:"
+            "无论您想要广泛的自定义还是出色的开箱体验，BlockNote 都能满足您的需求："
           }
         />
         <FadeIn className="grid max-w-full grid-cols-1 gap-4 md:max-w-screen-md md:grid-cols-2 xl:max-w-none xl:grid-cols-3 xl:p-0">

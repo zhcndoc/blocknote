@@ -1,5 +1,5 @@
 // import "../custom.css";
-import { Analytics } from "@vercel/analytics/react";
+// import { Analytics } from "@vercel/analytics/react";
 import type { AppProps } from "next/app";
 import { type ReactNode } from "react";
 import "../styles.css";
@@ -16,7 +16,7 @@ export default function Nextra({ Component, pageProps }: NextraAppProps) {
   return (
     <>
       <Component {...pageProps} />
-      <Analytics />
+      {/* <Analytics /> */}
     </>
   );
 }

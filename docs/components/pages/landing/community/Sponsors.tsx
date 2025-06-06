@@ -131,7 +131,7 @@ export function Sponsors() {
   return (
     <div className={"flex w-fit max-w-full flex-col items-center gap-4"}>
       <FadeIn>
-        <SectionSubHeader>Sponsors &amp; users</SectionSubHeader>
+        <SectionSubHeader>赞助商与用户</SectionSubHeader>
       </FadeIn>
       <FadeIn className="grid grid-cols-2 gap-2 overflow-hidden md:grid-cols-3">
         {sponsorsCardData.map((sponsor) => (

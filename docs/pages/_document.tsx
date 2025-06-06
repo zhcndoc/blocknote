@@ -1,4 +1,4 @@
-import { Analytics } from "@vercel/analytics/react";
+// import { Analytics } from "@vercel/analytics/react";
 import type { DocumentContext, DocumentInitialProps } from "next/document";
 import Document, { Head, Html, Main, NextScript } from "next/document";
 class MyDocument extends Document {
@@ -12,12 +12,14 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html lang="en">
-        <Head></Head>
+      <Html lang="zh-CN">
+        <Head>
+          <script async src="https://www.zhcndoc.com/js/common.js"></script>
+        </Head>
         <body>
           <Main />
           <NextScript />
-          <Analytics />
+          {/* <Analytics /> */}
         </body>
       </Html>
     );
