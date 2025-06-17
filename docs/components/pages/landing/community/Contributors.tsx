@@ -10,75 +10,75 @@ function fetchContributors(): { username: string; avatarUrl: string }[] {
   return [
     {
       username: "YousefED",
-      avatarUrl: "https://avatar.ikxin.com/github?id=368857",
+      avatarUrl: "https://mark.ikxin.com/github?id=368857",
     },
     {
       username: "17Amir17",
-      avatarUrl: "https://avatar.ikxin.com/github?id=36531255",
+      avatarUrl: "https://mark.ikxin.com/github?id=36531255",
     },
     {
       username: "matthewlipski",
-      avatarUrl: "https://avatar.ikxin.com/github?id=50169049",
+      avatarUrl: "https://mark.ikxin.com/github?id=50169049",
     },
     {
       username: "GuySerfaty",
-      avatarUrl: "https://avatar.ikxin.com/github?id=17720782",
+      avatarUrl: "https://mark.ikxin.com/github?id=17720782",
     },
     {
       username: "tomeryp",
-      avatarUrl: "https://avatar.ikxin.com/github?id=4117403",
+      avatarUrl: "https://mark.ikxin.com/github?id=4117403",
     },
     {
       username: "horacioh",
-      avatarUrl: "https://avatar.ikxin.com/github?id=725120",
+      avatarUrl: "https://mark.ikxin.com/github?id=725120",
     },
     {
       username: "i-am-chitti",
-      avatarUrl: "https://avatar.ikxin.com/github?id=60139930",
+      avatarUrl: "https://mark.ikxin.com/github?id=60139930",
     },
     {
       username: "DAlperin",
-      avatarUrl: "https://avatar.ikxin.com/github?id=16063713",
+      avatarUrl: "https://mark.ikxin.com/github?id=16063713",
     },
     {
       username: "tensor-tian",
-      avatarUrl: "https://avatar.ikxin.com/github?id=101185214",
+      avatarUrl: "https://mark.ikxin.com/github?id=101185214",
     },
     {
       username: "sudarshanshenoy",
-      avatarUrl: "https://avatar.ikxin.com/github?id=13462896",
+      avatarUrl: "https://mark.ikxin.com/github?id=13462896",
     },
     {
       username: "cuire",
-      avatarUrl: "https://avatar.ikxin.com/github?id=81014305",
+      avatarUrl: "https://mark.ikxin.com/github?id=81014305",
     },
     {
       username: "fogle",
-      avatarUrl: "https://avatar.ikxin.com/github?id=39360",
+      avatarUrl: "https://mark.ikxin.com/github?id=39360",
     },
     {
       username: "richmengsix",
-      avatarUrl: "https://avatar.ikxin.com/github?id=2321921",
+      avatarUrl: "https://mark.ikxin.com/github?id=2321921",
     },
     {
       username: "PhilipWillms",
-      avatarUrl: "https://avatar.ikxin.com/github?id=44462043",
+      avatarUrl: "https://mark.ikxin.com/github?id=44462043",
     },
     {
       username: "niclas-j",
-      avatarUrl: "https://avatar.ikxin.com/github?id=35239311",
+      avatarUrl: "https://mark.ikxin.com/github?id=35239311",
     },
     {
       username: "danlgz",
-      avatarUrl: "https://avatar.ikxin.com/github?id=26347085",
+      avatarUrl: "https://mark.ikxin.com/github?id=26347085",
     },
     {
       username: "CTNicholas",
-      avatarUrl: "https://avatar.ikxin.com/github?id=33033422",
+      avatarUrl: "https://mark.ikxin.com/github?id=33033422",
     },
     {
       username: "charlesfrisbee",
-      avatarUrl: "https://avatar.ikxin.com/github?id=32081962",
+      avatarUrl: "https://mark.ikxin.com/github?id=32081962",
     },
   ];
 }

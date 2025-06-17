@@ -38,7 +38,7 @@ const nextConfig = withAnalyzer(
         },
         {
           protocol: "https",
-          hostname: "avatar.ikxin.com",
+          hostname: "mark.ikxin.com",
           port: "",
           pathname: "/**",
         },

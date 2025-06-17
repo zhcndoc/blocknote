@@ -18,7 +18,7 @@ export function ExampleGroup(props: { examples: (typeof EXAMPLES_LIST)[0] }) {
               href={project.link}
               icon={proExamplesList.includes(project.text) && <ProBadge />}
               authorName={project.author}
-              authorImage={`https://avatar.ikxin.com/github/${project.author}`}
+              authorImage={`https://mark.ikxin.com/github/${project.author}`}
             />
           );
         })}
