@@ -32,6 +32,9 @@ type BlockNoteEditorOptions = {
     width?: number;
     class?: string;
   }) => Plugin;
+  heading?: {
+    levels?: number[];
+  };
   initialContent?: PartialBlock[];
   pasteHandler?: (context: {
     event: ClipboardEvent;
@@ -40,7 +43,7 @@ type BlockNoteEditorOptions = {
       pasteBehavior?: "prefer-markdown" | "prefer-html";
     }) => boolean | undefined;
   }) => boolean | undefined;
-  resolveFileUrl: (url: string) => Promise<string>
+  resolveFileUrl: (url: string) => Promise<string>;
   schema?: BlockNoteSchema;
   setIdAttribute?: boolean;
   sideMenuDetection?: "viewport" | "editor";
@@ -73,6 +76,8 @@ type BlockNoteEditorOptions = {
 
 `initialContent:` 编辑器创建时应包含的内容，表示为[部分块](/docs/manipulating-blocks#partial-blocks)数组。
 
+`heading`: 标题配置。允许您配置编辑器中应提供的标题级别数量。默认为 `[1, 2, 3]`。最多可配置为 6 个标题级别。
+
 `pasteHandler`：可用于覆盖默认粘贴行为的函数。详情请见[粘贴处理](/docs/advanced/paste-handling)。
 
 `resolveFileUrl:` 解析文件 URL 以进行显示/下载的函数。用于创建受认证的 URL 或实现自定义协议。
@@ -98,7 +103,9 @@ type BlockNoteEditorOptions = {
 <Callout type="info" emoji={"💡"}>
   <strong>手动创建编辑器（`BlockNoteEditor.create`）</strong>
   <p>
-    `useCreateBlockNote` 钩子实际上是对 `BlockNoteEditor.create` 方法的简单 `useMemo` 封装。如果你想手动控制编辑器的生命周期，可以直接使用此方法。例如，我们在[保存与加载示例](/examples/backend/saving-loading)中这样做，以延迟编辑器创建，直到从外部数据源获取到内容。
+    `useCreateBlockNote` 钩子实际上是对 `BlockNoteEditor.create` 方法的简单
+    `useMemo`
+    封装。如果你想手动控制编辑器的生命周期，可以直接使用此方法。例如，我们在[保存与加载示例](/examples/backend/saving-loading)中这样做，以延迟编辑器创建，直到从外部数据源获取到内容。
   </p>
 </Callout>
 
