@@ -8,7 +8,7 @@
     "build:site": "next build",
     "start": "next start",
     "lint": "next lint",
-    "init-db": "pnpx @better-auth/cli migrate"
+    "init-db": "pnpx @better-auth/cli migrate --y"
   },
   "dependencies": {
     "@blocknote/ariakit": "workspace:^",
