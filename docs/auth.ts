@@ -136,12 +136,11 @@ export const auth = betterAuth({
     },
   },
   // Use SQLite for local development
-  database:
-    process.env.NODE_ENV === "production" || process.env.POSTGRES_URL
-      ? new Pool({
-          connectionString: process.env.POSTGRES_URL,
-        })
-      : new Database("./sqlite.db"),
+  database: false
+    ? new Pool({
+        connectionString: process.env.POSTGRES_URL,
+      })
+    : new Database("./sqlite.db"),
   plugins: [
     customSession(
       async ({ user, session }) => {
