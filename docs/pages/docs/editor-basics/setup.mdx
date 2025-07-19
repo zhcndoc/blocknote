@@ -46,7 +46,6 @@ type BlockNoteEditorOptions = {
   resolveFileUrl: (url: string) => Promise<string>;
   schema?: BlockNoteSchema;
   setIdAttribute?: boolean;
-  sideMenuDetection?: "viewport" | "editor";
   tabBehavior?: "prefer-navigate-ui" | "prefer-indent";
   tables?: TableFeatures;
   trailingBlock?: boolean;
@@ -87,8 +86,6 @@ type BlockNoteEditorOptions = {
 `schema`：如果你想通过自定义块、样式或内联内容扩展编辑器，提供编辑器的 schema，详见[自定义 Schema](/docs/custom-schemas)。
 
 `setIdAttribute`：是否在块上渲染 `id` HTML 属性以及 `data-id` 属性。默认值为 `false`。
-
-`sideMenuDetection`：确定鼠标光标位置是否锁定在编辑器边界框内，用于显示[块侧边菜单](/docs/ui-components/side-menu)和块的拖放。设置为 `viewport` 时，侧边菜单会显示在光标附近的最近块旁，无论光标在视口的何处。放置块时也会锁定在编辑器边界框内。否则，侧边菜单仅在光标处于编辑器边界内时显示，块只能在悬停编辑器时放置。要使用多个编辑器，必须设置为 `editor`。默认值为 `viewport`。
 
 `tabBehavior`：确定按 Tab 键时是否应导航工具栏以实现键盘无障碍。设置为 `"prefer-navigate-ui"` 时，用户可以使用 Tab 键导航工具栏。按 Escape 键会重新聚焦编辑器，之后 Tab 则用于缩进块。`"prefer-indent"` 则使 Tab 始终缩进块。默认为 `prefer-navigate-ui`。
 

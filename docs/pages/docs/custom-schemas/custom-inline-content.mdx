@@ -47,6 +47,7 @@ type CustomInlineContentConfig = {
   type: string;
   content: "styled" | "none";
   readonly propSchema: PropSchema;
+  draggable?: boolean;
 };
 ```
 
@@ -83,6 +84,12 @@ type PropSchema<
 - `values`（可选）：指定该 prop 可以取的值的数组，例如限制该值为预定义字符串列表。如果未定义 `values`，BlockNote 认为该 prop 可以是任何 `PrimitiveType` 的值
 
 _在提及演示中，我们添加了一个 `user` prop，用于指定被提及的用户。_
+
+**`draggable`**
+
+指定内联内容是否可以在编辑器内拖动。如果设置为 `true`，则内联内容将可以被拖动。如果未指定，默认为 `false`。
+
+如果设置为 `true`，您应该将 `data-drag-handle` 添加到应作为拖动手柄的 DOM 元素上。
 
 #### 内联内容实现 (`ReactCustomInlineContentImplementation`)
 
