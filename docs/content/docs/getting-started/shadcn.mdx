@@ -1,0 +1,63 @@
+---
+title: 使用 ShadCN
+description: 使用 BlockNote 的 ShadCN 富文本编辑器
+imageTitle: 使用 BlockNote 的 ShadCN 富文本编辑器
+---
+
+# 开始使用 ShadCN
+
+[shadcn/ui](https://ui.shadcn.com/) 是一个基于 [Radix](https://radix-ui.com/) 和 Tailwind 的开源 React 组件集合。
+
+```console tab="npm"
+npm install @blocknote/core @blocknote/react @blocknote/shadcn
+```
+
+```console tab="pnpm"
+pnpm add @blocknote/core @blocknote/react @blocknote/shadcn
+```
+
+```console tab="bun"
+bun add @blocknote/core @blocknote/react @blocknote/shadcn
+```
+
+要在 shadcn 中使用 BlockNote，可以从 `@blocknote/shadcn` 中导入 `BlockNoteView`，并从 `@blocknote/shadcn/style.css` 导入样式表。
+
+<Example name="basic/shadcn" />
+
+## ShadCN 自定义
+
+BlockNote 自带默认的 shadcn 组件，但你很可能已经复制并可能在项目中自定义了自己的 shadcn 组件。  
+为了让 BlockNote 使用你项目中的 ShadCN 组件，而非默认组件，可以通过 `BlockNoteView` 的 `shadCNComponents` 属性传入：
+
+```tsx
+import * as Button from "@/components/ui/button"
+import * as Select from "@/components/ui/select"
+
+return (
+  <BlockNoteView editor={editor} shadCNComponents={{
+    Select,
+    Button,
+    ...
+  }} />
+);
+```
+
+你可以从以下 ShadCN 模块传入组件：
+
+- Badge
+- Button
+- Card
+- DropdownMenu
+- Form
+- Input
+- Label
+- Popover
+- Select
+- Tabs
+- Toggle
+- Tooltip
+
+<Callout type="warning" emoji="⚠️">
+  为了确保兼容性，你的 ShadCN 组件不应使用 Portals （请在你的
+  DropdownMenu、Popover 和 Select 组件中注释掉相关代码）。
+</Callout>

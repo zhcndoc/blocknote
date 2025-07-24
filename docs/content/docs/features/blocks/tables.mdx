@@ -1,0 +1,121 @@
+---
+title: 表格
+description: 如何在 BlockNote 中使用表格。
+imageTitle: 表格
+---
+
+# 表格块
+
+表格是一种以网格形式显示数据的简单方式。
+
+<Example name="ui-components/advanced-tables" />
+
+表格默认是一种以网格形式显示数据的简单方式。但 BlockNote 也支持更多高级功能，比如：
+
+- 拆分单元格
+- 单元格背景色
+- 单元格文本颜色
+- 表头行和列
+
+<Callout type="info">
+  这些功能默认是关闭的，以保持默认表格体验的简洁易用。
+</Callout>
+
+你可以在创建编辑器时，通过传入 `tables` 选项启用更多高级功能。
+
+```ts
+const editor = new BlockNoteEditor({
+  tables: {
+    splitCells: true,
+    cellBackgroundColor: true,
+    cellTextColor: true,
+    headers: true,
+  },
+});
+```
+
+你可以选择只启用某些功能，也可以全部禁用。这样可以灵活地根据你的应用需求使用表格。
+
+## 块的结构
+
+以下描述了 BlockNote 中表格块的结构。
+
+```ts
+type TableBlock = {
+  id: string;
+  type: "table";
+  props: DefaultProps;
+  content: TableContent;
+  children: Block[];
+};
+
+type TableContent = {
+  type: "tableContent";
+  columnWidths: number[];
+  headerRows: number;
+  rows: {
+    cells: TableCell[];
+  }[];
+};
+
+type TableCell = {
+  type: "tableCell";
+  props: {
+    colspan?: number;
+    rowspan?: number;
+  } & DefaultProps;
+  content: InlineContent[];
+};
+```
+
+## 选项
+
+### 单元格背景色
+
+要启用单元格背景色，需要在 `tables` 选项中传入 `cellBackgroundColor: true`。
+
+```ts
+const editor = new BlockNoteEditor({
+  tables: {
+    cellBackgroundColor: true,
+  },
+});
+```
+
+### 单元格文本颜色
+
+要启用单元格文本颜色，需要在 `tables` 选项中传入 `cellTextColor: true`。
+
+```ts
+const editor = new BlockNoteEditor({
+  tables: {
+    cellTextColor: true,
+  },
+});
+```
+
+### 表头行和列
+
+要启用该功能，需要在 `tables` 选项中传入 `headers: true`。
+
+```ts
+const editor = new BlockNoteEditor({
+  tables: {
+    headers: true,
+  },
+});
+```
+
+### 拆分单元格
+
+拆分和合并单元格是更高级表格编辑器的常见功能。
+
+要启用该功能，需要在 `tables` 选项中传入 `splitCells: true`。
+
+```ts
+const editor = new BlockNoteEditor({
+  tables: {
+    splitCells: true,
+  },
+});
+```

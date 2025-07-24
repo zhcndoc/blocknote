@@ -1,0 +1,100 @@
+---
+title: 自定义样式
+description: 了解如何为您的 BlockNote 编辑器创建自定义样式架构
+imageTitle: 自定义样式
+---
+
+# 自定义样式类型
+
+除了 BlockNote 提供的默认样式类型之外，您还可以使用 React 组件创建自己的自定义样式。请查看下面的演示，在其中我们向 BlockNote 编辑器添加了自定义字体样式，以及一个用于设置该样式的自定义[格式工具栏按钮](/docs/react/components/formatting-toolbar)。
+
+<Example name="custom-schema/font-style" />
+
+## 创建自定义样式类型
+
+使用 `createReactStyleSpec` 函数来创建自定义样式类型。该函数接收两个参数：
+
+```typescript
+function createReactStyleSpec(
+  styleConfig: CustomStyleConfig,
+  styleImplementation: ReactStyleImplementation,
+);
+```
+
+让我们来看演示中的自定义字体样式，并逐一解释每个字段的作用：
+
+```typescript
+export const Font = createReactStyleSpec(
+  {
+    type: "font",
+    propSchema: "string",
+  },
+  {
+    render: (props) => (
+      <span style={{ fontFamily: props.value }} ref={props.contentRef} />
+    ),
+  }
+);
+```
+
+### 样式配置（`CustomStyleConfig`）
+
+样式配置描述了自定义样式的结构。使用它来指定类型，以及样式是否应该接受字符串值：
+
+```typescript
+type CustomStyleConfig = {
+  type: string;
+  readonly propSchema: "boolean" | "string";
+};
+```
+
+**`type`**
+
+定义自定义样式的标识符。
+
+**`propSchema`**
+
+`propSchema` 指定样式是仅能切换开启/关闭的（`"boolean"`），还是可以接受字符串值的（`"string"`）。支持字符串值对于例如设置样式的颜色非常有用。
+
+_在字体样式演示中，我们将其设置为 `"string"`，以便存储字体族名称。_
+
+### 样式实现（`ReactCustomStyleImplementation`）
+
+样式实现定义了样式如何被呈现为 HTML。
+
+```typescript
+type ReactCustomStyleImplementation = {
+  render: React.FC<{
+    value?: string;
+    contentRef: (node: HTMLElement | null) => void;
+  }>;
+};
+```
+
+**`render`**
+
+这是您的 React 组件，用于定义自定义样式的渲染方式，并接受两个 React 属性：
+
+`value:` 样式的字符串值，仅当您的样式配置包含 `propSchema: "string"` 时可用。
+
+`contentRef:` 一个 React `ref`，用于标记可编辑元素。
+
+_注意，与自定义块和内联内容不同，自定义样式的 `render` 函数无法访问 React 上下文或其他状态。它们应当是普通的 React 函数组件，类似示例所示。_
+
+## 将自定义样式添加到编辑器
+
+最后，使用您的自定义样式定义来创建一个 BlockNoteSchema：
+
+```typescript
+const schema = BlockNoteSchema.create({
+  styleSpecs: {
+    // 如有需要，可启用默认样式
+    ...defaultStyleSpecs,
+
+    // 添加您自己的自定义样式：
+    font: Font,
+  },
+});
+```
+
+接下来，您可以使用这个自定义的 schema 来实例化您的编辑器，具体说明请参见[自定义架构](/docs/features/custom-schemas)页面。

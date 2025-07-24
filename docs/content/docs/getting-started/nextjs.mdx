@@ -1,0 +1,72 @@
+---
+title: 使用 Next.js
+description: 有关将 BlockNote 与 Next.js 集成的详细信息
+imageTitle: Next.js 支持
+---
+
+# 使用 Next.js 入门
+
+BlockNote 是一个仅在客户端渲染（而非服务器端渲染）运行的组件。如果你使用 Next.js，需要确保 Next.js 不会尝试将 BlockNote 作为服务器端组件进行渲染。
+
+请确保在 [客户端组件](https://nextjs.org/docs/getting-started/react-essentials#client-components) 中使用 BlockNote。你可以通过为你的组件创建一个单独的文件（**确保此文件位于 `pages` 或 `app` 目录之外，比如 `components/Editor.tsx`**），并以 `"use client";` [指令](https://react.dev/reference/react/use-client) 开头来实现：
+
+```typescript jsx
+"use client"; // 这将把 <Editor> 注册为客户端组件
+import "@blocknote/core/fonts/inter.css";
+import { useCreateBlockNote } from "@blocknote/react";
+import { BlockNoteView } from "@blocknote/mantine";
+import "@blocknote/mantine/style.css";
+
+// 我们的 <Editor> 组件，稍后可以复用
+export default function Editor() {
+  // 创建一个新的编辑器实例。
+  const editor = useCreateBlockNote();
+
+  // 使用 React 组件渲染编辑器实例。
+  return <BlockNoteView editor={editor} />;
+}
+```
+
+## 动态导入（Dynamic Import）
+
+在同一目录下，创建一个名为 `DynamicEditor.tsx` 的新文件：
+这里我们将使用 [动态导入](https://nextjs.org/docs/pages/building-your-application/optimizing/lazy-loading) 来确保 BlockNote 仅在客户端导入。
+
+你可以在页面中通过 `next/dynamic` 导入刚刚创建的组件：
+
+```typescript jsx
+"use client";
+
+import dynamic from "next/dynamic";
+
+export const Editor = dynamic(() => import("./Editor"), { ssr: false });
+```
+
+## 在页面 / 应用中导入
+
+现在，你可以在页面或应用中导入动态编辑器：
+
+```typescript jsx
+import { Editor } from "../components/DynamicEditor";
+
+
+function App() {
+  return (
+    <div>
+      <Editor />
+    </div>
+  );
+}
+```
+
+## React 19 / Next 15 严格模式（StrictMode）
+
+BlockNote 目前尚不支持 React 19 / Next 15 严格模式。暂时请在你的 `next.config.ts` 中禁用严格模式：
+
+```typescript
+...
+reactStrictMode: false,
+...
+```
+
+这将解决你在 Next.js React 应用中嵌入 BlockNote 时可能遇到的任何问题！

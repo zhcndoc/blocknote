@@ -1,0 +1,104 @@
+---
+title: PDF
+description: 将 BlockNote 文档导出为 PDF。
+imageTitle: BlockNote PDF 导出
+path: /docs/export-to-pdf
+---
+
+# PDF 导出
+
+可以将 BlockNote 文档完全在客户端导出为 PDF。
+
+<Callout type={"info"}>
+  此功能由 `@blocknote/xl-pdf-exporter` 提供。`xl-`
+  系列包完全开源，但采用了强制开源许可证。商业许可证适用于闭源专有产品，包含在
+  [商业订阅](/pricing) 中。
+</Callout>
+
+首先，安装 `@blocknote/xl-pdf-exporter` 和 `@react-pdf/renderer` 包：
+
+```bash
+npm install @blocknote/xl-pdf-exporter @react-pdf/renderer
+```
+
+然后，创建 `PDFExporter` 类的实例。该类提供以下方法：
+
+```typescript
+import {
+  PDFExporter,
+  pdfDefaultSchemaMappings,
+} from "@blocknote/xl-pdf-exporter";
+import * as ReactPDF from "@react-pdf/renderer";
+
+// 创建导出器
+const exporter = new PDFExporter(editor.schema, pdfDefaultSchemaMappings);
+
+// 将区块转换为 react-pdf 文档
+const pdfDocument = await exporter.toReactPDFDocument(editor.document);
+
+// 使用 react-pdf 写入文件：
+await ReactPDF.render(pdfDocument, `filename.pdf`);
+```
+
+下面查看带有实时 PDF 预览的[完整示例](/examples/interoperability/converting-blocks-to-pdf)：
+
+<Example name="interoperability/converting-blocks-to-pdf" />
+
+### PDF 自定义
+
+`toReactPDFDocument` 接受一个可选的 `options` 参数，可以自定义 PDF 的页眉和页脚：
+
+示例用法：
+
+```typescript
+import { Text } from "@react-pdf/renderer";
+const pdfDocument = await exporter.toReactPDFDocument(editor.document, {
+  header: <Text>页眉</Text>,
+  footer: <Text>页脚</Text>,
+});
+```
+
+### 自定义映射 / 自定义 Schema
+
+`PDFExporter` 构造函数接受两个参数：`schema` 和 `mappings`。
+一个 _mapping_ 定义了如何将 BlockNote schema 元素（区块、内联内容或样式）转换为 React-PDF 元素。
+如果您在编辑器中使用了[自定义 schema](/docs/features/custom-schemas)，或者想覆盖默认 BlockNote 元素的 PDF 转换方式，您可以传入自定义的 `mappings`：
+
+例如，如果您的 schema 中有 `extraBlock` 类型，可以使用如下代码：
+
+```typescript
+import { PDFExporter, pdfDefaultSchemaMappings } from "@blocknote/xl-pdf-exporter";
+import { Text } from "@react-pdf/renderer";
+
+new PDFExporter(schema, {
+    blockMapping: {
+        ...pdfDefaultSchemaMappings.blockMapping,
+        myCustomBlock: (block, exporter) => {
+            return <Text>我的自定义区块</Text>;
+        },
+    },
+    inlineContentMapping: pdfDefaultSchemaMappings.inlineContentMapping,
+    styleMapping: pdfDefaultSchemaMappings.styleMapping,
+});
+```
+
+### 导出器选项
+
+`PDFExporter` 构造函数还接受一个可选的 `options` 参数。
+虽然转换在客户端完成，默认配置使用了两个基于服务器的资源：
+
+```typescript
+const defaultOptions = {
+  // emoji 资源，这会传给 react-pdf 库(https://react-pdf.org/fonts#registeremojisource)
+  // 默认从 cloudflare + twemoji 加载
+  emojiSource: {
+    format: "png",
+    url: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/",
+  },
+  // 一个函数，用于解析外部资源以避免 CORS 问题
+  // 默认调用 BlockNote 托管的服务器代理来解析文件
+  resolveFileUrl: corsProxyResolveFileUrl,
+  // PDF 中使用的颜色，作用于高亮、背景色和字体颜色等
+  colors: COLORS_DEFAULT, // 来自 @blocknote/core 的默认值
+};
+```

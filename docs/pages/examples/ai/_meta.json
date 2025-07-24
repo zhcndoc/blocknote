@@ -1,0 +1,11 @@
+{
+  "minimal": {
+    "title": "Rich Text editor AI integration"
+  },
+  "playground": {
+    "title": "AI Playground"
+  },
+  "custom-ai-menu-items": {
+    "title": "Adding AI Menu Items"
+  }
+}

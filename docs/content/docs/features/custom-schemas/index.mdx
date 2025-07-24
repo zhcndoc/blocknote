@@ -1,0 +1,101 @@
+---
+title: 自定义模式
+description: 学习如何为您的 BlockNote 编辑器创建自定义模式
+---
+
+# 自定义模式
+
+默认情况下，BlockNote 文档支持不同类型的块、内联内容和文本样式（参见[默认模式](/docs/foundations/schemas)）。
+不过，您可以扩展 BlockNote，创建自定义模式以支持您自己的块、内联内容和文本样式。
+
+## 自定义块
+
+块是文档的主要元素，例如段落、标题、列表等。
+
+- [了解如何为您的 BlockNote 编辑器创建自定义块](/docs/features/custom-schemas/custom-blocks)
+
+## 自定义内联内容
+
+内联内容是可以插入到文本块中的元素，例如链接、提及、标签等。
+
+- [了解如何为您的 BlockNote 编辑器创建自定义内联内容](/docs/features/custom-schemas/custom-inline-content)
+
+## 自定义样式
+
+文本样式是可以应用于一段文本的属性，例如加粗、斜体、下划线等。
+
+- [了解如何为您的 BlockNote 编辑器添加自定义样式](/docs/features/custom-schemas/custom-styles)
+
+## 创建您自己的模式
+
+一旦您定义了自定义块（参见上面的链接）、内联内容或样式，就可以创建一个模式并将其传递给编辑器的初始化。
+
+```typescript
+const schema = BlockNoteSchema.create({
+  blockSpecs: {
+    // 如果需要，启用默认块
+    ...defaultBlockSpecs,
+
+    // 添加您自己的自定义块：
+    // customBlock: CustomBlock,
+  },
+  inlineContentSpecs: {
+    // 如果需要，启用默认内联内容
+    ...defaultInlineContentSpecs,
+
+    // 添加您自己的自定义内联内容：
+    // customInlineContent: CustomInlineContent,
+  },
+  styleSpecs: {
+    // 如果需要，启用默认样式
+    ...defaultStyleSpecs,
+
+    // 添加您自己的自定义样式：
+    // customStyle: CustomStyle
+  },
+});
+```
+
+然后可以将其传递给您的 BlockNoteEditor 实例化（`BlockNoteEditor.create` 或 `useCreateBlockNote`）：
+
+```typescript
+const editor = useCreateBlockNote({
+  schema,
+});
+```
+
+## 在 TypeScript 中的使用
+
+与大多数其他编辑器不同，BlockNote 设计为完全兼容 TypeScript。这意味着即使使用自定义模式，您也可以获得完整的类型安全和自动补全。
+
+默认情况下，API 暴露的方法、hooks 和类型假设您正在使用默认的内置模式。如果您使用自定义模式，有三种方式可以获得完整的类型安全：
+
+### 接受可选 `schema` 参数的方法
+
+一些方法，如 `useBlockNoteEditor` hook，接受一个可选的 `schema?: BlockNoteSchema` 参数。如果您使用自定义模式，应在这里传入它，以确保返回类型正确。
+
+### 手动定义类型
+
+如果您直接使用像 `BlockNoteEditor`、`Block`、`PartialBlock` 这样的类型，可以这样获得正确类型的变体：
+
+```typescript
+type MyBlock = Block<
+  typeof schema.blockSchema,
+  typeof schema.inlineContentSchema,
+  typeof schema.styleSchema
+>;
+```
+
+或者更简单地，使用模式暴露的简写：
+
+```typescript
+type MyBlockNoteEditor = typeof schema.BlockNoteEditor;
+type MyBlock = typeof schema.Block;
+type MyPartialBlock = typeof schema.PartialBlock;
+```
+
+### 自动覆盖所有默认类型（实验性）
+
+另外，获取完整类型安全而无需额外工作最简单的方式是通过自定义类型定义文件，用您的自定义模式覆盖所有默认类型。请参见这个 [示例 blocknote.d.ts](https://github.com/TypeCellOS/BlockNote/blob/main/examples/06-custom-schema/react-custom-styles/blocknote.d.ts.example)。这是一个实验性功能——我们非常希望听到您对这一方法的反馈。
+
+<CardTable path="custom-schemas" />

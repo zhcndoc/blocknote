@@ -1,0 +1,17 @@
+{
+  "partykit": {
+    "title": "Collaborative Editing with PartyKit"
+  },
+  "liveblocks": {
+    "title": "Collaborative Editing with Liveblocks"
+  },
+  "y-sweet": {
+    "title": "Collaborative Editing with Y-Sweet"
+  },
+  "comments": {
+    "title": "Comments & Threads"
+  },
+  "comments-with-sidebar": {
+    "title": "Threads Sidebar"
+  }
+}

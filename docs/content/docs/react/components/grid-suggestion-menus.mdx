@@ -1,0 +1,53 @@
+---
+title: 网格建议菜单
+description: 除了以堆叠形式显示建议菜单外，BlockNote 还支持以网格形式显示它们。
+imageTitle: 网格建议菜单
+---
+
+# Grid Suggestion Menus
+
+当用户输入触发字符时，会显示网格建议菜单，触发字符后输入的文本用于筛选菜单项。
+
+网格建议菜单与普通建议菜单类似，但结果以网格形式组织，用户可以使用键盘上的所有方向键（包括左、右键）来导航结果。
+
+## 表情符号选择器
+
+表情符号选择器是一个通过输入 `:` 字符打开的网格建议菜单（或在斜杠菜单中选择表情符号项时打开）。
+
+只有当用户输入两个非空格字符的查询时才会显示，以减少用户仅想输入 `:` 字符的情况。
+
+<ThemedImage
+  src={{
+    light: "/img/screenshots/emoji_picker.png",
+    dark: "/img/screenshots/emoji_picker_dark.png",
+  }}
+  alt="image"
+  width={400}
+  height={400}
+/>
+
+### 更改表情符号选择器列数
+
+默认情况下，表情符号选择器渲染为 10 列，但你可以更改为任意列数。下面的示例中，表情符号选择器被设置为只显示 5 列。
+
+<Example name="ui-components/suggestion-menus-emoji-picker-columns" />
+
+向 `BlockNoteView` 传递 `emojiPicker={false}` 告诉 BlockNote 不显示默认的表情符号选择器。添加带有 `triggerCharacter={":"}` 和 `columns={5}` 的 `GridSuggestionMenuController` 则告知 BlockNote 显示一个 5 列的表情符号选择器。
+
+### 替换表情符号选择器组件
+
+你可以用自己的 React 组件替换表情符号选择器的默认组件，下面的示例演示了这一点。
+
+<Example name="ui-components/suggestion-menus-emoji-picker-component" />
+
+同样，我们添加了一个带有 `triggerCharacter={":"}` 的 `GridSuggestionMenuController` 组件，并设置 `emojiPicker={false}` 来替换默认的表情符号选择器。
+
+此外，我们还将一个组件传递给它的 `gridSuggestionMenuComponent` 属性。传入的 `gridSuggestionMenuComponent` 负责渲染筛选后的项目。`GridSuggestionMenuController` 控制其相对于触发字符的位置和可见性，并决定显示哪些项目。由于我们没有指定要显示哪些项目（未定义 `getItems` 属性），它将使用网格的默认项目，也就是表情符号。
+
+## 创建额外的网格建议菜单
+
+你可以向编辑器添加更多的网格建议菜单，触发字符可以是任意字符。下面的示例添加了一个用于提及的网格建议菜单，每个项目是用户名字的首字母，触发字符为 `@`。
+
+<Example name="ui-components/suggestion-menus-grid-mentions" />
+
+在新的网格建议菜单中更改列数，或更改用于渲染它的组件，方式与 [表情符号选择器](/docs/react/components/suggestion-menus) 相同。有关提及元素的更多工作原理信息，请参见 [自定义内联内容](/docs/features/custom-schemas/custom-inline-content)。

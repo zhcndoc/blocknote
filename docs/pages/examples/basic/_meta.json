@@ -1,0 +1,41 @@
+{
+  "minimal": {
+    "title": "Basic Setup"
+  },
+  "block-objects": {
+    "title": "Displaying Document JSON"
+  },
+  "multi-column": {
+    "title": "Multi-Column Blocks"
+  },
+  "default-blocks": {
+    "title": "Default Schema Showcase"
+  },
+  "removing-default-blocks": {
+    "title": "Removing Default Blocks from Schema"
+  },
+  "block-manipulation": {
+    "title": "Manipulating Blocks"
+  },
+  "selection-blocks": {
+    "title": "Displaying Selected Blocks"
+  },
+  "ariakit": {
+    "title": "Use with Ariakit"
+  },
+  "shadcn": {
+    "title": "Use with ShadCN"
+  },
+  "localization": {
+    "title": "Localization (i18n)"
+  },
+  "custom-placeholder": {
+    "title": "Change placeholder text"
+  },
+  "multi-editor": {
+    "title": "Multi-Editor Setup"
+  },
+  "custom-paste-handler": {
+    "title": "Custom Paste Handler"
+  }
+}

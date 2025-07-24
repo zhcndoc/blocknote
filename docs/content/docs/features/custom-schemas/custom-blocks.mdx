@@ -1,0 +1,168 @@
+---
+title: Custom Blocks
+description: Learn how to create custom block types for your BlockNote editor
+imageTitle: Custom Blocks
+---
+
+# Custom Block Types
+
+In addition to the default block types that BlockNote offers, you can also make your own custom blocks using React components. Take a look at the demo below, in which we add a custom alert block to a BlockNote editor, as well as a custom [Slash Menu Item](/docs/react/components/suggestion-menus#changing-slash-menu-items) to insert it.
+
+<Example name="custom-schema/alert-block" />
+
+## Creating a Custom Block Type
+
+使用 `createReactBlockSpec` 函数来创建自定义区块类型。该函数接受两个参数：
+
+```typescript
+function createReactBlockSpec(
+  blockConfig: CustomBlockConfig,
+  blockImplementation: ReactCustomBlockImplementation,
+);
+```
+
+让我们来看演示中的自定义警告区块，并逐一说明各字段的作用：
+
+```typescript
+const Alert = createReactBlockSpec(
+  {
+    type: "alert",
+    propSchema: {
+      textAlignment: defaultProps.textAlignment,
+      textColor: defaultProps.textColor,
+      type: {
+        default: "warning",
+        values: ["warning", "error", "info", "success"],
+      },
+    },
+    content: "inline",
+  },
+  {
+    render: (props) => {
+      ...
+    },
+  }
+);
+```
+
+### Block Config (`CustomBlockConfig`)
+
+区块配置描述了自定义区块的结构。用它来指定区块的类型、属性（props）以及内容支持：
+
+```typescript
+type BlockConfig = {
+  type: string;
+  content: "inline" | "none";
+  readonly propSchema: PropSchema;
+  isSelectable?: boolean;
+  hardBreakShortcut?: "shift+enter" | "enter" | "none";
+};
+```
+
+**`type`**
+
+定义自定义区块的标识符。
+
+**`content`**
+
+如果您的自定义区块支持富文本内容，则设为 `inline`，否则设为 `none`。
+
+_在警告示例中，我们希望用户能够在警告区块中输入文本，因此设为 `"inline"`。_
+
+**`propSchema`**
+
+`PropSchema` 指定区块支持的属性。区块属性是存储在文档中的数据，用于定制区块的外观或行为。
+
+```typescript
+type PropSchema<PrimitiveType extends "boolean" | "number" | "string"> = Record<
+  string,
+  {
+    default: PrimitiveType;
+    values?: PrimitiveType[];
+  }
+>;
+```
+
+`[key: string]` 是属性的名称，值是一个包含两个字段的对象：
+
+- `default`：指定该属性的默认值
+
+- `values`（可选）：指定该属性允许的值的数组，例如限制为预定义字符串列表。如果未定义 `values`，BlockNote 会假定该属性可以是任何 `PrimitiveType` 类型的值。
+
+_In the alert demo, we add a `type` prop for the type of alert that we want (warning / error / info / success). We also want basic styling options, so we add text alignment and text color from the [Default Block Properties](/docs/features/blocks#default-block-properties)._
+
+**`isSelectable`**
+
+可以设置为 `false` 以使区块不可被鼠标或键盘选中。这对于能够选择区块内非编辑内容很有帮助。仅当 `content` 为 `none` 时才应设置为 `false`，默认值为 `true`。
+
+**`hardBreakShortcut`**
+
+定义在区块的内联内容中插入换行符的键盘快捷键。默认值为 `"shift+enter"`。
+
+#### File Block Config
+
+### Block Implementation (`ReactCustomBlockImplementation`)
+
+区块实现定义了区块在编辑器中的渲染方式，以及如何从 HTML 解析和转换为 HTML。
+
+```typescript
+type ReactCustomBlockImplementation = {
+  render: React.FC<{
+    block: Block;
+    editor: BlockNoteEditor;
+    contentRef?: (node: HTMLElement | null) => void;
+  }>;
+  toExternalHTML?: React.FC<{
+    block: Block;
+    editor: BlockNoteEditor;
+    contentRef?: (node: HTMLElement | null) => void;
+  }>;
+  parse?: (element: HTMLElement) => PartialBlock["props"] | undefined;
+};
+```
+
+**`render`**
+
+这是您的 React 组件，用于定义如何在编辑器中渲染自定义区块，接收三个 React 属性：
+
+`block:` 要渲染的区块，其类型和 props 将与区块配置中的类型和 PropSchema 匹配。
+
+`editor:` 区块所在的 BlockNote 编辑器实例。
+
+`contentRef:` 一个 React `ref`，用于标记区块中哪些元素是可编辑的，仅当区块配置中的 `content` 为 `"inline"` 时可用。
+
+**`toExternalHTML`**（可选）
+
+该组件用于将区块导出为 HTML（如复制到剪贴板后）以供 BlockNote 之外使用。如果未定义，则 BlockNote 会使用 `render` 进行 HTML 转换。
+
+_注意传给 `toExternalHTML` 的组件会在单独的 React 根中渲染和序列化，因此无法使用依赖 React Context 的 hook。_
+
+**`parse`**（可选）
+
+`parse` 函数定义如何将 HTML 内容解析为您的区块，例如从剪贴板粘贴内容时。如果元素应被解析为您定义的自定义区块，则返回区块应使用的 props；否则返回 `undefined`。
+
+`element`：正在解析的 HTML 元素。
+
+## Adding Custom Blocks to the Editor
+
+最后，使用您定义的自定义区块创建一个 BlockNoteSchema：
+
+```typescript
+const schema = BlockNoteSchema.create({
+  blockSpecs: {
+    // 如需启用默认区块，请使用展开语法
+    ...defaultBlockSpecs,
+
+    // 添加您自己的自定义区块：
+    alert: Alert,
+  },
+});
+```
+
+You can then instantiate your editor with this custom schema, as explained on the [Custom Schemas](/docs/features/custom-schemas) page.
+
+## Improving the User Experience
+
+现在您已经知道如何创建自定义区块并将其添加到编辑器，但用户尚无方式往文档中创建该区块实例。
+
+To fix this, it's recommended to implement a [command to insert your custom in the Slash Menu](/docs/react/components/suggestion-menus#changing-slash-menu-items), and [an item for it in the Block Type Select](/docs/react/components/formatting-toolbar)

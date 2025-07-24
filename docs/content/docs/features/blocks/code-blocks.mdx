@@ -1,0 +1,136 @@
+---
+title: 代码块
+description: 如何为代码块添加语法高亮。
+imageTitle: 代码块
+---
+
+# 代码块
+
+代码块是一种简单的方式，用于显示带有语法高亮的格式化代码。
+
+<Example name="theming/code-block" />
+
+代码块默认是一种简单的代码展示方式。但 BlockNote 也支持更高级的功能，比如：
+
+- 语法高亮
+- 自定义主题
+- 多种语言
+- Tab 缩进
+
+<Callout type="info">
+  这些功能默认是禁用的，以保持默认代码块体验的易用性并减少打包体积。
+</Callout>
+
+你可以在创建编辑器时传入 `codeBlock` 选项来启用更多高级功能。
+
+```ts
+const editor = new BlockNoteEditor({
+  codeBlock: {
+    indentLineWithTab: true,
+    defaultLanguage: "typescript",
+    supportedLanguages: {
+      typescript: {
+        name: "TypeScript",
+        aliases: ["ts"],
+      },
+    },
+    createHighlighter: () =>
+      createHighlighter({
+        themes: ["light-plus", "dark-plus"],
+        langs: [],
+      }),
+  },
+});
+```
+
+你可以选择只启用某些功能，或者完全不启用。这样可以灵活地根据你的应用需求使用代码块。
+
+## 块结构
+
+以下描述了 BlockNote 中代码块的结构。
+
+```ts
+type CodeBlock = {
+  id: string;
+  type: "codeBlock";
+  props: {
+    language: string;
+  } & DefaultProps;
+  content: InlineContent[];
+  children: Block[];
+};
+```
+
+## 选项
+
+### 基础设置
+
+要启用代码块的语法高亮，可以在 `useCreateBlockNote` 钩子中使用 `codeBlock` 选项。
+
+首先，安装相关包：
+
+```sh
+npm install @blocknote/code-block
+```
+
+然后这样使用：
+
+```tsx
+import { codeBlock } from "@blocknote/code-block";
+
+export default function App() {
+  const editor = useCreateBlockNote({
+    codeBlock,
+  });
+
+  return <BlockNoteView editor={editor} />;
+}
+```
+
+### 自定义主题与语言
+
+要配置代码块高亮的主题和语言，可以在 `useCreateBlockNote` 钩子中使用 `codeBlock` 选项。
+
+这允许你为编辑器的代码块配置一个 [shiki](https://shiki.style) 高亮器，从而定制你想使用的主题和语言。
+
+要创建一个语法高亮器，你可以使用 [shiki-codegen](https://shiki.style/packages/codegen) CLI 来生成创建语法高亮器的代码，支持你的语言和主题。
+
+例如，若要使用优化过的 javascript 引擎，指定 javascript、typescript、vue 三种语言，并包含亮色与暗色主题，可以运行以下命令：
+
+```bash
+npx shiki-codegen --langs javascript,typescript,vue --themes light,dark --engine javascript --precompiled ./shiki.bundle.ts
+```
+
+该命令将生成一个 `shiki.bundle.ts` 文件，你可以用它来为编辑器创建语法高亮器。
+
+示例如下：
+
+```ts
+import { createHighlighter } from "./shiki.bundle.js";
+
+export default function App() {
+  const editor = useCreateBlockNote({
+    codeBlock: {
+      indentLineWithTab: true,
+      defaultLanguage: "typescript",
+      supportedLanguages: {
+        typescript: {
+          name: "TypeScript",
+          aliases: ["ts"],
+        },
+      },
+      createHighlighter: () =>
+        createHighlighter({
+          themes: ["light-plus", "dark-plus"],
+          langs: [],
+        }),
+    },
+  });
+
+  return <BlockNoteView editor={editor} />;
+}
+```
+
+详见自定义代码块示例以获取更详细的示例。
+
+<Example name="theming/custom-code-block" />

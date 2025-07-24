@@ -1,0 +1,99 @@
+---
+title: ODT
+description: 将 BlockNote 文档导出为 ODT（开放文档文本）文件。
+imageTitle: BlockNote ODT 导出
+path: /docs/export-to-odt
+---
+
+# ODT 导出
+
+可以将 BlockNote 文档导出为 ODT 文件，完全在客户端完成。
+
+<Callout type={"info"}>
+  该功能由 `@blocknote/xl-odt-exporter` 提供。`xl-`
+  系列包完全开源，但采用了 Copyleft 许可证发布。对于在闭源专有产品中的商业使用，商业许可证包含在[商务订阅](/pricing)中。
+</Callout>
+
+首先，安装 `@blocknote/xl-odt-exporter` 包：
+
+```bash
+npm install @blocknote/xl-odt-exporter
+```
+
+接着，创建一个 `ODTExporter` 类的实例。它暴露了以下方法：
+
+```typescript
+import {
+  ODTExporter,
+  odtDefaultSchemaMappings,
+} from "@blocknote/xl-odt-exporter";
+
+// 创建导出器
+const exporter = new ODTExporter(editor.schema, odtDefaultSchemaMappings);
+
+// 将区块转换为 ODT 文档（Blob）
+const odtDocument = await exporter.toODTDocument(editor.document);
+```
+
+请参阅下面的[完整示例](/examples/interoperability/converting-blocks-to-odt)：
+
+<Example name="interoperability/converting-blocks-to-odt" />
+
+### 自定义 ODT 输出文件
+
+`toODTDocument` 接受一个可选的 `options` 参数，可用于自定义不同的选项（如页眉和页脚）。
+
+示例用法：
+
+```typescript
+const odt = await exporter.toODTDocument(testDocument, {
+  // XML 字符串
+  footer: "<text:p>FOOTER</text:p>",
+  // XMLDocument
+  header: new DOMParser().parseFromString(
+    `<text:p xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0">HEADER</text:p>`,
+    "text/xml",
+  ),
+});
+```
+
+### 自定义映射 / 自定义模式
+
+`ODTExporter` 构造函数接受 `schema`、`mappings` 和 `options` 参数。
+映射定义了如何将 BlockNote 模式元素（块、内联内容或样式）转换为 [ODT](https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html) XML 元素。
+如果你在编辑器中使用了[自定义模式](/docs/features/custom-schemas)，或者想要覆盖默认 BlockNote 元素转换为 ODT XML 元素的方式，你可以传入自己的 `mappings`：
+
+例如，若你的模式包含一个 `extraBlock` 类型，可以使用如下代码：
+
+```tsx
+import {
+  ODTExporter,
+  odtDefaultSchemaMappings,
+} from "@blocknote/xl-odt-exporter";
+
+new ODTExporter(schema, {
+  blockMapping: {
+    ...odtDefaultSchemaMappings.blockMapping,
+    myCustomBlock: (block, exporter) => {
+      return <text:p>My custom block</text:p>;
+    },
+  },
+  inlineContentMapping: odtDefaultSchemaMappings.inlineContentMapping,
+  styleMapping: odtDefaultSchemaMappings.styleMapping,
+});
+```
+
+### 导出器选项
+
+`ODTExporter` 构造函数接受一个可选的 `options` 参数。
+虽然转换在客户端完成，默认配置使用了一个服务器端代理来解析文件：
+
+```typescript
+const defaultOptions = {
+  // 用于解析外部资源以避免 CORS 问题的函数
+  // 默认情况下，这会调用 BlockNote 托管的服务器端代理来解析文件
+  resolveFileUrl: corsProxyResolveFileUrl,
+  // ODT 中用于高亮、背景色和字体颜色等的颜色配置
+  colors: COLORS_DEFAULT, // 来自 @blocknote/core 的默认值
+};
+```
