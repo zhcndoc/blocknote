@@ -26,7 +26,7 @@ const config = {
       },
       {
         protocol: "https",
-        hostname: "mark.ikxin.com",
+        hostname: "markhub.top",
         port: "",
         pathname: "/**",
       },
