@@ -11,7 +11,7 @@ const faqs = [
   {
     id: 2,
     question: "BlockNote 准备好用于生产环境了吗？",
-    answer: `BlockNote 被多家公司用于生产。此外，我们并没有重新发明轮子。核心编辑器建立在 Prosemirror 之上，这是一个经过实战检验的框架，支持来自 Atlassian、Gitlab、纽约时报等许多软件。`,
+    answer: `BlockNote 已被数十家公司在生产环境中使用，涵盖从初创企业到大型企业和公共机构的广泛范围。此外，我们并没有重新发明轮子。核心编辑器建立在 Prosemirror 之上，这是一个经过实战检验的框架，支持来自 Atlassian、Gitlab、纽约时报等众多软件。`,
   },
   {
     id: 3,
@@ -21,7 +21,13 @@ const faqs = [
   {
     id: 4,
     question: "BlockNote 真的是免费的吗？",
-    answer: `BlockNote 的 100% 是开源的。虽然该库是免费的，但我们提供付费咨询和支持服务，以帮助维持 BlockNote。如果您在商业项目中使用 BlockNote，我们鼓励您注册 BlockNote Pro！`,
+    answer: (
+      <>
+        100% 的 BlockNote 是开源的。我们提供咨询、支持服务和特定 XL
+        套件的商业许可证，以帮助维持 BlockNote
+        的发展。有关更多信息，请查看我们的 <a href="/pricing">定价页面</a>。
+      </>
+    ),
   },
 ];
 
