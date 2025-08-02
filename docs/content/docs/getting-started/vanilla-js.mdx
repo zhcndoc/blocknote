@@ -10,7 +10,9 @@ BlockNote 主要设计为 React 应用中快速且简易的块级编辑器，但
 
 <Callout type="warning" title="警告">
   我们推荐与 React 一起使用 BlockNote，这样你可以使用内置的 UI 组件。
-  本文档将说明如何在不使用 React 的情况下使用 BlockNote 并编写你自己的组件，但这并不推荐，因为你将失去 BlockNote 提供的极佳开箱即用体验。
+  本文档将说明如何在不使用 React 的情况下使用 BlockNote
+  并编写你自己的组件，但这并不推荐，因为你将失去 BlockNote
+  提供的极佳开箱即用体验。
 </Callout>
 
 ## 使用 NPM 安装
@@ -37,7 +39,7 @@ editor.mount(document.getElementById("root")); // 挂载编辑器的元素
 
 ## 创建你自己的 UI 元素
 
-因为你无法使用内置的 React [UI 组件](/docs/getting-started)，你需要创建并注册你自己的 UI 元素。
+因为你无法使用内置的 React [UI 组件](/docs/react/components)，你需要创建并注册你自己的 UI 元素。
 
 虽然你可以自由决定如何渲染这些元素，BlockNote 提供了用于更新元素可见性、位置和状态的方法：
 
@@ -62,9 +64,8 @@ editor[uiElement].onUpdate((uiElementState: ...) => {
 ```typescript
 import { BlockNoteEditor } from "@blocknote/core";
 
-const editor = BlockNoteEditor.create({
-  element: document.getElementById("root")!,
-});
+const editor = BlockNoteEditor.create();
+editor.mount(document.getElementById("root"));
 
 export function createButton(text: string, onClick?: () => void) {
   const element = document.createElement("a");
@@ -92,13 +93,32 @@ editor.sideMenu.onUpdate((sideMenuState) => {
     element.style.padding = "10px";
     element.style.opacity = "0.8";
     const addBtn = createButton("+", () => {
-      editor.sideMenu.addBlock();
+      const blockContent = sideMenuState.block.content;
+      const isBlockEmpty =
+        blockContent !== undefined &&
+        Array.isArray(blockContent) &&
+        blockContent.length === 0;
+
+      if (isBlockEmpty) {
+        editor.setTextCursorPosition(sideMenuState.block);
+        editor.openSuggestionMenu("/");
+      } else {
+        const insertedBlock = editor.insertBlocks(
+          [{ type: "paragraph" }],
+          sideMenuState.block,
+          "after",
+        )[0];
+        editor.setTextCursorPosition(insertedBlock);
+        editor.openSuggestionMenu("/");
+      }
     });
     element.appendChild(addBtn);
 
     const dragBtn = createButton("::", () => {});
 
-    dragBtn.addEventListener("dragstart", editor.sideMenu.blockDragStart);
+    dragBtn.addEventListener("dragstart", (evt) =>
+      editor.sideMenu.blockDragStart(evt, sideMenuState.block),
+    );
     dragBtn.addEventListener("dragend", editor.sideMenu.blockDragEnd);
     dragBtn.draggable = true;
     element.style.display = "none";

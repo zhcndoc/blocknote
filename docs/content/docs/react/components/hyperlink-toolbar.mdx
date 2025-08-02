@@ -9,15 +9,21 @@ path: /docs/link-toolbar
 
 当你在编辑器中悬停链接时，链接工具栏会出现。
 
-TODO 图片
-
-[//]: # '<img style={{maxWidth: "600px"}} src="/img/screenshots/link_toolbar.png" alt="image" />'
+<ThemedImage
+  src={{
+    light: "/img/screenshots/link_toolbar.png",
+    dark: "/img/screenshots/link_toolbar_dark.png",
+  }}
+  alt="image"
+  width={300}
+  height={300}
+/>
 
 ## 更改链接工具栏
 
 你可以用你自己的 React 组件更改或替换链接工具栏。在下面的演示中，默认的链接工具栏中添加了一个按钮，点击该按钮会弹出浏览器提示框。
 
-[//]: # '<Example name="ui-components/link-toolbar-buttons" />'
+<Example name="ui-components/link-toolbar-buttons" />
 
 我们首先定义自定义的 `AlertButton`。`useComponentsContext` 钩子获取 BlockNote 内部使用的所有组件，因此我们这里使用 `Components.LinkToolbar.Button`。
 

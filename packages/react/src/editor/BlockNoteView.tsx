@@ -52,7 +52,7 @@ export type BlockNoteViewProps<
   editor: BlockNoteEditor<BSchema, ISchema, SSchema>;
 
   /**
-   * The editor's theme, see [Themes](https://www.blocknotejs.orgdocs/react/styling-theming/themes) for more about this.
+   * Forces the editor to use the light or dark theme. See [Themes](https://www.blocknotejs.org/docs/react/styling-theming/themes) for additional customization when using Mantine.
    */
   theme?: "light" | "dark";
 
@@ -159,8 +159,9 @@ function BlockNoteViewComponent<
       ...existingContext,
       editor,
       setContentEditableProps,
+      colorSchemePreference: editorColorScheme,
     };
-  }, [existingContext, editor]);
+  }, [existingContext, editor, editorColorScheme]);
 
   // We set defaultUIProps and editorProps on a different context, the BlockNoteViewContext.
   // This BlockNoteViewContext is used to render the editor and the default UI.

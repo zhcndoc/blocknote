@@ -48,15 +48,14 @@ type CustomStyleConfig = {
 };
 ```
 
-**`type`**
+`type:` 定义自定义样式的标识符。
 
-定义自定义样式的标识符。
+`propSchema:` `propSchema` 指定样式是仅能切换开启/关闭的（`"boolean"`），还是可以接受字符串值的（`"string"`）。支持字符串值对于例如设置样式的颜色非常有用。
 
-**`propSchema`**
-
-`propSchema` 指定样式是仅能切换开启/关闭的（`"boolean"`），还是可以接受字符串值的（`"string"`）。支持字符串值对于例如设置样式的颜色非常有用。
-
-_在字体样式演示中，我们将其设置为 `"string"`，以便存储字体族名称。_
+<Callout type="info">
+  在字体样式演示中，我们将 `propSchema` 设置为
+  `"string"`，以便我们可以存储字体系列。
+</Callout>
 
 ### 样式实现（`ReactCustomStyleImplementation`）
 
@@ -71,15 +70,16 @@ type ReactCustomStyleImplementation = {
 };
 ```
 
-**`render`**
+`render:` 这是您的 React 组件，用于定义自定义样式的渲染方式，并接受两个 React 属性：
 
-这是您的 React 组件，用于定义自定义样式的渲染方式，并接受两个 React 属性：
+- `value:` 样式的字符串值，仅当您的样式配置包含 `propSchema: "string"` 时可用。
 
-`value:` 样式的字符串值，仅当您的样式配置包含 `propSchema: "string"` 时可用。
+- `contentRef:` 一个 React `ref`，用于标记可编辑元素。
 
-`contentRef:` 一个 React `ref`，用于标记可编辑元素。
-
-_注意，与自定义块和内联内容不同，自定义样式的 `render` 函数无法访问 React 上下文或其他状态。它们应当是普通的 React 函数组件，类似示例所示。_
+<Callout type="info">
+  请注意，与自定义块和内联内容不同，自定义样式的 `render` 函数无法访问 React
+  上下文或其他状态。它们应该是普通的 React 函数，类似于示例。
+</Callout>
 
 ## 将自定义样式添加到编辑器
 

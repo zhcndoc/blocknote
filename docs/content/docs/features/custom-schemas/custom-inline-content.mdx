@@ -55,37 +55,50 @@ type CustomInlineContentConfig = {
 };
 ```
 
-**`type`**
+`type:` 定义自定义内联内容的标识符。
 
-定义自定义内联内容的标识符。
+`content:` 如果您的自定义内联内容应包含 [`StyledText`](/docs/foundations/document-structure#inline-content-objects)，则设置为 `styled`，如果不包含，则设置为 `none`。
 
-**`content`**
+<Callout type="info">
+  _在提及标签示例中，我们希望每个提及都是一个不可编辑的单一元素，因此将 `content` 设置为 `"none"`。_
+</Callout>
 
-如果你的自定义内联内容应包含 [`StyledText`](/docs/foundations/document-structure#inline-content-objects)，则设置为 `styled`；如果不包含，则为 `none`。
-
-_在提及示例中，我们希望每个提及是一个单独的、不可编辑的元素，所以设置为 `"none"`。_
-
-**`propSchema`**
-
-`PropSchema` 指定内联内容支持的 props。内联内容的 props（属性）是在文档中随内联内容存储的数据，可以用来定制其外观或行为。
+`propSchema:` `PropSchema` 指定内联内容支持的属性。内联内容的 props 是随文档中内联内容一起存储的数据，可用于自定义其外观或行为。
 
 ```typescript
 type PropSchema<PrimitiveType extends "boolean" | "number" | "string"> = Record<
   string,
-  {
-    default: PrimitiveType;
-    values?: PrimitiveType[];
-  }
+  | {
+      default: PrimitiveType;
+      values?: PrimitiveType[];
+    }
+  | {
+      default: undefined;
+      type: PrimitiveType;
+      values?: PrimitiveType[];
+    }
 >;
 ```
 
-`[key: string]` 是 prop 的名称，值是包含两个字段的对象：
+`[key: string]` 是属性的名称。如果希望该属性有默认值，则应定义为具有以下属性的对象：
 
-- `default`：指定该 prop 的默认值
+- `default:` 指定属性的默认值，由此推断 `PrimitiveType`。
 
-- `values`（可选）：指定该 prop 可以取的值的数组，例如限制该值为预定义字符串列表。如果未定义 `values`，BlockNote 认为该 prop 可以是任何 `PrimitiveType` 的值
+- `values?:` 指定该属性可取的值的数组，例如，用于限制值为预定义字符串列表。如果未定义 `values`，BlockNote 默认属性可以是任何 `PrimitiveType` 类型的值。
 
-_在提及演示中，我们添加了一个 `user` prop，用于指定被提及的用户。_
+如果不希望该属性有默认值，可以定义为具有以下属性的对象：
+
+- `default:` 设为 `undefined`，表示无默认值。
+
+- `type:` 指定该属性可以设置的 `PrimitiveType`，因为默认值为 `undefined`，无法推断类型。
+
+- `values?:` 指定该属性可取的值的数组，例如限制为预定义字符串列表。如果未定义 `values`，BlockNote 默认属性可以是任何 `PrimitiveType` 类型的值。
+
+<Callout type="info">
+  _在提及标签示例中，我们为被提及的用户添加了一个 `user` 属性。_
+</Callout>
+
+`draggable?:` 指定该内联内容是否可以被拖拽。
 
 ### 内联内容实现 (`ReactCustomInlineContentImplementation`)
 
@@ -101,32 +114,32 @@ type ReactCustomInlineContentImplementation = {
 };
 ```
 
-**`render`**
+`render:` 这是您的 React 组件，定义了如何渲染自定义内联内容，并接收三个 React props：
 
-这是你的 React 组件，用于定义自定义内联内容的渲染方式，接受两个 React props：
+- `inlineContent:` 应渲染的内联内容。其类型和属性将匹配内联内容配置中定义的类型和 `PropSchema`。
 
-`inlineContent:` 需要渲染的内联内容。其类型和 props 会匹配内联内容配置中定义的类型和 `PropSchema`。
+- `contentRef:` 一个 React `ref`，可用于标记内联内容中可编辑的元素，仅当内联内容配置包含 `content: "styled"` 时可用。
 
-`contentRef:` React `ref`，用于标记内联内容中可编辑的元素，仅当你的内联内容配置中包含 `content: "styled"` 时提供。
+- `draggable:` 指定内联内容是否可以在编辑器内拖动。设置为 `true` 时，内联内容将可拖动。若未指定，默认为 `false`。若为 `true`，应在用作拖动句柄的 DOM 元素上添加 `data-drag-handle` 属性。
 
-`draggable:` 指定该内联内容是否可以在编辑器内拖动。如果设置为 `true`，该内联内容将可拖动。若未指定，默认值为 `false`。如果为 `true`，你应当将 `data-drag-handle` 添加到应作为拖动句柄的 DOM 元素上。
-
-_注意，由于内联内容定义上就是内联元素，你的组件也应该返回一个 HTML 内联元素。_
+<Callout type="info">
+  _注意，由于内联内容本质上是内联的，您的组件应返回一个 HTML 内联元素。_
+</Callout>
 
 ## 向编辑器添加自定义内联内容
 
-最后，使用你自定义内联内容的定义创建一个 BlockNoteSchema：
+最后，使用您自定义内联内容的定义创建一个 BlockNoteSchema：
 
 ```typescript
 const schema = BlockNoteSchema.create({
   inlineContentSpecs: {
-    // 如果需要，可以启用默认内联内容
+    // 如需要，可启用默认内联内容
     ...defaultInlineContentSpecs,
 
-    // 添加你自己的自定义内联内容：
+    // 添加您自己的自定义内联内容：
     mention: Mention,
   },
 });
 ```
 
-然后你可以使用此自定义 schema 实例化你的编辑器，具体方法请参见 [自定义 Schema](/docs/features/custom-schemas) 页面。
+然后您可以使用此自定义 schema 实例化您的编辑器，具体方法请参见 [自定义 Schema](/docs/features/custom-schemas) 页面。

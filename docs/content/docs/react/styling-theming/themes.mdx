@@ -7,62 +7,21 @@ path: /docs/styling-theming/theming
 
 # 主题
 
-主题让你能够快速更改编辑器 UI 的基本外观，包括颜色、边框、阴影和字体。
+BlockNote 提供了浅色和深色主题。默认情况下，主题会根据用户的系统偏好自动选择，但你也可以强制使用明亮或暗黑模式。
+
+当[使用 Mantine](/docs/getting-started/mantine) 时，你拥有额外的主题功能：
+
+- 针对浅色和深色模式自定义颜色方案，包括高亮颜色
+- 更改字体、阴影、边框和边框半径
+- 通过编程方式或使用 CSS 变量覆盖来自定义主题
+
+本页主要关注使用 Mantine 带来的额外功能，但[强制浅色/暗黑模式](/docs/react/styling-theming/themes#forcing-lightdark-mode)部分适用于所有 UI 库。
 
 <Example name="theming/theming-css-variables" />
 
-默认主题提供了简洁、现代的外观。但是，BlockNote 也支持更高级的主题功能，比如：
+## CSS 变量
 
-- 自定义配色方案
-- 明暗模式支持
-- CSS 变量覆盖
-- 程序化主题配置
-- 高亮颜色
-- 边框圆角定制
-
-<Callout type="info">
-  主题仅在使用默认 Mantine 组件时可用。
-
-ShadCN / Ariakit 组件可以采用不同的样式。
-</Callout>
-
-你可以通过覆盖 CSS 变量或者在 `BlockNoteView` 中使用 `theme` 属性来自定义主题。
-
-```ts
-const editor = new BlockNoteEditor({
-  // 编辑器配置
-});
-
-return (
-  <BlockNoteView
-    editor={editor}
-    theme={{
-      colors: {
-        editor: {
-          text: "#3f3f3f",
-          background: "#ffffff",
-        },
-        highlights: {
-          red: {
-            text: "#e03e3e",
-            background: "#fbe4e4",
-          },
-        },
-      },
-      borderRadius: 8,
-      fontFamily: "Inter, sans-serif",
-    }}
-  />
-);
-```
-
-你可以选择只自定义特定方面，也可以创建完全自定义的主题，灵活匹配你的应用设计系统。
-
-## 选项
-
-### CSS 变量
-
-主题由一组 CSS 变量组成，可以通过覆盖这些变量来改变编辑器主题。BlockNote 提供了两个默认主题：一个是浅色模式主题，一个是深色模式主题，系统偏好将决定使用哪一个。
+主题由一组 CSS 变量组成，可以通过覆盖这些变量来更改编辑器主题。
 
 以下是你可以设置的每个主题 CSS 变量，值取自默认浅色主题：
 
@@ -112,9 +71,9 @@ return (
 
 在 `.bn-container[data-color-scheme]` 选择器上设置这些变量将覆盖默认的浅色和深色主题。若要分别覆盖浅色和深色主题，使用 `.bn-container[data-color-scheme="light"]` 和 `.bn-container[data-color-scheme="dark"]` 选择器。
 
-### 程序化配置
+## 编程配置
 
-你也可以通过在 `BlockNoteView` 中的 `theme` 属性设置主题 CSS 变量。传入一个 `Theme` 对象将使用对象内的值覆盖浅色和深色主题的 CSS 变量。
+你还可以使用 [`BlockNoteView` 的 `theme` 属性](/docs/react/overview#props) 来设置主题 CSS 变量。传入一个 `Theme` 对象会用该对象中的值覆盖浅色和深色主题的 CSS 变量。
 
 ```ts twoslash
 /**
@@ -165,7 +124,7 @@ type Theme = Partial<{
 
 <Example name="theming/theming-css-variables-code" />
 
-### 明暗主题
+## 浅色和深色主题
 
 你也可以通过传入以下对象类型，分别覆盖浅色和深色主题的 CSS 变量：
 
@@ -176,7 +135,7 @@ type LightAndDarkThemes = {
 };
 ```
 
-### 强制切换明/暗模式
+## 强制浅色/暗黑模式
 
 通过向 `theme` 属性传入 `"light"` 或 `"dark"` 字符串（而非 `Theme` 对象），你还可以强制 BlockNote 始终使用明亮或暗黑主题。
 

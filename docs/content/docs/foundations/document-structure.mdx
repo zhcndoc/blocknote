@@ -67,16 +67,24 @@ type StyledText = {
   styles: Styles;
 };
 
-type InlineContent = Link | StyledText;
+type CustomInlineContent = {
+  type: string;
+  content: StyledText[] | undefined;
+  props: Record<string, boolean | number | string>;
+};
 ```
 
-`styles` 属性将在下文说明。
+type InlineContent = Link | StyledText | CustomInlineContent;
 
-### 样式与富文本
+````
 
-`StyledText` 对象的 `styles` 属性用于描述这段文本的富文本样式（如：粗体、斜体、颜色）或其他属性。它是一组指定应用于文本的样式的键值对。
+`styles` 属性的解释如下。
 
-请参见[默认 Schema](/docs/foundations/schemas)了解 BlockNote 默认包含哪些样式。
+### 样式和富文本
+
+`StyledText` 对象的 `styles` 属性用于描述一段文本的富文本样式（例如：粗体、斜体、颜色）或其他属性。它是一组键/值对，指定应用于文本的样式。
+
+请参阅 [默认样式](/docs/features/blocks/inline-content#default-styles) 以了解 BlockNote 默认包含哪些样式。
 
 ## 亲自体验
 
@@ -112,9 +120,9 @@ type ColumnListBlock = {
 
 尽管这两者表现为普通块，使用时须注意以下额外限制：
 
-- 列的子块必须是普通块  
-- 列列表的子块必须是列  
-- 列列表中至少必须有两个列  
+- 列的子块必须是普通块
+- 列列表的子块必须是列
+- 列列表中至少必须有两个列
 
 ### 表格
 
@@ -128,3 +136,4 @@ type TableContent = {
   }[];
 };
 ```
+````
