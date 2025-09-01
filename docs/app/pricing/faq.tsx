@@ -14,8 +14,8 @@ const faqs = [
         源文件进行了更改，您需要发布这些更改，以便更广泛的社区也能受益。
         <br />
         XL 套件（如 AI 集成、多列布局和导出器）是双重许可的，提供{" "}
-        <a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL-3.0</a>，或者
-        - 对于闭源项目 - 作为 BlockNote
+        <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a>，或者 -
+        对于闭源项目 - 作为 BlockNote
         商业订阅或更高版本的一部分提供商业许可证。有关详细信息，请参阅{" "}
         <a href="/legal/blocknote-xl-commercial-license">商业许可证条款</a>{" "}
         的确切细节。
@@ -27,7 +27,7 @@ const faqs = [
     answer: (
       <>
         仅当您使用任何 XL 套件（如 AI 集成、多列布局和导出器）并且无法遵守
-        AGPL-3.0 许可证时，您才需要{" "}
+        GPL-3.0 许可证时，您才需要{" "}
         <a href="/legal/blocknote-xl-commercial-license">商业许可证</a>。
         这很可能发生在您构建闭源应用程序时。BlockNote
         商业订阅及更高版本包括商业许可证。
@@ -44,7 +44,7 @@ const faqs = [
         为了可持续地支持持续开发，我们提供了一小套高级功能（XL
         套件），采用双重许可模式：
         <ul>
-          <li>AGPL-3.0 适用于开源项目</li>
+          <li>GPL-3.0 适用于开源项目</li>
           <li>
             商业许可证（包含在 BlockNote 商业订阅及更高版本中）适用于闭源使用
           </li>
