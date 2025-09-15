@@ -13,6 +13,7 @@ BlockNote 原生支持评论、评论线程（回复）和表情反应。
 - 提供一个 `resolveUsers` 函数，以便 BlockNote 可以获取并显示用户信息（名称和头像）。
 - 提供一个 `ThreadStore`，以便 BlockNote 能够存储和检索评论线程。
 - 启用实时协作（参见[实时协作](/docs/features/collaboration)）
+- 可选地提供一个供评论和评论编辑器使用的架构。如果未定义，它们将使用[默认评论编辑器架构](https://github.com/TypeCellOS/BlockNote/blob/main/packages/react/src/components/Comments/defaultCommentEditorSchema.ts)。有关自定义架构的更多信息，请参见[这里](/docs/features/custom-schemas)。
 
 ```tsx
 const editor = useCreateBlockNote({
@@ -21,6 +22,7 @@ const editor = useCreateBlockNote({
   },
   comments: {
     threadStore: yourThreadStore, // 见下文
+    schema: BlockNoteSchema.create(...) // optional, can be left undefined
   },
   // ...
   collaboration: {
