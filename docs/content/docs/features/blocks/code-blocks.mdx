@@ -16,29 +16,22 @@ imageTitle: 代码块
 - Tab 缩进
 
 <Callout type="info">
-  这些功能默认是禁用的，以保持默认代码块体验的易用性并减少打包体积。
+  这些功能默认是禁用的，以保持默认代码块体验的易用性并减少打包体积。你可以在创建编辑器时传入 `codeBlock` 选项来启用更多高级功能。
 </Callout>
 
-你可以在创建编辑器时传入 `codeBlock` 选项来启用更多高级功能。
-
 ```ts
-const editor = new BlockNoteEditor({
-  codeBlock: {
-    indentLineWithTab: true,
-    defaultLanguage: "typescript",
-    supportedLanguages: {
-      typescript: {
-        name: "TypeScript",
-        aliases: ["ts"],
-      },
-    },
-    createHighlighter: () =>
-      createHighlighter({
-        themes: ["light-plus", "dark-plus"],
-        langs: [],
-      }),
-  },
-});
+type CodeBlockOptions = {
+  indentLineWithTab?: boolean;
+  defaultLanguage?: string;
+  supportedLanguages?: Record<
+    string,
+    {
+      name: string;
+      aliases?: string[];
+    }
+  >;
+  createHighlighter?: () => Promise<HighlighterGeneric<any, any>>;
+};
 ```
 
 你可以选择只启用某些功能，或者完全不启用。这样可以灵活地根据你的应用需求使用代码块。
@@ -108,21 +101,23 @@ import { createHighlighter } from "./shiki.bundle.js";
 
 export default function App() {
   const editor = useCreateBlockNote({
-    codeBlock: {
-      indentLineWithTab: true,
-      defaultLanguage: "typescript",
-      supportedLanguages: {
-        typescript: {
-          name: "TypeScript",
-          aliases: ["ts"],
+    schema: BlockNoteSchema.create().extend({
+      codeBlock: createCodeBlockSpec({
+        indentLineWithTab: true,
+        defaultLanguage: "typescript",
+        supportedLanguages: {
+          typescript: {
+            name: "TypeScript",
+            aliases: ["ts"],
+          },
         },
-      },
-      createHighlighter: () =>
-        createHighlighter({
-          themes: ["light-plus", "dark-plus"],
-          langs: [],
-        }),
-    },
+        createHighlighter: () =>
+          createHighlighter({
+            themes: ["light-plus", "dark-plus"],
+            langs: [],
+          }),
+      }),
+    }),
   });
 
   return <BlockNoteView editor={editor} />;

@@ -1,3 +1,98 @@
+## 0.41.1 (2025-10-09)
+
+This was a version bump only, there were no code changes.
+
+## 0.41.0 (2025-10-08)
+
+### 🚀 Features
+
+- AI menu auto scrolling ([#2039](https://github.com/TypeCellOS/BlockNote/pull/2039))
+- Shortcut to delete empty table while cells are selected ([#2052](https://github.com/TypeCellOS/BlockNote/pull/2052))
+- **divider:** add a divider block ([#2014](https://github.com/TypeCellOS/BlockNote/pull/2014))
+
+### 🩹 Fixes
+
+- Code block language select value not updating properly ([#2050](https://github.com/TypeCellOS/BlockNote/pull/2050))
+- disable input rules for numbered headings #1789 ([#2032](https://github.com/TypeCellOS/BlockNote/pull/2032), [#1789](https://github.com/TypeCellOS/BlockNote/issues/1789))
+- video parsing and export for markdown ([#1955](https://github.com/TypeCellOS/BlockNote/pull/1955))
+- Reaction picker shown for users who can't react ([#2061](https://github.com/TypeCellOS/BlockNote/pull/2061))
+- Add Mantine dependency to individual examples ([#2070](https://github.com/TypeCellOS/BlockNote/pull/2070))
+- allow listening to `onChange` and other events before the underlying editor is initialized ([#2063](https://github.com/TypeCellOS/BlockNote/pull/2063))
+- toggle and check list item blocks ([#2071](https://github.com/TypeCellOS/BlockNote/pull/2071))
+- added missing fields to implementations in editor schema block specs ([#2046](https://github.com/TypeCellOS/BlockNote/pull/2046))
+
+### ❤️ Thank You
+
+- Héctor Zhuang @Hector-Zhuang
+- Matthew Lipski @matthewlipski
+- Nick Perez
+
+## 0.40.0 (2025-09-30)
+
+### 🚀 Features
+
+- Mantine v8 upgrade ([#2028](https://github.com/TypeCellOS/BlockNote/pull/2028), [#2029](https://github.com/TypeCellOS/BlockNote/issues/2029))
+- Update Mantine setup ([#2033](https://github.com/TypeCellOS/BlockNote/pull/2033))
+- **ai:** SDK 5, tool calling, custom backends ([#2007](https://github.com/TypeCellOS/BlockNote/pull/2007))
+- **core:** add the ability to autofocus on the editor element ([#2018](https://github.com/TypeCellOS/BlockNote/pull/2018))
+
+### 🩹 Fixes
+
+- Block colors menu not always showing ([#2027](https://github.com/TypeCellOS/BlockNote/pull/2027))
+- Update remianing examples to Mantine v8 ([#2031](https://github.com/TypeCellOS/BlockNote/pull/2031))
+- ShadCN example Tailwind setup ([#2042](https://github.com/TypeCellOS/BlockNote/pull/2042))
+
+### ❤️ Thank You
+
+- Matthew Lipski @matthewlipski
+- Nick Perez
+- Yousef
+
+## 0.39.1 (2025-09-19)
+
+### 🩹 Fixes
+
+- cleanup accesses to prosemirrorView to account for tiptap 3 behavior ([#2017](https://github.com/TypeCellOS/BlockNote/pull/2017))
+- **core:** input rules can handle when a new block is empty now ([#2013](https://github.com/TypeCellOS/BlockNote/pull/2013))
+
+### ❤️ Thank You
+
+- Nick Perez
+
+## 0.39.0 (2025-09-18)
+
+### 🚀 Features
+
+- move all blocks to use the custom blocks API ([#1904](https://github.com/TypeCellOS/BlockNote/pull/1904))
+- **core:** support for Tiptap V3 ([#2001](https://github.com/TypeCellOS/BlockNote/pull/2001))
+
+### ❤️ Thank You
+
+- Nick Perez
+
+## 0.38.0 (2025-09-16)
+
+### 🚀 Features
+
+- Custom schemas for comment editors ([#1976](https://github.com/TypeCellOS/BlockNote/pull/1976))
+
+### 🩹 Fixes
+
+- Suggestion menu positioning ([#1975](https://github.com/TypeCellOS/BlockNote/pull/1975))
+- doLLMRequest fails when deleting a non-existent block ([#1982](https://github.com/TypeCellOS/BlockNote/pull/1982))
+- file block resize handles not working with touch inputs ([#1981](https://github.com/TypeCellOS/BlockNote/pull/1981))
+- get pdf example working again ([a90ae4d58](https://github.com/TypeCellOS/BlockNote/commit/a90ae4d58))
+- better markdown & html paste, make methods synchronous ([#1957](https://github.com/TypeCellOS/BlockNote/pull/1957))
+- Improve setting text for custom file blocks ([#1984](https://github.com/TypeCellOS/BlockNote/pull/1984))
+- **react:** close link popover on submit in static formatting toolbar #1696 ([#1997](https://github.com/TypeCellOS/BlockNote/pull/1997), [#1696](https://github.com/TypeCellOS/BlockNote/issues/1696))
+
+### ❤️ Thank You
+
+- dsriva03 @dsriva03
+- Héctor Zhuang @Hector-Zhuang
+- Matthew Lipski @matthewlipski
+- Nick the Sick
+
 ## 0.37.0 (2025-08-29)
 
 ### 🚀 Features

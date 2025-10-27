@@ -1,6 +1,16 @@
-import { BlockNoteSchema, defaultBlockSpecs, PageBreak } from "@blocknote/core";
+import {
+  BlockNoteSchema,
+  defaultBlockSpecs,
+  createPageBreakBlockSpec,
+} from "@blocknote/core";
 import { testDocument } from "@shared/testDocument.js";
-import { BlobReader, Entry, TextWriter, ZipReader } from "@zip.js/zip.js";
+import {
+  BlobReader,
+  Entry,
+  FileEntry,
+  TextWriter,
+  ZipReader,
+} from "@zip.js/zip.js";
 import { Packer, Paragraph, TextRun } from "docx";
 import { describe, expect, it } from "vitest";
 import xmlFormat from "xml-formatter";
@@ -11,8 +21,8 @@ import { partialBlocksToBlocksForTesting } from "@shared/formatConversionTestUti
 
 const getZIPEntryContent = (entries: Entry[], fileName: string) => {
   const entry = entries.find((entry) => {
-    return entry.filename === fileName;
-  });
+    return entry.filename === fileName && !entry.directory;
+  }) as FileEntry | undefined;
 
   if (!entry) {
     return "";
@@ -24,7 +34,10 @@ describe("exporter", () => {
   it("should export a document", { timeout: 10000 }, async () => {
     const exporter = new DOCXExporter(
       BlockNoteSchema.create({
-        blockSpecs: { ...defaultBlockSpecs, pageBreak: PageBreak },
+        blockSpecs: {
+          ...defaultBlockSpecs,
+          pageBreak: createPageBreakBlockSpec(),
+        },
       }),
       docxDefaultSchemaMappings,
     );
@@ -54,7 +67,10 @@ describe("exporter", () => {
     async () => {
       const exporter = new DOCXExporter(
         BlockNoteSchema.create({
-          blockSpecs: { ...defaultBlockSpecs, pageBreak: PageBreak },
+          blockSpecs: {
+            ...defaultBlockSpecs,
+            pageBreak: createPageBreakBlockSpec(),
+          },
         }),
         docxDefaultSchemaMappings,
       );
@@ -124,7 +140,7 @@ describe("exporter", () => {
       const schema = BlockNoteSchema.create({
         blockSpecs: {
           ...defaultBlockSpecs,
-          pageBreak: PageBreak,
+          pageBreak: createPageBreakBlockSpec(),
           column: ColumnBlock,
           columnList: ColumnListBlock,
         },

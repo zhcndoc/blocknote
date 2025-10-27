@@ -61,7 +61,9 @@ const editor = createBlockNoteEditor({
   },
   extensions: [
     createAIExtension({
-      model,
+      transport: new DefaultChatTransport({
+        api: `/api/chat`,
+      }),
     }),
   ],
   // ... 其他编辑器选项
@@ -72,7 +74,7 @@ const editor = createBlockNoteEditor({
 
 ## 添加 AI UI 元素
 
-现在，只剩下一步就是自定义编辑器的 UI 元素。
+现在，只剩下一步就是自定义编辑器的 UI 元素。  
 我们希望：
 
 - 在格式工具栏（选中文本时显示）中添加一个 AI 按钮
@@ -99,6 +101,36 @@ const editor = createBlockNoteEditor({
   <SuggestionMenuWithAI editor={editor} />
 </BlockNoteView>
 ```
+
+## 后端设置
+
+接下来，我们将设置后端路由来处理转发到你的大型语言模型（LLM）提供商的 AI 请求。
+
+这个示例使用了 Next.js 和 [AI SDK 中的基础示例](https://ai-sdk.dev/docs/ai-sdk-ui/chatbot#example)：
+
+```ts app/api/chat/route.ts
+import { openai } from "@ai-sdk/openai";
+import { convertToModelMessages, streamText } from "ai";
+import { toolDefinitionsToToolSet } from "@blocknote/xl-ai";
+
+// 允许最长 30 秒的流式响应
+export const maxDuration = 30;
+
+export async function POST(req: Request) {
+  const { messages, toolDefinitions } = await req.json();
+
+  const result = streamText({
+    model: openai("gpt-4.1"), // 参考 https://ai-sdk.dev/docs/foundations/providers-and-models
+    messages: convertToModelMessages(messages),
+    tools: toolDefinitionsToToolSet(toolDefinitions),
+    toolChoice: "required",
+  });
+
+  return result.toUIMessageStreamResponse();
+}
+```
+
+更多关于如何将 BlockNote AI 与你的后端集成的信息，请参阅 [后端集成](/docs/features/ai/backend-integration)。
 
 # 完整示例
 

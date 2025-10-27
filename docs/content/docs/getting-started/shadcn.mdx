@@ -25,7 +25,7 @@ bun add @blocknote/core @blocknote/react @blocknote/shadcn
 为了确保 Tailwind 为 BlockNote 组件使用的所有工具类生成必要的 CSS，请确保在导入 Tailwind 的样式表中添加 `@source` 指令：
 
 ```css
-@import tailwindcss;
+@import "tailwindcss";
 ...
 /* 指向你安装的 `@blocknote/shadcn` 包的路径。 */
 @source "../node_modules/@blocknote/shadcn";
@@ -38,7 +38,10 @@ bun add @blocknote/core @blocknote/react @blocknote/shadcn
 如果你的应用不使用 shadcn 组件，仅使用 TailwindCSS，只需扩展 Tailwind 主题以包含 shadcn 工具类即可让一切正常工作。你可以将以下样式复制到导入 Tailwind 的样式表中。
 
 ```css
-@import tailwindcss;
+@import "tailwindcss";
+...
+/* 指向你安装的 `@blocknote/shadcn` 包的路径。 */
+@source "../node_modules/@blocknote/shadcn";
 ...
 @custom-variant dark (&:is(.dark *));
 
@@ -167,7 +170,7 @@ bun add @blocknote/core @blocknote/react @blocknote/shadcn
 
 ## shadcn 自定义
 
-BlockNote 附带默认的 shadcn 组件。但是，通常你已经在项目中复制并可能自定义了自己的 shadcn 组件。
+BlockNote 附带默认的 shadcn 组件。但是，通常你已经在项目中复制并可能自定义了自己的 shadcn 组件。  
 要让 BlockNote 使用你项目中的 shadcn 组件而非默认组件，可以通过 `BlockNoteView` 的 `shadcnComponents` 属性传递它们：
 
 ```tsx
@@ -199,6 +202,6 @@ return (
 - Tooltip
 
 <Callout type="warning" emoji="⚠️">
-  为确保兼容性，你的 shadcn 组件不应使用 Portals （请注释掉
+  为确保兼容性，你的 shadcn 组件不应使用 Portals （请注释掉  
   DropdownMenu、Popover 和 Select 组件中的相关代码）。
 </Callout>

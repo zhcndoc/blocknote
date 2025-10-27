@@ -3,6 +3,7 @@ import type { Project } from "../util";
 const template = (project: Project) => ({
   name: "@blocknote/example-" + project.fullSlug.replace("/", "-"),
   description: "AUTO-GENERATED FILE, DO NOT EDIT DIRECTLY",
+  type: "module",
   private: true,
   version: "0.12.4",
   scripts: {
@@ -12,20 +13,34 @@ const template = (project: Project) => ({
     preview: "vite preview",
   },
   dependencies: {
-    "@blocknote/core": "latest",
-    "@blocknote/react": "latest",
     "@blocknote/ariakit": "latest",
+    "@blocknote/core": "latest",
     "@blocknote/mantine": "latest",
+    "@blocknote/react": "latest",
     "@blocknote/shadcn": "latest",
-    react: "^19.1.0",
-    "react-dom": "^19.1.0",
+    "@mantine/core": "^8.3.4",
+    "@mantine/hooks": "^8.3.4",
+    "@mantine/utils": "^6.0.22",
+    react: "^19.2.0",
+    "react-dom": "^19.2.0",
+    ...(project.config.tailwind
+      ? {
+          tailwindcss: "^4.1.14",
+          "tw-animate-css": "^1.4.0",
+        }
+      : {}),
     ...(project.config?.dependencies || {}),
   },
   devDependencies: {
-    "@types/react": "^19.1.0",
-    "@types/react-dom": "^19.1.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    vite: "^5.3.4",
+    ...(project.config.tailwind
+      ? {
+          "@tailwindcss/vite": "^4.1.14",
+        }
+      : {}),
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "@vitejs/plugin-react": "^4.7.0",
+    vite: "^5.4.20",
     ...(project.config?.devDependencies || {}),
   },
 });

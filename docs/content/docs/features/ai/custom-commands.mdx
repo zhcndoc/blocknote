@@ -25,7 +25,11 @@ imageTitle: BlockNote AI
 首先，我们定义一个新的 AI 命令。让我们创建一个让选中文本变得更随意的命令。
 
 ```tsx
-import { AIMenuSuggestionItem, getAIExtension } from "@blocknote/xl-ai";
+import {
+  AIMenuSuggestionItem,
+  getAIExtension,
+  aiDocumentFormats,
+} from "@blocknote/xl-ai";
 
 // 自定义命令：让文本更随意（非正式）。
 export const makeInformal = (
@@ -36,17 +40,19 @@ export const makeInformal = (
   aliases: ["informal", "make informal", "casual"],
   icon: <RiEmotionHappyFill size={18} />,
   onItemClick: async () => {
-    await getAIExtension(editor).callLLM({
+    await getAIExtension(editor).invokeAI({
       // 发送给大语言模型的提示：
       userPrompt: "给选中文本赋予更随意（非正式）的语气",
       // 告诉大语言模型具体使用选中的内容作为上下文（而非整个文档）
       useSelection: true,
       // 我们只希望大语言模型更新选中文本，不添加或删除区块
-      defaultStreamTools: {
-        add: false,
-        delete: false,
-        update: true,
-      },
+      streamToolsProvider: aiDocumentFormats.html.getStreamToolsProvider({
+        defaultStreamTools: {
+          add: false,
+          delete: false,
+          update: true,
+        },
+      }),
     });
   },
   size: "small",
@@ -113,5 +119,5 @@ function CustomAIMenu() {
 
 # 参考
 
-到目前为止，我们已经向编辑器添加了基本命令，但也可以完全自定义发送给大语言模型的底层提示。
-想详细了解本指南中使用的 `callLLM` 方法，请继续阅读 [AI 参考文档](/docs/features/ai/reference)。
+到目前为止，我们已经向编辑器添加了基本命令，但也可以完全自定义发送给大语言模型的底层提示。  
+想详细了解本指南中使用的 `invokeAI` 方法，请继续阅读 [AI 参考文档](/docs/features/ai/reference)。

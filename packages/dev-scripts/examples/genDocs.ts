@@ -36,10 +36,7 @@ async function generateCodeForExample(project: Project) {
   fs.writeFileSync(
     indexFile,
     `"use client";
-import dynamic from "next/dynamic";
-const Component = dynamic(() => import("./App"), {
-  ssr: false,
-});
+import Component from "./App";
 
 export default Component;`,
   );
@@ -116,6 +113,8 @@ async function generateExampleGroupsData(projects: Project[]) {
       title: project.title,
       author: project.config.author,
       isPro: project.config.pro || false,
+      inTailwindApp: project.config.tailwind || false,
+      showStackBlitzLink: project.config.stackBlitz ?? true,
       pathFromRoot: project.pathFromRoot,
       files: Object.fromEntries(
         getProjectFiles(project).map((file) => [
@@ -137,6 +136,8 @@ export type ExampleGroupsData = {
     title: string;
     author: string;
     isPro: boolean;
+    inTailwindApp: boolean;
+    showStackBlitzLink: boolean;
     pathFromRoot: string;
     files: Record<string, string>;
   }[];
@@ -166,6 +167,19 @@ async function addDependenciesToExample(project: Project) {
       ...packageJsonObject.devDependencies,
       ...devDependencies,
     };
+    // Change all instances of `@blocknote/*` to `workspace:*`, since we want packages to be installed from the workspace
+    Object.entries(packageJsonObject.dependencies).forEach(([key, value]) => {
+      if (key.startsWith("@blocknote/")) {
+        packageJsonObject.dependencies[key] = "workspace:*";
+      }
+    });
+    Object.entries(packageJsonObject.devDependencies).forEach(
+      ([key, value]) => {
+        if (key.startsWith("@blocknote/")) {
+          packageJsonObject.devDependencies[key] = "workspace:*";
+        }
+      },
+    );
     fs.writeFileSync(packageJson, JSON.stringify(packageJsonObject, null, 2));
   }
 }

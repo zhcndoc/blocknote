@@ -18,8 +18,10 @@ imageTitle: 自定义样式
 function createReactStyleSpec(
   styleConfig: CustomStyleConfig,
   styleImplementation: ReactStyleImplementation,
-);
+): StyleSpec;
 ```
+
+它会返回您的自定义内联内容实例，或者一个 `StyleSpec`。该 `StyleSpec` 将传递给您的[BlockNote 架构](/docs/features/custom-schemas#creating-your-own-schema)，以便向编辑器添加该样式。
 
 让我们来看演示中的自定义字体样式，并逐一解释每个字段的作用：
 
@@ -67,6 +69,11 @@ type ReactCustomStyleImplementation = {
     value?: string;
     contentRef: (node: HTMLElement | null) => void;
   }>;
+  toExternalHTML?: React.FC<{
+    value?: string;
+    contentRef: (node: HTMLElement | null) => void;
+  }>;
+  parse?: (element: HTMLElement) => string | true | undefined;
 };
 ```
 
@@ -76,10 +83,15 @@ type ReactCustomStyleImplementation = {
 
 - `contentRef:` 一个 React `ref`，用于标记可编辑元素。
 
+`toExternalHTML?:` 这个组件用于当样式导出为 HTML 供 BlockNote 之外使用时，例如复制到剪贴板。如果未定义，BlockNote 默认使用 `render` 进行 HTML 转换。接收与 `render` 相同的属性。
+
 <Callout type="info">
-  请注意，与自定义块和内联内容不同，自定义样式的 `render` 函数无法访问 React
-  上下文或其他状态。它们应该是普通的 React 函数，类似于示例。
+  请注意，传递给 `toExternalHTML` 的组件会在一个单独的 React 根中渲染和序列化，这意味着您不能使用依赖于 React 上下文的钩子。
 </Callout>
+
+`parse?:` `parse` 函数定义了如何将 HTML 内容解析为您的样式，例如在从剪贴板粘贴内容时。如果该元素应该被解析为您的自定义样式，则返回一个 `string` 或 `true`。如果 `propSchema` 是 `"string"`，则应返回字符串值，否则返回 `true`。返回 `undefined` 表示不从此 HTML 元素解析样式。它接收一个参数：
+
+- `element`：当前正在解析的 HTML 元素。
 
 ## 将自定义样式添加到编辑器
 

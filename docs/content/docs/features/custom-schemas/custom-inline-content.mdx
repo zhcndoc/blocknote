@@ -18,8 +18,10 @@ imageTitle: 自定义内联内容
 function createReactInlineContentSpec(
   blockConfig: CustomInlineContentConfig,
   blockImplementation: ReactInlineContentImplementation,
-);
+): InlineContentSpec;
 ```
+
+它返回您的自定义内联内容的实例，或者一个 `InlineContentSpec`。此 `InlineContentSpec` 会传递到您的 [BlockNote schema](/docs/features/custom-schemas#creating-your-own-schema) 中，以将内联内容添加到编辑器。
 
 让我们看看演示中的自定义提及标签，并逐个字段解释其作用：
 
@@ -51,7 +53,6 @@ type CustomInlineContentConfig = {
   type: string;
   content: "styled" | "none";
   readonly propSchema: PropSchema;
-  draggable?: boolean;
 };
 ```
 
@@ -106,11 +107,20 @@ type PropSchema<PrimitiveType extends "boolean" | "number" | "string"> = Record<
 
 ```typescript
 type ReactCustomInlineContentImplementation = {
+  meta?: {
+    draggable?: boolean;
+  };
   render: React.FC<{
     inlineContent: InlineContent;
+    editor: BlockNoteEditor;
     contentRef?: (node: HTMLElement | null) => void;
-    draggable?: boolean;
   }>;
+  toExternalHTML?: React.FC<{
+    inlineContent: InlineContent;
+    editor: BlockNoteEditor;
+    contentRef?: (node: HTMLElement | null) => void;
+  }>;
+  parse?: (element: HTMLElement) => PartialInlineContent["props"] | undefined;
 };
 ```
 
@@ -121,6 +131,18 @@ type ReactCustomInlineContentImplementation = {
 - `contentRef:` 一个 React `ref`，可用于标记内联内容中可编辑的元素，仅当内联内容配置包含 `content: "styled"` 时可用。
 
 - `draggable:` 指定内联内容是否可以在编辑器内拖动。设置为 `true` 时，内联内容将可拖动。若未指定，默认为 `false`。若为 `true`，应在用作拖动句柄的 DOM 元素上添加 `data-drag-handle` 属性。
+
+`toExternalHTML?:` 该组件用于将内联内容导出为外部 HTML（例如复制到剪贴板时）。如果未定义，BlockNote 将使用 `render` 进行 HTML 转换。接收与 `render` 相同的 props。
+
+<Callout type="info">
+  _注意，传递给 `toExternalHTML` 的组件会在单独的 React 根中渲染和序列化，这意味着您不能使用依赖 React Context 的 hooks。_
+</Callout>
+
+`parse?:` `parse` 函数定义如何将 HTML 内容解析为您的内联内容，例如从剪贴板粘贴内容时。如果元素应被解析为您的自定义内联内容，则返回该内联内容应具有的 props，否则返回 `undefined`。接收一个参数：
+
+- `element:` 正在解析的 HTML 元素。
+
+`meta?.draggable?:` 指定内联内容是否可拖动。
 
 <Callout type="info">
   _注意，由于内联内容本质上是内联的，您的组件应返回一个 HTML 内联元素。_

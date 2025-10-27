@@ -18,11 +18,11 @@ exports[`creates json schema 1`] = `
             },
             "type": {
               "enum": [
+                "bulletListItem",
+                "numberedListItem",
                 "paragraph",
                 "quote",
                 "toggleListItem",
-                "bulletListItem",
-                "numberedListItem",
               ],
               "type": "string",
             },
@@ -41,27 +41,16 @@ exports[`creates json schema 1`] = `
             "props": {
               "additionalProperties": false,
               "properties": {
-                "isToggleable": {
+                "checked": {
                   "enum": undefined,
                   "type": "boolean",
-                },
-                "level": {
-                  "enum": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6,
-                  ],
-                  "type": "number",
                 },
               },
               "type": "object",
             },
             "type": {
               "enum": [
-                "heading",
+                "checkListItem",
               ],
               "type": "string",
             },
@@ -102,22 +91,54 @@ exports[`creates json schema 1`] = `
         {
           "additionalProperties": false,
           "properties": {
+            "content": undefined,
+            "props": {
+              "additionalProperties": false,
+              "properties": {},
+              "type": "object",
+            },
+            "type": {
+              "enum": [
+                "divider",
+              ],
+              "type": "string",
+            },
+          },
+          "required": [
+            "type",
+          ],
+          "type": "object",
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
             "content": {
               "$ref": "#/$defs/inlinecontent",
             },
             "props": {
               "additionalProperties": false,
               "properties": {
-                "checked": {
+                "isToggleable": {
                   "enum": undefined,
                   "type": "boolean",
+                },
+                "level": {
+                  "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                  ],
+                  "type": "number",
                 },
               },
               "type": "object",
             },
             "type": {
               "enum": [
-                "checkListItem",
+                "heading",
               ],
               "type": "string",
             },

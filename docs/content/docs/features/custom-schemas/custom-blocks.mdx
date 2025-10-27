@@ -12,19 +12,22 @@ imageTitle: 自定义区块
 
 ## 创建自定义区块类型
 
-使用 `createReactBlockSpec` 函数来创建自定义区块类型。该函数接受两个参数：
+使用 `createReactBlockSpec` 函数来创建自定义区块类型。该函数接受三个参数：
 
 ```typescript
 function createReactBlockSpec(
   blockConfig: CustomBlockConfig,
   blockImplementation: ReactCustomBlockImplementation,
-);
+  extensions?: BlockNoteExtension[],
+): (options? BlockOptions) => BlockSpec;
 ```
+
+它返回一个函数，您可以调用该函数来创建自定义区块的实例，或者创建一个 `BlockSpec`。该 `BlockSpec` 随后会传入您的 [BlockNote schema](/docs/features/custom-schemas#creating-your-own-schema)，以将区块添加到编辑器中。此函数也可以接受任意选项，您可以在[下方](/docs/features/custom-schemas/custom-blocks#block-config-options)了解更多相关内容。
 
 让我们来看演示中的自定义警告区块，并逐一说明各字段的作用：
 
 ```typescript
-const Alert = createReactBlockSpec(
+const createAlert = createReactBlockSpec(
   {
     type: "alert",
     propSchema: {
@@ -54,8 +57,6 @@ type BlockConfig = {
   type: string;
   content: "inline" | "none";
   readonly propSchema: PropSchema;
-  isSelectable?: boolean;
-  hardBreakShortcut?: "shift+enter" | "enter" | "none";
 };
 ```
 
@@ -125,6 +126,15 @@ type ReactCustomBlockImplementation = {
     contentRef?: (node: HTMLElement | null) => void;
   }>;
   parse?: (element: HTMLElement) => PartialBlock["props"] | undefined;
+  runsBefore?: string[];
+  meta?: {
+    hardBreakShortcut?: "shift+enter" | "enter" | "none";
+    selectable?: boolean;
+    fileBlockAccept?: string[];
+    code?: boolean;
+    defining?: boolean;
+    isolating?: boolean;
+  };
 };
 ```
 
@@ -146,6 +156,68 @@ type ReactCustomBlockImplementation = {
 
 - `element`: 正在解析的 HTML 元素。
 
+`runsBefore?:` 如果该区块的解析或扩展需要优先于其他区块，可在此传入它们的 `type` 数组。
+
+`meta?:` 用于设置区块的各种通用属性的对象。
+
+- `hardBreakShortcut?:` 定义用于在区块的内联内容中插入硬换行的键盘快捷键。默认为 `"shift+enter"`。
+
+- `selectable?:` 可以设置为 false，使区块不可被鼠标和键盘选中。这也有助于能选中区块中不可编辑的内容。仅当 `content` 为 `none` 时才应设置为 false，默认为 true。
+
+- `fileBlockAccept?:` 针对自定义的文件区块，指定上传文件时接受的 MIME 类型。所有文件区块都应指定该属性，并在 `render` 函数中使用 [`FileBlockWrapper`](https://github.com/TypeCellOS/BlockNote/blob/main/packages/react/src/blocks/File/helpers/render/FileBlockWrapper.tsx) / [`ResizableFileBlockWrapper`](https://github.com/TypeCellOS/BlockNote/blob/main/packages/react/src/blocks/File/helpers/render/ResizableFileBlockWrapper.tsx) 组件（详见下一小节）。
+
+- `code?:` 该区块是否包含 [代码](https://prosemirror.net/docs/ref/#model.NodeSpec.code)。
+
+- `defining?:` 该区块是否为 [defining](https://prosemirror.net/docs/ref/#model.NodeSpec.defining)。
+
+- `isolating?:` 该区块是否为 [isolating](https://prosemirror.net/docs/ref/#model.NodeSpec.isolating)。
+
+### 区块扩展
+
+尽管本页示例未使用，`createReactBlockSpec` 接受第三个可选参数 `extensions`。用于添加特定于该区块的编辑器 `extensions`，您可以在 [此处](/docs/features/extensions) 了解更多。
+
+区块扩展通常用于添加键盘快捷键，以便将当前区块类型切换为自定义区块。例如，一个目录区块的扩展可能会添加一个 ProseMirror 插件，用以扫描标题并生成目录。
+
+### 区块配置选项
+
+在某些情况下，您可能希望区块配置可自定义。例如，您可能希望代码区块支持不同的语法高亮（如 web 或嵌入式代码），或标题区块支持灵活的标题级别数。您可以对该用例使用相同的 API，做一些小改动：
+
+```typescript
+// 区块可接受的任意选项，例如标题级别数或可用的代码高亮语言。
+type CustomBlockConfigOptions = {
+  ...
+}
+
+const createCustomBlock = createReactBlockSpec(
+  createBlockConfig((options: CustomBlockConfigOptions) => ({
+    type: "customBlock"
+    propSchema: ...,
+    content: ...,
+  })),
+  (options: CustomBlockConfigOptions) => ({
+    render: ...,
+    ...
+  })
+)
+
+const options: CustomBlockConfigOptions = {
+  ...
+};
+
+const schema = BlockNoteSchema.create().extend({
+  blockSpecs: {
+    // 创建定制区块的实例，并添加进 schema。
+    customBlock: createCustomBlock(options),
+  },
+});
+```
+
+你可以看到，我们不再为配置和实现传入普通对象，而是传入函数。这些函数接收区块选项作为参数，并分别返回配置和实现对象。另外，用于创建配置的函数被 `createBlockConfig` 包裹。
+
+另外请注意，本页示例中，我们通过调用 `createAlert()`（无参数）创建了新的 Alert 区块实例。而对自定义区块若有选项，则可按上述方式传入。
+
+要查看使用区块选项的完整示例，请参考 [内置标题区块](https://github.com/TypeCellOS/BlockNote/blob/main/packages/core/src/blocks/Heading/block.ts)。
+
 ## 将自定义区块添加到编辑器
 
 最后，使用您定义的自定义区块创建一个 BlockNoteSchema：
@@ -157,7 +229,7 @@ const schema = BlockNoteSchema.create({
     ...defaultBlockSpecs,
 
     // 添加您自己的自定义区块：
-    alert: Alert,
+    alert: createAlert(),
   },
 });
 ```

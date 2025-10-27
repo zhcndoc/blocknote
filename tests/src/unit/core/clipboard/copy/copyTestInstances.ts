@@ -515,6 +515,10 @@ export const copyTestInstancesHTML: TestInstance<
           content: "Check List Item 1",
         },
         {
+          type: "toggleListItem",
+          content: "Toggle List Item 1",
+        },
+        {
           type: "codeBlock",
           content: 'console.log("Hello World");',
         },
@@ -534,6 +538,9 @@ export const copyTestInstancesHTML: TestInstance<
         },
         {
           type: "image",
+        },
+        {
+          type: "divider",
         },
         {
           type: "paragraph",
@@ -589,6 +596,13 @@ export const copyTestInstancesHTML: TestInstance<
           content: "Check List Item 1",
         },
         {
+          type: "toggleListItem",
+          props: {
+            textAlignment: "right",
+          },
+          content: "Toggle List Item 1",
+        },
+        {
           type: "codeBlock",
           props: {
             language: "typescript",
@@ -618,6 +632,9 @@ export const copyTestInstancesHTML: TestInstance<
             showPreview: true,
             previewWidth: 256,
           },
+        },
+        {
+          type: "divider",
         },
         {
           type: "paragraph",

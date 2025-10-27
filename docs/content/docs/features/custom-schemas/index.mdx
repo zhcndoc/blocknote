@@ -28,35 +28,71 @@ description: 学习如何为您的 BlockNote 编辑器创建自定义模式
 
 ## 创建您自己的模式
 
-一旦您定义了自定义块（参见上面的链接）、内联内容或样式，就可以创建一个模式并将其传递给编辑器的初始化。
+一旦您定义了自定义块（参见上面的链接）、内联内容或样式，就可以创建一个模式并将其传递给编辑器的初始化。有两种方法可以创建新模式。
+
+### 扩展现有模式
+
+您可以调用 `BlockNoteSchema.extend` 向现有模式添加自定义块、内联内容或样式。虽然这适用于任何现有模式，但最常用的是用来扩展默认模式。
+
+```typescript
+// 当什么都不传入 `BlockNoteSchema.create` 时，会创建默认模式的实例。
+const schema = BlockNoteSchema.create()
+  // 向默认模式添加自定义块、内联内容或样式。
+  .extend({
+    blockSpecs: {
+      // 添加您自己的自定义块：
+      customBlock: CustomBlock,
+      ...
+    },
+    inlineContentSpecs: {
+      // 添加您自己的自定义内联内容：
+      customInlineContent: CustomInlineContent,
+      ...
+    },
+    styleSpecs: {
+      // 添加您自己的自定义样式：
+      customStyle: CustomStyle,
+      ...
+    },
+  });
+```
+
+### 从头创建模式
+
+将自定义块、内联内容或样式直接传递给 `BlockNoteSchema.create` 会创建一个只包含您传入内容的新模式。如果您只需要默认模式中的少数基本内容，且打算自行实现其余部分，这非常有用。
 
 ```typescript
 const schema = BlockNoteSchema.create({
   blockSpecs: {
-    // 如果需要，启用默认块
-    ...defaultBlockSpecs,
+    // 只添加默认的段落块：
+    paragraph: defaultBlockSpecs.paragraph,
 
     // 添加您自己的自定义块：
-    // customBlock: CustomBlock,
+    customBlock: CustomBlock,
+    ...
   },
   inlineContentSpecs: {
-    // 如果需要，启用默认内联内容
-    ...defaultInlineContentSpecs,
+    // 只添加默认的文本内联内容：
+    text: defaultInlineContentSpecs.text,
 
     // 添加您自己的自定义内联内容：
-    // customInlineContent: CustomInlineContent,
+    customInlineContent: CustomInlineContent,
+    ...
   },
   styleSpecs: {
-    // 如果需要，启用默认样式
-    ...defaultStyleSpecs,
+    // 只添加默认的加粗样式：
+    bold: defaultStyleSpecs.bold,
 
     // 添加您自己的自定义样式：
-    // customStyle: CustomStyle
+    customStyle: CustomStyle,
+    ...
   },
 });
 ```
 
-然后可以将其传递给您的 BlockNoteEditor 实例化（`BlockNoteEditor.create` 或 `useCreateBlockNote`）：
+## 使用您自己的模式
+
+一旦您使用 `BlockNoteSchema.create` 或 `BlockNoteSchema.extend` 创建了模式实例，就可以将其传递给 BlockNoteEditor 的 `schema` 选项（无论是 `BlockNoteEditor.create` 还是 `useCreateBlockNote`）：
 
 ```typescript
 const editor = useCreateBlockNote({

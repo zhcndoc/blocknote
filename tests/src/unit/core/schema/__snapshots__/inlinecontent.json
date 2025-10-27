@@ -1,0 +1,38 @@
+{
+  "link": {
+    "config": "link",
+    "implementation": {},
+  },
+  "mention": {
+    "config": {
+      "content": "none",
+      "propSchema": {
+        "user": {
+          "default": "",
+        },
+      },
+      "type": "mention",
+    },
+    "implementation": {
+      "node": null,
+      "render": [Function],
+      "toExternalHTML": [Function],
+    },
+  },
+  "tag": {
+    "config": {
+      "content": "styled",
+      "propSchema": {},
+      "type": "tag",
+    },
+    "implementation": {
+      "node": null,
+      "render": [Function],
+      "toExternalHTML": undefined,
+    },
+  },
+  "text": {
+    "config": "text",
+    "implementation": {},
+  },
+}
