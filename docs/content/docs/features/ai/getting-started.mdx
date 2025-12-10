@@ -51,7 +51,7 @@ import { createBlockNoteEditor } from "@blocknote/core";
 import { BlockNoteAIExtension } from "@blocknote/xl-ai";
 import { en } from "@blocknote/core/locales";
 import { en as aiEn } from "@blocknote/xl-ai/locales";
-import { createAIExtension } from "@blocknote/xl-ai";
+import { AIExtension } from "@blocknote/xl-ai";
 import "@blocknote/xl-ai/style.css"; // 添加 AI 样式表
 
 const editor = createBlockNoteEditor({
@@ -60,7 +60,7 @@ const editor = createBlockNoteEditor({
     ai: aiEn, // 添加 AI 扩展的默认翻译
   },
   extensions: [
-    createAIExtension({
+    AIExtension({
       transport: new DefaultChatTransport({
         api: `/api/chat`,
       }),
@@ -70,7 +70,7 @@ const editor = createBlockNoteEditor({
 });
 ```
 
-查看 [API 参考](/docs/features/ai/reference) 了解 `createAIExtension` 方法的更多信息。
+有关 `AIExtension` 选项的更多信息，请参阅 [API 参考](/docs/features/ai/reference)。
 
 ## 添加 AI UI 元素
 
@@ -111,7 +111,11 @@ const editor = createBlockNoteEditor({
 ```ts app/api/chat/route.ts
 import { openai } from "@ai-sdk/openai";
 import { convertToModelMessages, streamText } from "ai";
-import { toolDefinitionsToToolSet } from "@blocknote/xl-ai";
+import {
+  aiDocumentFormats,
+  injectDocumentStateMessages,
+  toolDefinitionsToToolSet,
+} from "@blocknote/xl-ai/server";
 
 // 允许最长 30 秒的流式响应
 export const maxDuration = 30;
@@ -121,7 +125,8 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: openai("gpt-4.1"), // 参考 https://ai-sdk.dev/docs/foundations/providers-and-models
-    messages: convertToModelMessages(messages),
+    system: aiDocumentFormats.html.systemPrompt,
+    messages: convertToModelMessages(injectDocumentStateMessages(messages)),
     tools: toolDefinitionsToToolSet(toolDefinitions),
     toolChoice: "required",
   });
@@ -130,10 +135,16 @@ export async function POST(req: Request) {
 }
 ```
 
+这遵循了 AI SDK 的常规 `streamText` 模式，但有三个例外：
+
+- BlockNote 文档状态从消息元数据中提取，并通过 `injectDocumentStateMessages` 注入到消息中
+- BlockNote 客户端工具定义从请求体中提取，并通过 `toolDefinitionsToToolSet` 传递给 LLM
+- 系统提示词设置为默认的 BlockNote 系统提示词（`aiDocumentFormats.html.systemPrompt`）。你可以覆盖或扩展系统提示词。如果你这样做，请确保你修改后的系统提示词仍然能够向 AI 解释如何修改 BlockNote 文档。
+
 更多关于如何将 BlockNote AI 与你的后端集成的信息，请参阅 [后端集成](/docs/features/ai/backend-integration)。
 
 # 完整示例
 
-查看完整示例代码和在线演示。在编辑器中选中文本并点击 AI（星星）按钮，或在任意位置输入 `/ai` 来使用 AI 功能。
+查看完整示例代码和在线演示。选择一些文本并点击 AI（星星）按钮，或在编辑器的任意位置输入 `/ai` 以访问 AI 功能。
 
 <Example name="ai/minimal" />

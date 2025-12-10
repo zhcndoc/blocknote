@@ -4,30 +4,36 @@ description: 了解如何在你的 BlockNote 编辑器中启用评论功能
 imageTitle: 评论
 ---
 
-# Comments
+# 评论
 
-BlockNote 原生支持评论、评论线程（回复）和表情反应。
+BlockNote 原生支持评论、评论线程（回复）和表情符号反应。
 
-要在编辑器中启用评论，你需要：
+要在你的编辑器中启用评论，你需要：
 
-- 提供一个 `resolveUsers` 函数，以便 BlockNote 可以获取并显示用户信息（名称和头像）。
-- 提供一个 `ThreadStore`，以便 BlockNote 能够存储和检索评论线程。
-- 启用实时协作（参见[实时协作](/docs/features/collaboration)）
-- 可选地提供一个供评论和评论编辑器使用的架构。如果未定义，它们将使用[默认评论编辑器架构](https://github.com/TypeCellOS/BlockNote/blob/main/packages/react/src/components/Comments/defaultCommentEditorSchema.ts)。有关自定义架构的更多信息，请参见[这里](/docs/features/custom-schemas)。
+- 创建一个 `CommentsExtension` 实例，并将其传递给编辑器的 `extensions` 选项。
+- 将 `resolveUsers` 传递给你的 `CommentsExtension` 实例，以便它可以检索和显示用户信息（姓名和头像）。
+- 为你的 `CommentsExtension` 实例提供一个 `ThreadStore`，以便它可以存储和检索评论线程。
+- 启用实时协作（参见 [实时协作](/docs/features/collaboration)）
+- 可选地为评论和评论编辑器提供一个 schema。如果未定义，它们将使用 [默认评论编辑器 schema](https://github.com/TypeCellOS/BlockNote/blob/main/packages/react/src/components/Comments/defaultCommentEditorSchema.ts)。更多关于自定义 schema 的信息请参见 [这里](/docs/features/custom-schemas)。
 
 ```tsx
 const editor = useCreateBlockNote({
-  resolveUsers: async (userIds: string[]) => {
-    // 返回给定 userIds 的用户信息（见下文）
-  },
-  comments: {
-    threadStore: yourThreadStore, // 见下文
-    schema: BlockNoteSchema.create(...) // optional, can be left undefined
-  },
-  // ...
+  extensions: [
+    CommentsExtension({
+      // See below.
+      threadStore: ...,
+      // Return user information for the given userIds (see below).
+      resolveUsers: async (userIds: string[]) => { ... },
+      // Optional, can be left undefined
+      schema: BlockNoteSchema.create(...)
+    }),
+    ...
+  ],
   collaboration: {
-    // ... // 参见实时协作文档
+    // See real-time collaboration docs
+    ...
   },
+  ...
 });
 ```
 
@@ -121,7 +127,7 @@ _注意：`ThreadStoreAuth` 只用于在 UI 中显示或隐藏操作选项。要
 
 当用户与评论交互时，数据会与激活用户 ID 一起存储于 ThreadStore（此 ID 由你初始化 ThreadStore 时指定）。
 
-要显示评论，BlockNote 需要根据用户 ID 获取用户信息（例如用户名和头像），因此你需要在编辑器选项中提供一个 `resolveUsers` 函数。
+要显示评论，BlockNote 需要根据用户 ID 获取用户信息（如用户名和头像）。为此，您需要为您的 `CommentsExtension` 提供一个 `resolveUsers` 函数。
 
 该函数接收一个用户 ID 数组，应该返回对应顺序的 `User` 对象数组。
 

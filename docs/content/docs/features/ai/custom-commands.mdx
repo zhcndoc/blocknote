@@ -26,8 +26,8 @@ imageTitle: BlockNote AI
 
 ```tsx
 import {
+  AIExtension,
   AIMenuSuggestionItem,
-  getAIExtension,
   aiDocumentFormats,
 } from "@blocknote/xl-ai";
 
@@ -40,7 +40,7 @@ export const makeInformal = (
   aliases: ["informal", "make informal", "casual"],
   icon: <RiEmotionHappyFill size={18} />,
   onItemClick: async () => {
-    await getAIExtension(editor).invokeAI({
+    await editor.getExtension(AIExtension)?.invokeAI({
       // 发送给大语言模型的提示：
       userPrompt: "给选中文本赋予更随意（非正式）的语气",
       // 告诉大语言模型具体使用选中的内容作为上下文（而非整个文档）
