@@ -958,11 +958,11 @@
           ],
           "dependencies": {
             "@blocknote/code-block": "latest",
-            "@shikijs/types": "^3.2.1",
-            "@shikijs/core": "^3.2.1",
-            "@shikijs/engine-javascript": "^3.2.1",
-            "@shikijs/langs-precompiled": "^3.2.1",
-            "@shikijs/themes": "^3.2.1"
+            "@shikijs/core": "^3.19.0",
+            "@shikijs/engine-javascript": "^3.19.0",
+            "@shikijs/langs-precompiled": "^3.19.0",
+            "@shikijs/themes": "^3.19.0",
+            "@shikijs/types": "^3.19.0"
           } as any
         },
         "title": "Custom Code Block Theme & Language",
@@ -1627,7 +1627,7 @@
           ],
           "pro": true,
           "dependencies": {
-            "@tiptap/core": "^3.11.0"
+            "@tiptap/core": "^3.13.0"
           } as any
         },
         "title": "TipTap extension (arrow InputRule)",

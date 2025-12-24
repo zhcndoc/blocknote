@@ -3,7 +3,7 @@
   "homepage": "https://github.com/TypeCellOS/BlockNote",
   "private": true,
   "license": "GPL-3.0 OR PROPRIETARY",
-  "version": "0.44.2",
+  "version": "0.45.0",
   "files": [
     "dist",
     "types",
@@ -52,7 +52,7 @@
     "@blocknote/xl-ai": "workspace:*",
     "@hono/node-server": "^1.19.5",
     "ai": "^5.0.102",
-    "hono": "^4.10.0"
+    "hono": "^4.10.3"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
