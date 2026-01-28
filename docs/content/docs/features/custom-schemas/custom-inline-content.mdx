@@ -1,7 +1,6 @@
 ---
 title: 自定义内联内容
 description: 了解如何为您的 BlockNote 编辑器创建自定义内联内容
-imageTitle: 自定义内联内容
 ---
 
 # 自定义内联内容类型
@@ -61,7 +60,8 @@ type CustomInlineContentConfig = {
 `content:` 如果您的自定义内联内容应包含 [`StyledText`](/docs/foundations/document-structure#inline-content-objects)，则设置为 `styled`，如果不包含，则设置为 `none`。
 
 <Callout type="info">
-  _在提及标签示例中，我们希望每个提及都是一个不可编辑的单一元素，因此将 `content` 设置为 `"none"`。_
+  在提及演示中，我们希望每个提及都是一个单一的、不可编辑的元素，因此我们将
+  `content` 设置为 `"none"`。
 </Callout>
 
 `propSchema:` `PropSchema` 指定内联内容支持的属性。内联内容的 props 是随文档中内联内容一起存储的数据，可用于自定义其外观或行为。
@@ -96,7 +96,7 @@ type PropSchema<PrimitiveType extends "boolean" | "number" | "string"> = Record<
 - `values?:` 指定该属性可取的值的数组，例如限制为预定义字符串列表。如果未定义 `values`，BlockNote 默认属性可以是任何 `PrimitiveType` 类型的值。
 
 <Callout type="info">
-  _在提及标签示例中，我们为被提及的用户添加了一个 `user` 属性。_
+  在提及演示中，我们为被提及的用户添加了一个 `user` 属性。
 </Callout>
 
 `draggable?:` 指定该内联内容是否可以被拖拽。
@@ -135,7 +135,8 @@ type ReactCustomInlineContentImplementation = {
 `toExternalHTML?:` 该组件用于将内联内容导出为外部 HTML（例如复制到剪贴板时）。如果未定义，BlockNote 将使用 `render` 进行 HTML 转换。接收与 `render` 相同的 props。
 
 <Callout type="info">
-  _注意，传递给 `toExternalHTML` 的组件会在单独的 React 根中渲染和序列化，这意味着您不能使用依赖 React Context 的 hooks。_
+  请注意，传递给 `toExternalHTML` 的组件会在一个单独的 React
+  根节点中渲染和序列化，这意味着你无法使用依赖于 React 上下文的 hooks。
 </Callout>
 
 `parse?:` `parse` 函数定义如何将 HTML 内容解析为您的内联内容，例如从剪贴板粘贴内容时。如果元素应被解析为您的自定义内联内容，则返回该内联内容应具有的 props，否则返回 `undefined`。接收一个参数：
@@ -145,7 +146,7 @@ type ReactCustomInlineContentImplementation = {
 `meta?.draggable?:` 指定内联内容是否可拖动。
 
 <Callout type="info">
-  _注意，由于内联内容本质上是内联的，您的组件应返回一个 HTML 内联元素。_
+  请注意，由于内联内容本质上是内联的，你的组件也应该返回一个 HTML 内联元素。
 </Callout>
 
 ## 向编辑器添加自定义内联内容

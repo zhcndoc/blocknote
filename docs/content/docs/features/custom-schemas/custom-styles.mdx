@@ -1,7 +1,6 @@
 ---
 title: 自定义样式
 description: 了解如何为您的 BlockNote 编辑器创建自定义样式架构
-imageTitle: 自定义样式
 ---
 
 # 自定义样式类型
@@ -86,7 +85,8 @@ type ReactCustomStyleImplementation = {
 `toExternalHTML?:` 这个组件用于当样式导出为 HTML 供 BlockNote 之外使用时，例如复制到剪贴板。如果未定义，BlockNote 默认使用 `render` 进行 HTML 转换。接收与 `render` 相同的属性。
 
 <Callout type="info">
-  请注意，传递给 `toExternalHTML` 的组件会在一个单独的 React 根中渲染和序列化，这意味着您不能使用依赖于 React 上下文的钩子。
+  请注意，传递给 `toExternalHTML` 的组件会在一个单独的 React
+  根中渲染和序列化，这意味着您不能使用依赖于 React 上下文的钩子。
 </Callout>
 
 `parse?:` `parse` 函数定义了如何将 HTML 内容解析为您的样式，例如在从剪贴板粘贴内容时。如果该元素应该被解析为您的自定义样式，则返回一个 `string` 或 `true`。如果 `propSchema` 是 `"string"`，则应返回字符串值，否则返回 `true`。返回 `undefined` 表示不从此 HTML 元素解析样式。它接收一个参数：

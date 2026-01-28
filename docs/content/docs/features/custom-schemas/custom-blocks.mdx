@@ -124,6 +124,7 @@ type ReactCustomBlockImplementation = {
     block: Block;
     editor: BlockNoteEditor;
     contentRef?: (node: HTMLElement | null) => void;
+    contest: { nestingLevel: number };
   }>;
   parse?: (element: HTMLElement) => PartialBlock["props"] | undefined;
   runsBefore?: string[];
@@ -146,7 +147,9 @@ type ReactCustomBlockImplementation = {
 
 - `contentRef:` 一个 React `ref`，可用来标记区块中哪些元素可编辑，仅当区块配置包含 `content: "inline"` 时可用。
 
-`toExternalHTML?:` 当区块导出到 HTML（例如复制到剪贴板）时使用的组件。如果未定义，BlockNote 会使用 `render` 进行 HTML 转换。接收与 `render` 相同的 props。
+`toExternalHTML?:` 该组件在区块导出为 HTML 用于 BlockNote 之外使用时调用，例如复制到剪贴板时。如果未定义，BlockNote 将使用 `render` 进行 HTML 转换。它接收与 `render` 相同的 props 以及一个额外的 `context` 属性，该属性是一个包含以下属性的对象：
+
+- `nestingLevel`: 当前导出的区块嵌套在其他区块中的深度。0 表示处于文档的顶层。
 
 <Callout type="info">
   _请注意，传入 `toExternalHTML` 的组件会在一个独立的 React 根实例中渲染和序列化，因此无法使用依赖于 React 上下文的 Hooks。_

@@ -23,9 +23,9 @@ const faqs = [
     question: "BlockNote 真的是免费的吗？",
     answer: (
       <>
-        100% 的 BlockNote 是开源的。我们提供咨询、支持服务和特定 XL
-        套件的商业许可证，以帮助维持 BlockNote
-        的发展。有关更多信息，请查看我们的 <a href="/pricing">定价页面</a>。
+        BlockNote 100% 开源。我们提供咨询、支持服务以及特定 XL
+        套件的商业许可，以帮助 BlockNote 的可持续发展。请访问我们的{" "}
+        <Link href="/pricing">定价页面</Link> 了解更多详情。
       </>
     ),
   },
