@@ -1,4 +1,3 @@
-import { ThemeToggle } from "@/components/fumadocs/layout/theme-toggle";
 import { cn } from "@/lib/fumadocs/cn";
 import LogoDark from "@/public/img/logos/banner.dark.svg";
 import LogoLight from "@/public/img/logos/banner.svg";
@@ -9,7 +8,7 @@ import ThemedImage from "@/components/ThemedImage";
 
 function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   const classes =
-    "text-sm text-fd-muted-foreground no-underline transition hover:text-fd-foreground";
+    "text-sm text-stone-500 no-underline transition-colors hover:text-purple-600 block py-1";
   if (href.startsWith("http")) {
     return (
       <a className={classes} href={href}>
@@ -25,7 +24,9 @@ function FooterLink({ href, children }: { href: string; children: ReactNode }) {
 }
 
 function FooterHeader({ children }: { children: ReactNode }) {
-  return <h3 className="text-fd-foreground text-sm">{children}</h3>;
+  return (
+    <h3 className="mb-4 font-serif text-base text-stone-900">{children}</h3>
+  );
 }
 
 const navigation = {
@@ -69,95 +70,80 @@ export function FooterContent() {
       </h2>
       <div className="mx-auto w-full">
         <div className="xl:grid xl:grid-cols-3 xl:gap-16">
-          <div className="">
-            {/* <FooterHeader>Subscribe to our newsletter</FooterHeader> */}
+          <div className="mb-12 xl:mb-0">
             <ThemedImage
               src={{ light: LogoLight, dark: LogoDark }}
               alt="BlockNote"
-              className="w-40"
+              className="mb-6 w-40"
             />
-            <p className="text-fd-muted-foreground mt-4 text-sm">
+            <p className="max-w-sm text-sm leading-relaxed text-stone-500">
               BlockNote 是一个可扩展的 React
-              富文本编辑器，支持基于块的编辑、协作，并配备现成可用的可定制 UI
+              富文本编辑器，支持基于块的编辑、实时协作，并配备可定制的现成 UI
               组件。
             </p>
-            {/* <SubmitForm /> */}
           </div>
-          <div className="grid grid-cols-1 gap-8 xl:col-span-2">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 md:gap-8">
-              <div className="mt-12 xl:!mt-0">
-                <FooterHeader>学习</FooterHeader>
-                <ul className="ml-0 mt-4 list-none space-y-1.5">
-                  {navigation.general.map((item) => (
-                    <li key={item.name}>
-                      <FooterLink href={item.href}>{item.name}</FooterLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="mt-12 xl:!mt-0">
-                <FooterHeader>合作</FooterHeader>
-                <ul className="ml-0 mt-4 list-none space-y-1.5">
-                  {navigation.collaborate().map((item) => (
-                    <li key={item.name}>
-                      <FooterLink href={item.href}>{item.name}</FooterLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="mt-12 xl:!mt-0">
-                <FooterHeader>社区</FooterHeader>
-                <ul className="ml-0 mt-4 list-none space-y-1.5">
-                  {navigation.community.map((item) => (
-                    <li key={item.name}>
-                      <FooterLink href={item.href}>{item.name}</FooterLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="mt-12 xl:!mt-0">
-                <FooterHeader>法律</FooterHeader>
-                <ul className="ml-0 mt-4 list-none space-y-1.5">
-                  <li key={"terms-and-conditions"}>
-                    <FooterLink href={"/legal/terms-and-conditions"}>
-                      使用条款
-                    </FooterLink>
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 xl:col-span-2">
+            <div>
+              <FooterHeader>学习</FooterHeader>
+              <ul className="space-y-1">
+                {navigation.general.map((item) => (
+                  <li key={item.name}>
+                    <FooterLink href={item.href}>{item.name}</FooterLink>
                   </li>
-                  <li key={"privacy-policy"}>
-                    <FooterLink href={"/legal/privacy-policy"}>
-                      隐私政策
-                    </FooterLink>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <FooterHeader>合作</FooterHeader>
+              <ul className="space-y-1">
+                {navigation.collaborate().map((item) => (
+                  <li key={item.name}>
+                    <FooterLink href={item.href}>{item.name}</FooterLink>
                   </li>
-                </ul>
-              </div>
-              <div className="mt-12 xl:!mt-0">
-                <FooterHeader>主题</FooterHeader>
-                <ul className="ml-0 mt-4 list-none space-y-1.5">
-                  <li key={"theme"}>
-                    <ThemeToggle mode="light-dark-system" />
+                ))}
+              </ul>
+            </div>
+            <div>
+              <FooterHeader>社区</FooterHeader>
+              <ul className="space-y-1">
+                {navigation.community.map((item) => (
+                  <li key={item.name}>
+                    <FooterLink href={item.href}>{item.name}</FooterLink>
                   </li>
-                </ul>
-              </div>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <FooterHeader>法律 & 主题</FooterHeader>
+              <ul className="space-y-1">
+                <li>
+                  <FooterLink href={"/legal/terms-and-conditions"}>
+                    服务条款
+                  </FooterLink>
+                </li>
+                <li>
+                  <FooterLink href={"/legal/privacy-policy"}>
+                    隐私政策
+                  </FooterLink>
+                </li>
+                {/* <li className="pt-2">
+                  <ThemeToggle mode="light-dark-system" />
+                </li> */}
+              </ul>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 sm:flex sm:items-center sm:justify-between">
-          <div>
-            <p className="text-fd-muted-foreground mt-4 text-xs">
-              <a target="_blank" href="https://www.zhcndoc.com">
-                简中文档
-              </a>
-              ｜
-              <a
-                rel="nofollow"
-                target="_blank"
-                href="https://beian.miit.gov.cn"
-              >
-                沪ICP备2024070610号-3
-              </a>
-            </p>
-          </div>
+        <div className="mt-16 border-t border-stone-200 pt-8 sm:flex sm:items-center sm:justify-between">
+          <p className="text-xs text-stone-400">
+            <a target="_blank" href="https://www.zhcndoc.com">
+              简中文档
+            </a>
+            <span>｜</span>
+            <a rel="nofollow" target="_blank" href="https://beian.miit.gov.cn">
+              沪ICP备2024070610号-3
+            </a>
+          </p>
         </div>
       </div>
     </div>
@@ -166,19 +152,10 @@ export function FooterContent() {
 
 export function Footer({ menu }: { menu?: boolean }): ReactElement {
   return (
-    <footer className="bg-fd-secondary relative z-30 mt-10">
-      {/* <div className="pointer-events-none absolute top-0 h-12 w-full -translate-y-full bg-gradient-to-t from-[#FAFAFA] to-transparent dark:from-black" /> */}
-      {/* <div
-        className={cn(
-          "mx-auto flex max-w-[90rem] gap-2 px-4 py-2",
-          menu ? "flex" : "hidden",
-        )}>
-        <ThemeSwitch />
-      </div>
-      <hr className="dark:border-neutral-800" /> */}
+    <footer className="relative z-30 border-t border-stone-200 bg-stone-50">
       <div
         className={cn(
-          "mx-auto flex max-w-[90rem] justify-center py-12 text-black md:justify-center dark:text-white",
+          "mx-auto flex max-w-[90rem] justify-center py-16 text-stone-900 md:justify-center",
           "pl-[max(env(safe-area-inset-left),1.5rem)] pr-[max(env(safe-area-inset-right),1.5rem)]",
         )}
       >
