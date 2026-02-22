@@ -1,39 +1,42 @@
 ---
-title: Embeds
-description: How to use embeds in BlockNote.
+title: 嵌入
+description: 如何在 BlockNote 中使用嵌入。
 ---
 
-# Embed Blocks
+# 嵌入块
 
-Embeds are a way to display content from external sources in your documents. BlockNote supports various embeds to help you structure and format your content effectively.
+嵌入是一种在文档中展示外部内容的方式。BlockNote 支持多种嵌入，帮助你有效地组织和格式化内容。
 
-## File
+## 文件
 
-**Type & Props**
+**类型及属性**
 
 ```ts
 type FileBlock = {
   id: string;
   type: "file";
   props: {
-    name: string = "";
-    url: string = "";
-    caption: string = "";
-  } & DefaultProps;
+    backgroundColor: string;
+    name: string;
+    url: string;
+    caption: string;
+  };
   content: undefined;
   children: Block[];
 };
 ```
 
-`name:` The file name.
+`backgroundColor:` 块的背景颜色。默认值为 `"default"`。
 
-`url:` The file URL.
+`name:` 文件名称。默认值为 `""`。
 
-`caption:` The file caption.
+`url:` 文件 URL。默认值为 `""`。
 
-## Image
+`caption:` 文件说明。默认值为 `""`。
 
-**Configuration Options**
+## 图片
+
+**配置选项**
 
 ```ts
 type ImageBlockOptions = {
@@ -41,35 +44,45 @@ type ImageBlockOptions = {
 };
 ```
 
-`icon:` The HTML string for an icon SVG. If no URL is given, the image block displays a button to add one using a link or file, and the provided SVG replaces the generic file icon in that button.
+`icon:` 图标 SVG 的 HTML 字符串。如果没有提供 URL，图片块将显示一个按钮，允许通过链接或文件添加图片，其中提供的 SVG 会替代该按钮中的通用文件图标。
 
-**Type & Props**
+**类型及属性**
 
 ```typescript
 type ImageBlock = {
   id: string;
   type: "image";
   props: {
-    url: string = "";
-    caption: string = "";
-    previewWidth: number = 512;
-  } & DefaultProps;
+    backgroundColor: string;
+    textAlignment: "left" | "center" | "right" | "justify";
+    name: string;
+    url: string;
+    caption: string;
+    showPreview: boolean;
+    previewWidth: number | undefined;
+  };
   content: undefined;
   children: Block[];
 };
 ```
 
-`name:` The image name.
+`backgroundColor:` 块的背景颜色。默认值为 `"default"`。
 
-`url:` The image URL.
+`textAlignment:` 图片的对齐方式。默认值为 `"left"`。
 
-`caption:` The image caption.
+`name:` 图片文件名称。默认值为 `""`。
 
-`previewWidth:` The image previewWidth in pixels.
+`url:` 图片 URL。默认值为 `""`。
 
-## Video
+`caption:` 图片说明。默认值为 `""`。
 
-**Configuration Options**
+`showPreview:` 是否显示图片预览还是链接。默认值为 `true`。
+
+`previewWidth:` 图片预览宽度，单位为像素。默认值为 `undefined`（无固定宽度）。
+
+## 视频
+
+**配置选项**
 
 ```ts
 type VideoBlockOptions = {
@@ -77,39 +90,45 @@ type VideoBlockOptions = {
 };
 ```
 
-`icon:` The HTML string for an icon SVG. If no URL is given, the video block displays a button to add one using a link or file, and the provided SVG replaces the generic file icon in that button.
+`icon:` 图标 SVG 的 HTML 字符串。如果没有提供 URL，视频块将显示一个按钮，允许通过链接或文件添加视频，其中提供的 SVG 会替代该按钮中的通用文件图标。
 
-**Type & Props**
+**类型及属性**
 
 ```ts
 type VideoBlock = {
   id: string;
   type: "video";
   props: {
-    name: string = "";
-    url: string = "";
-    caption: string = "";
-    showPreview: boolean = true;
+    backgroundColor: string;
+    textAlignment: "left" | "center" | "right" | "justify";
+    name: string;
+    url: string;
+    caption: string;
+    showPreview: boolean;
     previewWidth: number | undefined;
-  } & DefaultProps;
+  };
   content: undefined;
   children: Block[];
 };
 ```
 
-`name:` The video name.
+`backgroundColor:` 块的背景颜色。默认值为 `"default"`。
 
-`url:` The video URL.
+`textAlignment:` 视频的对齐方式。默认值为 `"left"`。
 
-`caption:` The video caption.
+`name:` 视频文件名称。默认值为 `""`。
 
-`showPreview:` Whether to show the video preview.
+`url:` 视频 URL。默认值为 `""`。
 
-`previewWidth:` The video preview width in pixels.
+`caption:` 视频说明。默认值为 `""`。
 
-## Audio
+`showPreview:` 是否显示视频播放器还是链接。默认值为 `true`。
 
-**Configuration Options**
+`previewWidth:` 视频预览宽度，单位为像素。默认值为 `undefined`（无固定宽度）。
+
+## 音频
+
+**配置选项**
 
 ```ts
 type AudioBlockOptions = {
@@ -117,29 +136,32 @@ type AudioBlockOptions = {
 };
 ```
 
-`icon:` The HTML string for an icon SVG. If no URL is given, the audio block displays a button to add one using a link or file, and the provided SVG replaces the generic file icon in that button.
+`icon:` 图标 SVG 的 HTML 字符串。如果没有提供 URL，音频块将显示一个按钮，允许通过链接或文件添加音频，其中提供的 SVG 会替代该按钮中的通用文件图标。
 
-**Type & Props**
+**类型及属性**
 
 ```ts
 type AudioBlock = {
   id: string;
   type: "audio";
   props: {
-    name: string = "";
-    url: string = "";
-    caption: string = "";
-    showPreview: boolean = true;
-  } & DefaultProps;
+    backgroundColor: string;
+    name: string;
+    url: string;
+    caption: string;
+    showPreview: boolean;
+  };
   content: undefined;
   children: Block[];
 };
 ```
 
-`name:` The audio name.
+`backgroundColor:` 块的背景颜色。默认值为 `"default"`。
 
-`url:` The audio URL.
+`name:` 音频文件名称。默认值为 `""`。
 
-`caption:` The audio caption.
+`url:` 音频 URL。默认值为 `""`。
 
-`showPreview:` Whether to show the audio preview.
+`caption:` 音频说明。默认值为 `""`。
+
+`showPreview:` 是否显示音频播放器还是链接。默认值为 `true`。

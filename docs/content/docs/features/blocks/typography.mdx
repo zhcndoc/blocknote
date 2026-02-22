@@ -1,15 +1,15 @@
 ---
-title: Typography
-description: How to use typography blocks in BlockNote.
+title: 排版
+description: 如何在 BlockNote 中使用排版块。
 ---
 
-# Typography Blocks
+# 排版块
 
-Typography blocks are fundamental elements for displaying text content in your documents. BlockNote supports various typography blocks to help you structure and format your content effectively.
+排版块是用于在文档中显示文本内容的基本元素。BlockNote 支持多种排版块，帮助你有效地构建和格式化内容。
 
-## Paragraph
+## 段落
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type ParagraphBlock = {
@@ -21,9 +21,9 @@ type ParagraphBlock = {
 };
 ```
 
-## Heading
+## 标题
 
-**Configuration Options**
+**配置选项**
 
 ```typescript
 type HeadingBlockOptions = Partial<{
@@ -33,38 +33,66 @@ type HeadingBlockOptions = Partial<{
 }>;
 ```
 
-`defaultLevel:` The default level for headings which are created/inserted without a set level, which is `1` by default.
+`defaultLevel:` 未设置级别时创建/插入标题的默认级别，默认为 `1`。
 
-`levels:` The heading levels that the block supports, or '1'-'6' by default.
+`levels:` 块支持的标题级别，默认是 `[1, 2, 3, 4, 5, 6]`。
 
-`allowToggleHeadings:` Whether toggle headings should be supported, `true` by default. Toggle headings have a button which toggles between hiding and showing the block's children.
+`allowToggleHeadings:` 是否支持切换标题，默认是 `true`。切换标题拥有一个按钮，可以切换隐藏或显示该块的子内容。
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type HeadingBlock = {
   id: string;
   type: "heading";
   props: {
-    level: 1 | 2 | 3 = 1;
+    level: 1 | 2 | 3 | 4 | 5 | 6 = 1;
+    isToggleable?: boolean;
   } & DefaultProps;
   content: InlineContent[];
   children: Block[];
 };
 ```
 
-`level:` The heading level, representing a title (`level: 1`), heading (`level: 2`), and subheading (`level: 3`).
+`level:` 标题级别，表示标题 (`level: 1`)、副标题 (`level: 2`) 以及子标题 (`level: 3`, `level: 4`, `level: 5`, `level: 6`)。默认值为 `1`。
 
-## Quote
+`isToggleable:` 标题是否可切换（子内容是否隐藏）。仅在 `allowToggleHeadings` 为 `true`（默认）时存在。默认值为 `false`。
 
-**Type & Props**
+## 引用
+
+**类型与属性**
 
 ```typescript
 type QuoteBlock = {
   id: string;
   type: "quote";
-  props: DefaultProps;
+  props: {
+    backgroundColor: string;
+    textColor: string;
+  };
   content: InlineContent[];
   children: Block[];
 };
 ```
+
+`backgroundColor:` 块的背景颜色。默认值为 `"default"`。
+
+`textColor:` 块的文本颜色。默认值为 `"default"`。
+
+## 分割线
+
+用于分隔内容的水平线。
+
+**类型与属性**
+
+```typescript
+type DividerBlock = {
+  id: string;
+  type: "divider";
+  props: {};
+  content: undefined;
+  children: Block[];
+};
+```
+
+分割线块无属性且无内容。可通过在空行输入 `---` 来插入。

@@ -1,35 +1,35 @@
 ---
 title: HTML
-description: It's possible to export or import Blocks to and from HTML.
-imageTitle: HTML Ixport
+description: 可以将区块导出或导入为 HTML。
+imageTitle: HTML 导入导出
 ---
 
-# HTML Import
+# HTML 导入
 
-It's possible to import HTML content into BlockNote blocks, completely client-side.
+可以将 HTML 内容导入到 BlockNote 的区块中，完全在客户端完成。
 
 <Callout type={"warning"}>
-    The functions to import from HTML are considered "lossy"; some information might be dropped when converting HTML to Blocks.
+    从 HTML 导入的功能被认为是“有损”的；将 HTML 转换为区块时可能会丢失一些信息。
 
-    To serialize Blocks to a non-lossy format (for example, to store the contents of the editor in your backend), simply export the built-in Block format using `JSON.stringify(editor.document)`.
+    若要将区块序列化为无损格式（例如，在后端存储编辑器内容），只需使用内置区块格式导出，即 `JSON.stringify(editor.document)`。
 
 </Callout>
 
-### HTML to Blocks
+### HTML 转区块
 
-Use `tryParseHTMLToBlocks` to parse an HTML string to `Block` objects:
+使用 `tryParseHTMLToBlocks` 将 HTML 字符串解析为 `Block` 对象：
 
 ```typescript
-async tryParseHTMLToBlocks(html: string): Promise<Blocks[]>;
+tryParseHTMLToBlocks(html: string): Block[];
 
-// Usage
-const blocksFromHTML = await editor.tryParseHTMLToBlocks(html);
+// 用法
+const blocksFromHTML = editor.tryParseHTMLToBlocks(html);
 ```
 
-`returns:` The blocks parsed from the HTML string.
+`返回值：` 从 HTML 字符串解析得到的区块。
 
-Tries to create `Block` objects out of any HTML block-level elements, and `InlineContent` objects from any HTML inline elements, though not all HTML tags are recognized. If BlockNote doesn't recognize an element's tag, it will parse it as a paragraph or plain text.
+尝试从任何 HTML 块级元素创建 `Block` 对象，并从任何 HTML 行内元素创建 `InlineContent` 对象，尽管并非所有 HTML 标签都被识别。如果 BlockNote 未识别某个元素的标签，则会将其解析为段落或纯文本。
 
-**Demo**
+**演示**
 
 <Example name="interoperability/converting-blocks-from-html" />

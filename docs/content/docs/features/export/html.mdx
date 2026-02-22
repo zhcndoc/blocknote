@@ -1,62 +1,62 @@
 ---
 title: HTML
-description: It's possible to export Blocks to HTML, completely client-side.
-imageTitle: HTML Export
+description: 可以将区块导出为 HTML，完全在客户端完成。
+imageTitle: HTML 导出
 path: /docs/converting-blocks
 ---
 
-# HTML Export
+# HTML 导出
 
 <Callout type={"warning"}>
-    The functions to export to HTML are considered "lossy"; some information might be dropped when you export Blocks to HTML.
+    导出为 HTML 的功能被认为是“有损”的；导出区块为 HTML 时，可能会丢失一些信息。
 
-    To serialize Blocks to a non-lossy format (for example, to store the contents of the editor in your backend), simply export the built-in Block format using `JSON.stringify(editor.document)`.
+    若要将区块序列化为无损格式（例如，在后端存储编辑器内容），只需使用 `JSON.stringify(editor.document)` 导出内置区块格式即可。
 
 </Callout>
 
-## Export to BlockNote HTML
+## 导出为 BlockNote HTML
 
-Use `editor.blocksToFullHTML` to export blocks with their full HTML structure, the same as BlockNote uses in its rendered HTML.
+使用 `editor.blocksToFullHTML` 导出具有完整 HTML 结构的区块，和 BlockNote 在渲染的 HTML 中使用的结构相同。
 
-For example, you an use this for static rendering documents that have been created in the editor.
+例如，可以将其用于静态渲染编辑器中创建的文档。
 
 <Callout type={"info"}>
-    For the exported HTML to look the same as the editor, make sure to wrap it in the same `div`s that the editor renders, and add the same stylesheets. To learn more, see [this example](/examples/backend/rendering-static-documents).
+    为了使导出的 HTML 与编辑器显示一致，请确保用编辑器渲染时相同的 `div` 包裹，并添加相同的样式表。更多信息请参见 [此示例](/examples/backend/rendering-static-documents)。
 
 </Callout>
 
 ```typescript
-async blocksToFullHTML(blocks?: Block[]): Promise<string>;
+blocksToFullHTML(blocks?: Block[]): string;
 
-// Usage
-const HTMLFromBlocks = await editor.blocksToFullHTML(blocks);
+// 使用示例
+const HTMLFromBlocks = editor.blocksToFullHTML(blocks);
 ```
 
-`blocks:` The blocks to convert. If not provided, the entire document (all top-level blocks) is used.
+`blocks:` 要转换的区块。如果未提供，则使用整个文档（所有顶层区块）。
 
-`returns:` The blocks, exported to an HTML string.
+`returns:` 导出的 HTML 字符串。
 
-## Export to Interoperable HTML
+## 导出为互操作 HTML
 
-The editor exposes functions to convert Blocks to and from HTML for interoperability with other applications.
+编辑器提供了将区块与 HTML 互相转换的函数，以便与其他应用程序互操作。
 
-Converting Blocks to HTML this way will lose some information such as the nesting of nodes in order to export a simple HTML structure.
+以此方式将区块转换为 HTML 会丢失部分信息，例如节点嵌套，以导出简洁的 HTML 结构。
 
-Use `blocksToHTMLLossy` to export `Block` objects to an HTML string:
+使用 `blocksToHTMLLossy` 将 `Block` 对象导出为 HTML 字符串：
 
 ```typescript
-async blocksToHTMLLossy(blocks?: Block[]): Promise<string>;
+blocksToHTMLLossy(blocks?: Block[]): string;
 
-// Usage
-const HTMLFromBlocks = await editor.blocksToHTMLLossy(blocks);
+// 使用示例
+const HTMLFromBlocks = editor.blocksToHTMLLossy(blocks);
 ```
 
-`blocks:` The blocks to convert. If not provided, the entire document (all top-level blocks) is used.
+`blocks:` 要转换的区块。如果未提供，则使用整个文档（所有顶层区块）。
 
-`returns:` The blocks, exported to an HTML string.
+`returns:` 导出的 HTML 字符串。
 
-To better conform to HTML standards, children of blocks which aren't list items are un-nested in the output HTML.
+为了更好地符合 HTML 标准，输出的 HTML 中非列表项区块的子元素将不会嵌套。
 
-**Demo**
+**演示**
 
 <Example name="interoperability/converting-blocks-to-html" />

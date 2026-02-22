@@ -1,65 +1,65 @@
 ---
-title: Manipulating Content
-description: How to read, create, update, and remove blocks and inline content in the BlockNote editor
+title: 操作内容
+description: 如何在 BlockNote 编辑器中读取、创建、更新和删除块和内联内容
 ---
 
-# Manipulating Content
+# 操作内容
 
-BlockNote provides comprehensive APIs for manipulating both blocks and inline content within the editor. This guide covers how to programmatically work with the document structure (blocks) and the content within those blocks (text, links, styling).
+BlockNote 提供了全面的 API 来操作编辑器中的块和内联内容。本指南涵盖了如何以编程方式操作文档结构（块）及块内的内容（文本、链接、样式）。
 
-## Overview
+## 概览
 
-The content manipulation APIs fall into two main categories:
+内容操作 API 分为两大类：
 
-### Block Manipulation
+### 块操作
 
-- **[Reading blocks](#reading-blocks)** - Accessing existing blocks and their relationships
-- **[Creating blocks](#creating-blocks)** - Inserting new blocks into the document
-- **[Updating blocks](#updating-blocks)** - Modifying existing block content and properties
-- **[Removing blocks](#removing-blocks)** - Deleting blocks from the document
-- **[Replacing blocks](#replacing-blocks)** - Swapping existing blocks with new ones
-- **[Moving blocks](#moving-blocks)** - Reordering blocks within the document
-- **[Nesting blocks](#nesting-blocks)** - Creating hierarchical relationships between blocks
+- **[读取块](#读取块)** - 访问已有块及其关系
+- **[创建块](#创建块)** - 向文档插入新块
+- **[更新块](#更新块)** - 修改现有块的内容和属性
+- **[删除块](#删除块)** - 从文档中删除块
+- **[替换块](#替换块)** - 用新块替换现有块
+- **[移动块](#移动块)** - 调整文档块的顺序
+- **[嵌套块](#嵌套块)** - 创建块之间的层级关系
 
-### Inline Content Manipulation
+### 内联内容操作
 
-- **[Inserting content](#inserting-inline-content)** - Adding text, links, and styled content
-- **[Reading content](#reading-content)** - Getting selected text and active styles
-- **[Styling text](#styling-text)** - Adding, removing, and toggling text styles
-- **[Working with links](#working-with-links)** - Creating and accessing link content
+- **[插入内容](#插入内联内容)** - 添加文本、链接及样式内容
+- **[读取内容](#读取内容)** - 获取选中文本和激活的样式
+- **[样式文本](#样式文本)** - 添加、移除和切换文本样式
+- **[操作链接](#操作链接)** - 创建和访问链接内容
 
-## Common Types
+## 常用类型
 
-### Block Identifiers
+### 块标识符
 
-Most block methods require a `BlockIdentifier` to reference existing blocks:
+大多数块方法需要 `BlockIdentifier` 来引用已有块：
 
 ```typescript
-type BlockIdentifier = string | Block;
+type BlockIdentifier = string | { id: string };
 ```
 
-You can pass either:
+你可以传入：
 
-- A `string` representing the block ID
-- A `Block` object (the ID will be extracted automatically)
+- 表示块 ID 的字符串
+- 任何带有 `id: string` 属性的对象，如 `Block`
 
-### Partial Blocks
+### 部分块
 
-When creating or updating blocks, you use `PartialBlock` objects which have optional properties:
+创建或更新块时，使用具有可选属性的 `PartialBlock` 对象：
 
 ```typescript
 type PartialBlock = {
-  id?: string; // Auto-generated if not provided
-  type?: string; // Block type (paragraph, heading, etc.)
-  props?: Partial<Record<string, any>>; // Block-specific properties
-  content?: string | InlineContent[] | TableContent; // Block content
-  children?: PartialBlock[]; // Nested blocks
+  id?: string; // 如果未提供则自动生成
+  type?: string; // 块类型（段落、标题等）
+  props?: Partial<Record<string, any>>; // 块特定属性
+  content?: string | InlineContent[] | TableContent; // 块内容
+  children?: PartialBlock[]; // 嵌套块
 };
 ```
 
-### Partial Inline Content
+### 部分内联内容
 
-When creating or updating inline content, you use `PartialInlineContent` which allows for flexible content specification:
+创建或更新内联内容时，使用 `PartialInlineContent` 来灵活指定内容：
 
 ```typescript
 type PartialLink = {
@@ -71,40 +71,40 @@ type PartialLink = {
 type PartialInlineContent = string | (string | PartialLink | StyledText)[];
 ```
 
-This type allows you to:
+该类型允许你：
 
-- Pass a simple string for plain text
-- Pass an array of mixed content (strings, links, styled text)
-- Use `PartialLink` for link content
-- Use `StyledText` for text with formatting
+- 传入简单字符串表示纯文本
+- 传入混合内容数组（字符串、链接、样式文本）
+- 使用 `PartialLink` 表示链接内容
+- 使用 `StyledText` 表示带格式的文本
 
-## Block Manipulation
+## 块操作
 
-### Reading Blocks
+### 读取块
 
-#### Getting the Document
+#### 获取文档
 
-Retrieve all top-level blocks in the editor:
+获取编辑器中的所有顶层块：
 
 ```typescript
 const blocks = editor.document;
 ```
 
-Returns a snapshot of all top-level (non-nested) blocks in the document.
+返回文档中所有顶层（非嵌套）块的快照。
 
-#### Getting Specific Blocks
+#### 获取特定块
 
 ```typescript
-// Single block
+// 单个块
 getBlock(blockIdentifier: BlockIdentifier): Block | undefined
 
-// Previous block
+// 上一个块
 getPrevBlock(blockIdentifier: BlockIdentifier): Block | undefined
 
-// Next block
+// 下一个块
 getNextBlock(blockIdentifier: BlockIdentifier): Block | undefined
 
-// Parent block
+// 父块
 getParentBlock(blockIdentifier: BlockIdentifier): Block | undefined
 ```
 
@@ -115,27 +115,27 @@ const nextBlock = editor.getNextBlock("block-123");
 const parentBlock = editor.getParentBlock("nested-block-123");
 ```
 
-#### Traversing All Blocks
+#### 遍历所有块
 
 ```typescript
 forEachBlock(
-  callback: (block: Block) => boolean | undefined,
+  callback: (block: Block) => boolean,
   reverse: boolean = false
 ): void
 ```
 
-Traverses all blocks depth-first and executes a callback for each.
+深度优先遍历所有块，并对每个块执行回调。
 
 ```typescript
 editor.forEachBlock((block) => {
-  console.log(`Block ${block.id}: ${block.type}`);
-  return true; // Continue traversal
+  console.log(`块 ${block.id}: ${block.type}`);
+  return true; // 继续遍历
 });
 ```
 
-### Creating Blocks
+### 创建块
 
-#### Inserting Blocks
+#### 插入块
 
 ```typescript
 insertBlocks(
@@ -145,30 +145,30 @@ insertBlocks(
 ): void
 ```
 
-Inserts new blocks relative to an existing block.
+将新块插入到现有块的相对位置。
 
 ```typescript
-// Insert a paragraph before an existing block
+// 在现有块前插入段落
 editor.insertBlocks(
-  [{ type: "paragraph", content: "New paragraph" }],
+  [{ type: "paragraph", content: "新段落" }],
   "existing-block-id",
   "before",
 );
 
-// Insert multiple blocks after an existing block
+// 在现有块后插入多个块
 editor.insertBlocks(
   [
-    { type: "heading", content: "New Section", props: { level: 2 } },
-    { type: "paragraph", content: "Section content" },
+    { type: "heading", content: "新章节", props: { level: 2 } },
+    { type: "paragraph", content: "章节内容" },
   ],
   "existing-block-id",
   "after",
 );
 ```
 
-### Updating Blocks
+### 更新块
 
-#### Modifying Existing Blocks
+#### 修改现有块
 
 ```typescript
 updateBlock(
@@ -177,49 +177,49 @@ updateBlock(
 ): void
 ```
 
-Updates an existing block with new properties.
+用新属性更新已存在的块。
 
 ```typescript
-// Change a paragraph to a heading
+// 把段落改为标题
 editor.updateBlock("block-123", {
   type: "heading",
   props: { level: 2 },
 });
 
-// Update content only
+// 仅更新内容
 editor.updateBlock("block-123", {
-  content: "Updated content",
+  content: "更新后的内容",
 });
 
-// Update multiple properties
+// 同时更新多个属性
 editor.updateBlock("block-123", {
   type: "heading",
-  content: "New heading text",
+  content: "新标题文本",
   props: { level: 1 },
 });
 ```
 
-### Removing Blocks
+### 删除块
 
-#### Deleting Blocks
+#### 删除块
 
 ```typescript
 removeBlocks(blocksToRemove: BlockIdentifier[]): void
 ```
 
-Removes one or more blocks from the document.
+从文档中删除一个或多个块。
 
 ```typescript
-// Remove a single block
+// 删除单个块
 editor.removeBlocks(["block-123"]);
 
-// Remove multiple blocks
+// 删除多个块
 editor.removeBlocks(["block-123", "block-456", "block-789"]);
 ```
 
-### Replacing Blocks
+### 替换块
 
-#### Swapping Blocks
+#### 交换块
 
 ```typescript
 replaceBlocks(
@@ -228,47 +228,47 @@ replaceBlocks(
 ): void
 ```
 
-Replaces existing blocks with new ones.
+用新块替换已有块。
 
 ```typescript
-// Replace a paragraph with a heading
+// 用标题替换段落
 editor.replaceBlocks(
   ["paragraph-block"],
-  [{ type: "heading", content: "New Heading", props: { level: 2 } }],
+  [{ type: "heading", content: "新标题", props: { level: 2 } }],
 );
 
-// Replace multiple blocks with different content
+// 用不同内容替换多个块
 editor.replaceBlocks(
   ["block-1", "block-2"],
   [
-    { type: "paragraph", content: "Replacement content" },
-    { type: "bulletListItem", content: "List item" },
+    { type: "paragraph", content: "替换内容" },
+    { type: "bulletListItem", content: "列表项" },
   ],
 );
 ```
 
-### Moving Blocks
+### 移动块
 
-#### Reordering Blocks
+#### 重新排序块
 
 ```typescript
 moveBlocksUp(): void
 moveBlocksDown(): void
 ```
 
-Moves the currently selected blocks up or down in the document.
+将当前选择的块上移或下移。
 
 ```typescript
-// Move selected blocks up
+// 上移选中块
 editor.moveBlocksUp();
 
-// Move selected blocks down
+// 下移选中块
 editor.moveBlocksDown();
 ```
 
-### Nesting Blocks
+### 嵌套块
 
-#### Creating Hierarchical Structures
+#### 创建层级结构
 
 ```typescript
 canNestBlock(): boolean
@@ -277,25 +277,25 @@ canUnnestBlock(): boolean
 unnestBlock(): void
 ```
 
-Manages the nesting level of blocks (indentation).
+管理块的嵌套层级（缩进）。
 
 ```typescript
-// Check if current block can be nested
+// 检查当前块是否可嵌套
 if (editor.canNestBlock()) {
-  editor.nestBlock(); // Indent the block
+  editor.nestBlock(); // 缩进块
 }
 
-// Check if current block can be un-nested
+// 检查当前块是否可解除嵌套
 if (editor.canUnnestBlock()) {
-  editor.unnestBlock(); // Outdent the block
+  editor.unnestBlock(); // 减少缩进
 }
 ```
 
-## Inline Content Manipulation
+## 内联内容操作
 
-### Inserting Inline Content
+### 插入内联内容
 
-#### Basic Insertion
+#### 基础插入
 
 ```typescript
 insertInlineContent(
@@ -304,13 +304,13 @@ insertInlineContent(
 ): void
 ```
 
-Inserts content at the current cursor position or replaces the current selection.
+在当前光标位置插入内容或替换当前选区。
 
 ```typescript
-// Insert plain text
+// 插入纯文本
 editor.insertInlineContent("Hello, world!");
 
-// Insert mixed content
+// 插入混合内容
 editor.insertInlineContent([
   "Hello ",
   { type: "text", text: "World", styles: { bold: true } },
@@ -318,187 +318,187 @@ editor.insertInlineContent([
   { type: "link", content: "BlockNote", href: "https://blocknotejs.org" },
 ]);
 
-// Insert with selection update
-editor.insertInlineContent("New content", { updateSelection: true });
+// 插入并更新选区
+editor.insertInlineContent("新内容", { updateSelection: true });
 ```
 
-#### Advanced Content Examples
+#### 高级内容示例
 
 ```typescript
-// Insert styled text
+// 插入样式文本
 editor.insertInlineContent([
   {
     type: "text",
-    text: "Bold and italic",
+    text: "加粗且斜体",
     styles: { bold: true, italic: true },
   },
 ]);
 
-// Insert link with styled content
+// 插入带样式内容的链接
 editor.insertInlineContent([
   {
     type: "link",
     content: [
-      { type: "text", text: "Visit ", styles: {} },
+      { type: "text", text: "访问 ", styles: {} },
       { type: "text", text: "BlockNote", styles: { bold: true } },
     ],
     href: "https://blocknotejs.org",
   },
 ]);
 
-// Insert complex mixed content
+// 插入复杂混合内容
 editor.insertInlineContent([
-  "This is ",
-  { type: "text", text: "important", styles: { bold: true, textColor: "red" } },
-  " and you should ",
-  { type: "link", content: "read more", href: "https://example.com" },
-  " about it.",
+  "这是 ",
+  { type: "text", text: "重要的", styles: { bold: true, textColor: "red" } },
+  "，你应该 ",
+  { type: "link", content: "阅读更多", href: "https://example.com" },
+  " 相关内容。",
 ]);
 ```
 
-### Reading Content
+### 读取内容
 
-#### Getting Selected Text
+#### 获取选中文本
 
 ```typescript
 getSelectedText(): string
 ```
 
-Retrieves the currently selected text as a plain string.
+以纯文本形式获取当前选中的文本。
 
 ```typescript
 const selectedText = editor.getSelectedText();
-console.log("Selected text:", selectedText);
+console.log("选中文本:", selectedText);
 
-// Example: Copy selected text to clipboard
+// 示例：复制选中文本到剪贴板
 if (selectedText) {
   navigator.clipboard.writeText(selectedText);
 }
 ```
 
-#### Getting Active Styles
+#### 获取激活样式
 
 ```typescript
 getActiveStyles(): Styles
 ```
 
-Returns the active text styles at the current cursor position or at the end of the current selection.
+返回当前光标位置或选区末尾的激活文本样式。
 
 ```typescript
 const activeStyles = editor.getActiveStyles();
-console.log("Active styles:", activeStyles);
+console.log("激活样式:", activeStyles);
 
-// Example: Check if text is bold
+// 示例：检测文本是否加粗
 if (activeStyles.bold) {
-  console.log("Text is bold");
+  console.log("文本是加粗的");
 }
 
-// Example: Get text color
+// 示例：获取文本颜色
 if (activeStyles.textColor) {
-  console.log("Text color:", activeStyles.textColor);
+  console.log("文本颜色:", activeStyles.textColor);
 }
 ```
 
-#### Getting Selected Link
+#### 获取选中链接
 
 ```typescript
 getSelectedLinkUrl(): string | undefined
 ```
 
-Returns the URL of the last link in the current selection, or `undefined` if no links are selected.
+返回当前选区中最后一个链接的 URL，若无链接则返回 `undefined`。
 
 ```typescript
 const linkUrl = editor.getSelectedLinkUrl();
 
 if (linkUrl) {
-  console.log("Selected link URL:", linkUrl);
-  // Open link in new tab
+  console.log("选中链接 URL:", linkUrl);
+  // 新标签页打开链接
   window.open(linkUrl, "_blank");
 } else {
-  console.log("No link selected");
+  console.log("未选中链接");
 }
 ```
 
-### Styling Text
+### 样式文本
 
-#### Adding Styles
+#### 添加样式
 
 ```typescript
 addStyles(styles: Styles): void
 ```
 
-Applies styles to the currently selected text.
+向当前选中文本应用样式。
 
 ```typescript
-// Add single style
+// 添加单一样式
 editor.addStyles({ bold: true });
 
-// Add multiple styles
+// 添加多种样式
 editor.addStyles({
   bold: true,
   italic: true,
   textColor: "red",
 });
 
-// Add background color
+// 添加背景色
 editor.addStyles({ backgroundColor: "yellow" });
 ```
 
-#### Removing Styles
+#### 移除样式
 
 ```typescript
 removeStyles(styles: Styles): void
 ```
 
-Removes specific styles from the currently selected text.
+从当前选中文本移除指定样式。
 
 ```typescript
-// Remove single style
+// 移除单一样式
 editor.removeStyles({ bold: true });
 
-// Remove multiple styles
+// 移除多种样式
 editor.removeStyles({ bold: true, italic: true });
 
-// Remove color styles
+// 移除颜色样式
 editor.removeStyles({ textColor: "red", backgroundColor: "yellow" });
 ```
 
-#### Toggling Styles
+#### 切换样式
 
 ```typescript
 toggleStyles(styles: Styles): void
 ```
 
-Toggles styles on the currently selected text (adds if not present, removes if present).
+切换当前选中文本的样式（若存在则移除，否则添加）。
 
 ```typescript
-// Toggle single style
+// 切换单一样式
 editor.toggleStyles({ bold: true });
 
-// Toggle multiple styles
+// 切换多种样式
 editor.toggleStyles({ bold: true, italic: true });
 
-// Toggle color
+// 切换颜色样式
 editor.toggleStyles({ textColor: "blue" });
 ```
 
-### Working with Links
+### 操作链接
 
-#### Creating Links
+#### 创建链接
 
 ```typescript
 createLink(url: string, text?: string): void
 ```
 
-Creates a new link, optionally replacing the currently selected text.
+创建一个新链接，可选择替换当前选中的文本。
 
 ```typescript
-// Create link from selected text
+// 将选中文本创建为链接
 editor.createLink("https://blocknotejs.org");
 
-// Create link with custom text
-editor.createLink("https://blocknotejs.org", "Visit BlockNote");
+// 创建带自定义文本的链接
+editor.createLink("https://blocknotejs.org", "访问 BlockNote");
 
-// Create link with empty URL (removes link)
+// 创建空链接（移除链接）
 editor.createLink("");
 ```

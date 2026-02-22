@@ -129,9 +129,11 @@ type ColumnListBlock = {
 ```typescript
 type TableContent = {
   type: "tableContent";
+  columnWidths: (number | undefined)[];
+  headerRows?: number;
+  headerCols?: number;
   rows: {
     cells: InlineContent[][];
   }[];
 };
 ```
-````

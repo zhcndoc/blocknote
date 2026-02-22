@@ -1,177 +1,177 @@
 ---
-title: Events
-description: BlockNote emits events when certain actions occur in the editor
+title: 事件
+description: 当编辑器中发生特定操作时，BlockNote 会触发事件
 ---
 
-# Events
+# 事件
 
-BlockNote provides several event callbacks that allow you to respond to changes in the editor. These events are essential for building reactive applications and tracking user interactions.
+BlockNote 提供了多个事件回调，允许您响应编辑器中的变化。这些事件对于构建响应式应用和跟踪用户交互至关重要。
 
-## Overview
+## 概述
 
-The editor emits events for:
+编辑器会触发以下事件：
 
-- **Editor lifecycle** - When the editor is created, mounted, unmounted, etc.
-- **Content changes** - When blocks are inserted, updated, or deleted
-- **Selection changes** - When the cursor position or selection changes
+- **编辑器生命周期** - 编辑器创建、挂载、卸载等时触发
+- **内容变化** - 插入、更新或删除区块时触发
+- **选择变化** - 光标位置或选择范围发生变化时触发
 
 ## `onMount`
 
-The `onMount` callback is called when the editor has been mounted.
+当编辑器被挂载时，会调用 `onMount` 回调。
 
 ```typescript
 editor.onMount(() => {
-  console.log("Editor is mounted");
+  console.log("编辑器已挂载");
 });
 ```
 
 ## `onUnmount`
 
-The `onUnmount` callback is called when the editor has been unmounted.
+当编辑器被卸载时，会调用 `onUnmount` 回调。
 
 ```typescript
 editor.onUnmount(() => {
-  console.log("Editor is unmounted");
+  console.log("编辑器已卸载");
 });
 ```
 
 ## `onSelectionChange`
 
-The `onSelectionChange` callback is called whenever the editor's selection changes, including cursor movements and text selections.
+每当编辑器的选择范围发生变化（包括光标移动和文本选择）时，会调用 `onSelectionChange` 回调。
 
 ```typescript
 editor.onSelectionChange((editor) => {
-  console.log("Selection changed");
+  console.log("选择范围已改变");
 
-  // Get current selection information
+  // 获取当前的选择信息
   const selection = editor.getSelection();
   const textCursorPosition = editor.getTextCursorPosition();
 
-  console.log("Current selection:", selection);
-  console.log("Text cursor position:", textCursorPosition);
+  console.log("当前选择：", selection);
+  console.log("文本光标位置：", textCursorPosition);
 });
 ```
 
 ## `onChange`
 
-The `onChange` callback is called whenever the editor's content changes. This is the primary way to track modifications to the document.
+每当编辑器的内容发生变化时，会调用 `onChange` 回调。这是追踪文档修改的主要方式。
 
 ```typescript
 editor.onChange((editor, { getChanges }) => {
-  console.log("Editor content changed");
+  console.log("编辑器内容已改变");
 
-  // Get detailed information about what changed
+  // 获取详细的变更信息
   const changes = getChanges();
-  console.log("Changes:", changes);
+  console.log("变更内容：", changes);
 
-  // Save content, update UI, etc.
+  // 保存内容，更新 UI 等
 });
 ```
 
-See [Understanding Changes](#understanding-changes) for more information about the `getChanges` function.
+有关 `getChanges` 函数的更多信息，请参见[理解变更](#理解变更)。
 
 ## `onBeforeChange`
 
-The `onBeforeChange` callback is called before any change is applied to the editor, allowing you to cancel the change.
+在任何变更应用到编辑器之前，会调用 `onBeforeChange` 回调，允许您取消此次变更。
 
 ```typescript
-editor.onBeforeChange((editor, { getChanges, tr }) => {
+editor.onBeforeChange(({ getChanges, tr }) => {
   if (
-    // Cancel inserting new blocks
+    // 取消插入新区块
     getChanges().some((change) => change.type === "insert")
   ) {
-    // By returning `false`, the change will be canceled & not applied to the editor.
+    // 返回 `false` 将取消此次变更，不会应用到编辑器
     return false;
   }
 });
 ```
 
-See [Understanding Changes](#understanding-changes) for more information about the `getChanges` function.
+有关 `getChanges` 函数的更多信息，请参见[理解变更](#理解变更)。
 
-## Understanding Changes
+## 理解变更
 
-The `getChanges()` function returns detailed information about what blocks were affected. It includes three types of changes:
+`getChanges()` 函数返回关于哪些区块受到影响的详细信息。它包括三种变更类型：
 
-- Insertions - When a new block is inserted
-- Deletions - When a block is deleted
-- Updates - When a block's content is changed
-- Moves - When a block is moved to a new position (which can also update the block's content)
+- 插入 - 插入了新的区块
+- 删除 - 删除了区块
+- 更新 - 区块内容发生了变化
+- 移动 - 区块被移动到新的位置（这也可能会更新区块的内容）
 
 ```typescript
 /**
- * The changes that occurred in the editor.
+ * 编辑器中发生的变更。
  */
 type BlocksChanged = Array<
   | {
       type: "insert" | "delete";
-      // The affected block (when inserting, this is the new block, when deleting, this is the block that was deleted)
+      // 受影响的区块（插入时为新插入的区块，删除时为被删除的区块）
       block: Block;
-      // The source of the change
+      // 变更来源
       source: BlockChangeSource;
-      // Insert and delete changes don't have a previous block
+      // 插入和删除变更没有先前区块
       prevBlock: undefined;
     }
   | {
       type: "update";
-      // The affected block
+      // 受影响的区块
       block: Block;
-      // The source of the change
+      // 变更来源
       source: BlockChangeSource;
-      // The block before the update
+      // 更新前的区块
       prevBlock: Block;
     }
   | {
       type: "move";
-      // The source of the change
+      // 变更来源
       source: BlockChangeSource;
-      // The affected block
+      // 受影响的区块
       block: Block;
-      // The block before the move (since a move can also update the block's content)
+      // 移动前的区块（因为移动也可能会更新区块内容）
       prevBlock: Block;
       /**
-       * The previous parent block (if it existed).
+       * 移动前的父区块（如果存在）。
        */
       prevParent?: Block;
       /**
-       * The current parent block (if it exists).
+       * 当前位置的父区块（如果存在）。
        */
       currentParent?: Block;
     }
 >;
 ```
 
-### Change Sources
+### 变更来源
 
-Each change includes a source that indicates what triggered the modification:
+每个变更都包含一个来源，用于指示触发此次修改的原因：
 
 ```typescript
 type BlockChangeSource = {
   type:
-    | "local" // Triggered by local user (default)
-    | "paste" // From paste operation
-    | "drop" // From drop operation
-    | "undo" // From undo operation (local-only)
-    | "redo" // From redo operation (local-only)
-    | "undo-redo" // From undo/redo operations (collaboration-only)
-    | "yjs-remote"; // From remote user (collaboration-only)
+    | "local" // 本地用户触发（默认）
+    | "paste" // 来自粘贴操作
+    | "drop" // 来自拖放操作
+    | "undo" // 来自撤销操作（仅本地）
+    | "redo" // 来自重做操作（仅本地）
+    | "undo-redo" // 来自撤销/重做操作（协作环境）
+    | "yjs-remote"; // 来自远程用户（协作环境）
 };
 ```
 
-## Event Cleanup
+## 事件清理
 
-All event callbacks return cleanup functions that you can call to remove the event listener:
+所有事件回调都会返回清理函数，调用该函数即可移除事件监听器：
 
 ```typescript
-// Set up event listeners
+// 设置事件监听器
 const cleanupOnChange = editor.onChange((editor, { getChanges }) => {
-  console.log("Content changed");
+  console.log("内容已改变");
 });
 
 const cleanupOnSelection = editor.onSelectionChange((editor) => {
-  console.log("Selection changed");
+  console.log("选择范围已改变");
 });
 
-// Later, clean up event listeners
+// 之后，清理事件监听器
 cleanupOnChange();
 cleanupOnSelection();
 ```
