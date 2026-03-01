@@ -1,9 +1,9 @@
-# 并排渲染从区块转换的 HTML
+# Rendering HTML Converted From Blocks (Side by Side)
 
-此示例将当前文档（所有区块）导出为 HTML，并在编辑器下方渲染。
+This example exports the current document (all blocks) as HTML and renders it below the editor.
 
-**试一试：**编辑文档以查看渲染的静态 HTML！
+**Try it out:** Edit the document to see the rendered static HTML!
 
-**相关文档：**
+**Relevant Docs:**
 
-- [将区块转换为 HTML](/docs/features/export/html)
+- [Converting Blocks to HTML](/docs/features/export/html)

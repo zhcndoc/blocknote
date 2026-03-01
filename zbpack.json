@@ -1,4 +1,5 @@
 {
-  "app_dir": "docs",
-  "build_command": "pnpm run -w build && pnpm run -w gen && pnpm run init-db && pnpm run build:site"
+  "app_dir": "/",
+  "build_command": "pnpm run build:site",
+  "start_command": "cd docs && pnpm run start"
 }
