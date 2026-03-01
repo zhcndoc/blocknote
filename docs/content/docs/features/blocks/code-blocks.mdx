@@ -89,7 +89,7 @@ export default function App() {
 例如，若要使用优化过的 javascript 引擎，指定 javascript、typescript、vue 三种语言，并包含亮色与暗色主题，可以运行以下命令：
 
 ```bash
-npx shiki-codegen --langs javascript,typescript,vue --themes light,dark --engine javascript --precompiled ./shiki.bundle.ts
+npx shiki-codegen --langs javascript,typescript,vue --themes light-plus,dark-plus --engine javascript --precompiled ./shiki.bundle.ts
 ```
 
 该命令将生成一个 `shiki.bundle.ts` 文件，你可以用它来为编辑器创建语法高亮器。
@@ -102,21 +102,23 @@ import { createHighlighter } from "./shiki.bundle.js";
 export default function App() {
   const editor = useCreateBlockNote({
     schema: BlockNoteSchema.create().extend({
-      codeBlock: createCodeBlockSpec({
-        indentLineWithTab: true,
-        defaultLanguage: "typescript",
-        supportedLanguages: {
-          typescript: {
-            name: "TypeScript",
-            aliases: ["ts"],
+      blockSpecs: {
+        codeBlock: createCodeBlockSpec({
+          indentLineWithTab: true,
+          defaultLanguage: "typescript",
+          supportedLanguages: {
+            typescript: {
+              name: "TypeScript",
+              aliases: ["ts"],
+            },
           },
-        },
-        createHighlighter: () =>
-          createHighlighter({
-            themes: ["light-plus", "dark-plus"],
-            langs: [],
-          }),
-      }),
+          createHighlighter: () =>
+            createHighlighter({
+              themes: ["light-plus", "dark-plus"],
+              langs: [],
+            }),
+        }),
+      },
     }),
   });
 

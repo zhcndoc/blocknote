@@ -1,12 +1,13 @@
 import {
-  useFloating,
-  useTransitionStyles,
+  autoUpdate,
+  FloatingFocusManager,
   useDismiss,
+  useFloating,
+  useHover,
   useInteractions,
   useMergeRefs,
   useTransitionStatus,
-  autoUpdate,
-  useHover,
+  useTransitionStyles,
 } from "@floating-ui/react";
 import { HTMLAttributes, ReactNode, useEffect, useRef } from "react";
 
@@ -26,6 +27,7 @@ export type GenericPopoverReference =
       cacheMountedBoundingClientRect?: boolean;
     }
   | {
+      element: undefined;
       // When no reference element is provided, this can be provided as an
       // alternative "virtual" element to position the popover around.
       getBoundingClientRect: () => DOMRect;
@@ -61,7 +63,7 @@ export function getMountedBoundingClientRectCache(
 
   return () => {
     if (
-      "element" in reference &&
+      reference.element &&
       (reference.cacheMountedBoundingClientRect ?? true)
     ) {
       if (reference.element.isConnected) {
@@ -172,6 +174,16 @@ export const GenericPopover = (
         {...mergedProps}
         dangerouslySetInnerHTML={{ __html: innerHTML.current }}
       />
+    );
+  }
+
+  if (!props.focusManagerProps?.disabled) {
+    return (
+      <FloatingFocusManager {...props.focusManagerProps} context={context}>
+        <div ref={mergedRefs} {...mergedProps}>
+          {props.children}
+        </div>
+      </FloatingFocusManager>
     );
   }
 
