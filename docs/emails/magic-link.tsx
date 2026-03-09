@@ -20,30 +20,28 @@ export const MagicLinkEmail = ({ name, url }: MagicLinkEmailProps) => {
     <Html>
       <Head />
       <Body style={main}>
-        <Preview>BlockNote - Sign in to your account</Preview>
+        <Preview>BlockNote - 登录你的账号</Preview>
         <Container style={container}>
           <Img
-            src="https://www.blocknotejs.org/img/logos/icon_light_500.png"
+            src="https://blocknote.zhcndoc.com/img/logos/icon_light_500.png"
             width="40"
             height="40"
             alt="BlockNote"
           />
           <Section>
-            <Text style={text}>Hi{name ? ` ${name}` : ""},</Text>
+            <Text style={text}>你好{name ? ` ${name}` : ""}，</Text>
             <Text style={text}>
-              Someone recently requested a magic link for your BlockNote
-              account. If this was you, you can sign in here:
+              刚刚有人为你的 BlockNote 账号请求了一封魔法链接邮件。如果是你
+              本人操作，可以通过下面的按钮登录：
             </Text>
             <Button style={button} href={url}>
-              Sign in
+              登录
             </Button>
             <Text style={text}>
-              If you don&apos;t want to sign in or didn&apos;t request this,
-              just ignore and delete this message.
+              如果你不想登录，或这不是你的操作，直接忽略并删除这封邮件即可。
             </Text>
             <Text style={text}>
-              To keep your account secure, please don&apos;t forward this email
-              to anyone.
+              为了确保账号安全，请不要将这封邮件转发给任何人。
             </Text>
           </Section>
         </Container>

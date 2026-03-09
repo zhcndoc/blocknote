@@ -3,7 +3,7 @@ import { getFullMetadata } from "@/lib/getFullMetadata";
 import { Suspense } from "react";
 
 export const metadata = getFullMetadata({
-  title: "Sign In",
+  title: "登录",
   path: "/signin",
 });
 

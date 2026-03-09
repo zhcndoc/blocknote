@@ -1,29 +1,29 @@
 ---
-title: Editor Setup
-description: Learn how to set up the editor.
+title: 编辑器设置
+description: 学习如何设置编辑器。
 ---
 
-# Editor Setup
+# 编辑器设置
 
-You can customize your editor when you instantiate it. Let's take a closer looks at the basic methods and components to set up your BlockNote editor.
+您可以在实例化编辑器时自定义它。让我们仔细看看设置 BlockNote 编辑器的基本方法和组件。
 
-## Create an editor
+## 创建编辑器
 
-Create a new `BlockNoteEditor` by calling the `useCreateBlockNote` hook. This instantiates a new editor and its required state. You can later interact with the editor using the Editor API and pass it to the `BlockNoteView` component.
+通过调用 `useCreateBlockNote` Hook 创建一个新的 `BlockNoteEditor`。这会实例化一个新的编辑器及其所需的状态。之后，您可以使用编辑器 API 与编辑器交互，并将其传递给 `BlockNoteView` 组件。
 
 ```tsx twoslash
 import React from "react";
 /**
- * The options for the editor, like initial content, schema, etc.
- * See the [Editor Options API reference](/docs/reference/editor/overview#options) for more details
+ * 编辑器选项，如初始内容、schema 等。
+ * 详情请参见 [编辑器选项 API 参考](/docs/reference/editor/overview#options)
  */
 type BlockNoteEditorOptions = object;
 /**
- * See the [Editor API reference](/docs/reference/editor/manipulate-blocks) for more details
+ * 详情请参见 [编辑器 API 参考](/docs/reference/editor/manipulate-blocks)
  */
 type BlockNoteEditor = object;
 /**
- * This hook creates a new editor instance, but doesn't render it.
+ * 此 Hook 创建一个新的编辑器实例，但不会渲染它。
  */
 // ---cut---
 declare function useCreateBlockNote(
@@ -32,33 +32,28 @@ declare function useCreateBlockNote(
 ): BlockNoteEditor;
 ```
 
-The hook takes two optional parameters:
+该 Hook 接受两个可选参数：
 
-**options:** Configure the editor with various options. You can find some commonly used options below, or see [Editor Options](/docs/reference/editor/overview#options) for all available options.
+**options：** 用各种选项配置编辑器。下面列出了一些常用选项，更多选项请参见 [编辑器选项](/docs/reference/editor/overview#options)。
 
-- `initialContent` - Set starting content
-- `dictionary` - Customize text strings for localization. See the [Localization](/docs/features/localization) for more.
-- `schema` - Add custom blocks and styles. See [Custom Schemas](/docs/features/custom-schemas).
-- `uploadFile` - Handle file uploads to a backend.
-- `pasteHandler` - Handle how pasted clipboard content gets parsed.
+- `initialContent` - 设置起始内容
+- `dictionary` - 用于本地化的文本字符串定制。详见 [本地化](/docs/features/localization)。
+- `schema` - 添加自定义块和样式。详见 [自定义 Schema](/docs/features/custom-schemas)。
+- `uploadFile` - 处理文件上传到后端。
+- `pasteHandler` - 处理剪贴板内容的粘贴解析。
 
-**deps:** React dependency array that determines when to recreate the editor.
+**deps：** React 依赖数组，决定何时重新创建编辑器。
 
 <Callout type="info" emoji={"💡"}>
-  <strong>Manually creating the editor (`BlockNoteEditor.create`)</strong>
+  <strong>手动创建编辑器（`BlockNoteEditor.create`）</strong>
   <p>
-    The `useCreateBlockNote` hook is actually a simple `useMemo` wrapper around
-    the `BlockNoteEditor.create` method. You can use this method directly if you
-    want to control the editor lifecycle manually. For example, we do this in
-    the [Saving & Loading example](/examples/backend/saving-loading) to delay
-    the editor creation until some content has been fetched from an external
-    data source.
+    `useCreateBlockNote` Hook 其实是对 `BlockNoteEditor.create` 方法的一个简单的 `useMemo` 包装。如果您想手动控制编辑器生命周期，可以直接使用该方法。例如，我们在 [保存与加载示例](/examples/backend/saving-loading) 中使用此方法来延迟编辑器创建，直到从外部数据源获取到内容。
   </p>
 </Callout>
 
-## Render the editor
+## 渲染编辑器
 
-Use the `<BlockNoteView>` component to render the `BlockNoteEditor` instance you just created:
+使用 `<BlockNoteView>` 组件来渲染您刚创建的 `BlockNoteEditor` 实例：
 
 ```tsx
 const editor = useCreateBlockNote();
@@ -66,21 +61,21 @@ const editor = useCreateBlockNote();
 return <BlockNoteView editor={editor} />;
 ```
 
-The `<BlockNoteView>` component has a number of props that you can use to customize the editor. See [React Overview](/docs/react/overview) for more information. But, here are some important props to consider:
+`<BlockNoteView>` 组件有许多可用属性供您自定义编辑器。更多信息请参见 [React 概览](/docs/react/overview)。以下是一些重要属性：
 
-- `editor`: The `BlockNoteEditor` instance to render.
-- `editable`: Whether the editor should be editable.
-- `onChange`: Callback fired when the editor content (document) changes.
-- `onSelectionChange`: Callback fired when the editor selection changes.
-- `theme`: The editor's theme, see [Themes](/docs/react/styling-theming/themes) for more about this.
+- `editor`：要渲染的 `BlockNoteEditor` 实例。
+- `editable`：编辑器是否可编辑。
+- `onChange`：编辑器内容（文档）变化时触发的回调。
+- `onSelectionChange`：编辑器选区变化时触发的回调。
+- `theme`：编辑器主题，详见 [主题](/docs/react/styling-theming/themes)。
 
 <Callout type="info" emoji={"💡"}>
-  <strong>Uncontrolled component</strong>
+  <strong>非受控组件</strong>
   <p>
-    Note that the `BlockNoteView` component is an [uncontrolled component](https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components). 
-    This means you don't pass in the editor content directly as a prop. You can use the `initialContent` option in the `useCreateBlockNote` hook to set the initial content of the editor (similar to the `defaultValue` prop in a regular React `<textarea>`).
+    请注意，`BlockNoteView` 组件是一个 <a href="https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components" target="_blank" rel="noopener noreferrer">非受控组件</a>。
+    这意味着您不会直接作为属性传入编辑器内容。您可以使用 `useCreateBlockNote` Hook 中的 `initialContent` 选项来设置编辑器的初始内容（类似于普通 React `<textarea>` 的 `defaultValue` 属性）。
   </p>
   <p>
-    BlockNote handles the complexities and performance optimizations of managing editor state internally. You can interact with the editor content using the [Editor API](/docs/reference/editor/overview).
+    BlockNote 内部处理了编辑器状态的复杂性和性能优化。您可以使用 [编辑器 API](/docs/reference/editor/overview) 与编辑器内容进行交互。
   </p>
 </Callout>

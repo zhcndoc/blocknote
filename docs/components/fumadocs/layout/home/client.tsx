@@ -161,7 +161,7 @@ export function Header({
                   <SearchToggle className="p-2" hideIfDisabled />
                 ))}
               <CollapsibleTrigger
-                aria-label="Toggle Menu"
+                aria-label="切换菜单"
                 className={cn(
                   buttonVariants({
                     size: "icon",

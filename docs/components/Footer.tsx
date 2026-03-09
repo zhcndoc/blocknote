@@ -66,7 +66,7 @@ export function FooterContent() {
   return (
     <div aria-labelledby="footer-heading" className="w-full">
       <h2 className="sr-only" id="footer-heading">
-        Footer
+        页脚
       </h2>
       <div className="mx-auto w-full">
         <div className="xl:grid xl:grid-cols-3 xl:gap-16">

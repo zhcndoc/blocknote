@@ -16,7 +16,7 @@ export const Letter: React.FC = () => {
         <div className="relative">
           <div className="mb-16">
             <h2 className="font-serif text-6xl font-medium italic tracking-tight text-stone-900 md:text-8xl">
-              Let&apos;s build.
+              一起构建吧。
             </h2>
           </div>
 
@@ -24,21 +24,17 @@ export const Letter: React.FC = () => {
             <div className="col-span-12 md:col-span-7">
               <div className="prose prose-lg prose-stone max-w-none">
                 <p className="font-sans text-xl font-medium leading-relaxed text-stone-900">
-                  Building a rich text editor is one of the hardest engineering
-                  challenges on the web. It used to take months of specialized
-                  work.
+                  构建富文本编辑器一直是 Web 上最困难的工程挑战之一。过去，
+                  这往往意味着数月的专项开发工作。
                 </p>
                 <p>
-                  We believe that great tools should be{" "}
-                  <strong>sovereign</strong> by default. You shouldn&apos;t have
-                  to choose between a cohesive UX and owning your
-                  infrastructure.
+                  我们相信，优秀的工具默认就应该保持<strong>自主可控</strong>。
+                  你不该被迫在统一体验和掌控基础设施之间二选一。
                 </p>
                 <p>
-                  That&apos;s why we built BlockNote. A{" "}
-                  <strong>batteries-included</strong> editor that gives you a
-                  Notion-quality experience in minutes, while staying grounded
-                  in open standards like{" "}
+                  这正是我们打造 BlockNote 的原因。它是一款
+                  <strong>开箱即用</strong> 的编辑器，能让你在几分钟内获得 接近
+                  Notion 级别的体验，同时仍然扎根于开放标准，例如{" "}
                   <span className="font-semibold text-stone-900">
                     ProseMirror
                   </span>{" "}
@@ -47,10 +43,10 @@ export const Letter: React.FC = () => {
               </div>
               <div className="mt-12 text-lg text-stone-600">
                 <p>
-                  Whether you&apos;re a startup or a public institution, you
-                  deserve software that lasts. Join us to{" "}
+                  无论你是初创团队还是公共机构，你都值得拥有经得起时间考验的
+                  软件。加入我们，一起{" "}
                   <span className="relative inline-block font-medium text-stone-900">
-                    shape the future
+                    塑造未来
                     <svg
                       className="absolute -bottom-1 left-0 w-full text-stone-300"
                       height="6"
@@ -65,7 +61,7 @@ export const Letter: React.FC = () => {
                       />
                     </svg>
                   </span>{" "}
-                  of the open web.
+                  的开放网络。
                 </p>
               </div>
             </div>
@@ -76,11 +72,10 @@ export const Letter: React.FC = () => {
                 <div className="flex h-full flex-col justify-between">
                   <div>
                     <h3 className="mb-6 font-sans text-3xl font-bold tracking-tight">
-                      Enter BlockNote.
+                      认识 BlockNote。
                     </h3>
                     <p className="mb-8 font-sans leading-relaxed text-stone-400">
-                      Forget low-level details. Work with a strongly typed API.
-                      Get modern UI components out-of-the-box.
+                      忘掉底层细节。使用强类型 API，直接获得现代化 UI 组件。
                     </p>
                   </div>
 
@@ -92,10 +87,10 @@ export const Letter: React.FC = () => {
                       </div>
                       <div className="flex flex-col">
                         <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">
-                          The Team
+                          团队
                         </span>
                         <span className="font-serif italic text-stone-200">
-                          BlockNote Creators
+                          BlockNote 创作者
                         </span>
                       </div>
                     </div>

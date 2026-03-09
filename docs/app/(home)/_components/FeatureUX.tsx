@@ -27,28 +27,27 @@ export const FeatureUX: React.FC = () => {
     {
       id: "components",
       icon: <span>🔋</span>,
-      label: "Ready to Use",
-      description:
-        "Slash menus, formatting toolbars, and drag handles work instantly.",
+      label: "开箱即用",
+      description: "斜杠菜单、格式工具栏和拖拽手柄立即可用。",
     },
     {
       id: "ai",
       icon: <span>✨</span>,
-      label: "AI Assistance",
-      description: "Write and redact content with AI.",
+      label: "AI 辅助",
+      description: "借助 AI 写作、改写和润色内容。",
     },
     {
       id: "blocks",
       icon: <span>🧱</span>,
-      label: "Block-Based",
-      description: "Drag, drop, and nest content blocks.",
+      label: "块编辑",
+      description: "支持拖拽、排序和嵌套内容区块。",
     },
   ];
 
   return (
     <FeatureSection
-      title="A modern editor, ready to ship."
-      description="Built-in components provide a complete, block-based editing experience out of the box. Customize everything when you need to."
+      title="可直接上线的现代编辑器。"
+      description="内置组件提供完整的块编辑体验，开箱即用；需要时也能对每一处进行深度定制。"
       tabs={tabs}
       activeTabId={activeTab}
       onTabChange={(id) => setActiveTab(id as any)}

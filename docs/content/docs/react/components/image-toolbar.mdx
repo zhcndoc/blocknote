@@ -1,43 +1,43 @@
 ---
-title: File Panel
-description: The File Panel appears whenever you select an image that doesn't have a URL, or when you click the "Replace File" button in the Formatting Panel when an image is selected.
+title: 文件面板
+description: 每当您选择一个没有 URL 的图片，或者在选中图片时点击格式面板中的“替换文件”按钮时，文件面板都会出现。
 ---
 
-# File Panel
+# 文件面板
 
-The File Panel appears whenever you select a file (e.g. an image or video) that doesn't have a URL, or when you click the "Replace File" button in the [Formatting Toolbar](/docs/react/components/formatting-toolbar) when a file is selected.
+每当您选择一个没有 URL 的文件（例如图片或视频），或者在选中文件时点击[格式工具栏](/docs/react/components/formatting-toolbar)中的“替换文件”按钮时，文件面板都会出现。
 
 <ThemedImage
   src={{
     light: "/img/screenshots/image_toolbar.png",
     dark: "/img/screenshots/image_toolbar_dark.png",
   }}
-  alt="image"
+  alt="图片"
   width={600}
   height={600}
 />
 
-## File Upload
+## 文件上传
 
-You may notice that upon creating a new BlockNote editor, the "Upload" tab in the File Panel is missing. This is because you must provide BlockNote with a function to handle file uploads using the `uploadFile` [Editor Option](/docs/reference/editor/overview#options):
+您可能会注意到，在新建一个 BlockNote 编辑器时，文件面板中的“上传”标签缺失。这是因为您必须为 BlockNote 提供一个处理文件上传的函数，使用 `uploadFile` [编辑器选项](/docs/reference/editor/overview#options)：
 
 ```ts
 type uploadFile = (file: File) => Promise<string>;
 ```
 
-`file:` The file to upload, in this case an image.
+`file:` 要上传的文件，此处为图片文件。
 
-`returns:` A `Promise`, which resolves to the URL that the image can be accessed at.
+`返回值:` 一个 `Promise`，解析后得到该图片可访问的 URL。
 
-You can use the provided `uploadToTempFilesOrg` function to as a starting point, which uploads files to [tmpfiles.org](https://tmpfiles.org/). However, it's not recommended to use this in a production environment - you should use your own backend:
+您可以使用提供的 `uploadToTempFilesOrg` 函数作为起点，该函数会将文件上传到 [tmpfiles.org](https://tmpfiles.org/)。然而，不推荐在生产环境中使用它——您应当使用自己的后端：
 
 <Example name="backend/file-uploading" />
 
-## Resolving URLs
+## 解析 URL
 
-Depending on your backend implementation, the URL returned after uploading a file may not point to the file itself, but an API endpoint which lets you access the file. In this case, said file will need to be fetched from when rendering the block.
+根据您的后端实现，上传文件后返回的 URL 可能不是指向文件本身，而是一个允许访问该文件的 API 端点。在这种情况下，渲染区块时需要从该端点获取文件。
 
-BlockNote supports this use case using the `resolveFileUrl` [editor option](/docs/reference/editor/overview#options):
+BlockNote 通过 `resolveFileUrl` [编辑器选项](/docs/reference/editor/overview#options) 支持此用例：
 
 ```ts
 type resolveFileUrl = (url: string) => Promise<string>;

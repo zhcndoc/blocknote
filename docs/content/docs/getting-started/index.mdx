@@ -1,16 +1,16 @@
 ---
-title: Getting Started
-description: Getting started with BlockNote is quick and easy. All you need to do is install the package and add the React component to your app!
-imageTitle: Getting Started with BlockNote
+title: 快速开始
+description: 使用 BlockNote 快速且轻松地入门。你所需要做的就是安装包并将 React 组件添加到应用中！
+imageTitle: BlockNote 快速开始
 ---
 
-# Getting Started
+# 快速开始
 
-Getting started with BlockNote is quick and easy. Install the required packages and add the React component to your app.
+使用 BlockNote 快速且轻松地入门。安装所需的包并将 React 组件添加到你的应用中。
 
-## Install
+## 安装
 
-To install BlockNote with [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), run:
+要使用 [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 安装 BlockNote，请运行：
 
 ```console tab="npm"
 npm install @blocknote/core @blocknote/react @blocknote/mantine
@@ -27,50 +27,48 @@ bun add @blocknote/core @blocknote/react @blocknote/mantine
 npm install @mantine/core @mantine/hooks @mantine/utils
 ```
 
-This guide uses the [Mantine](https://mantine.dev/) version of BlockNote's UI, which works great out-of-the-box. However, BlockNote provides multiple UI library options. Choose the one that best fits your project:
+本指南使用 BlockNote UI 的 [Mantine](https://mantine.dev/) 版本，该版本开箱即用效果极佳。不过，BlockNote 提供多种 UI 库选项。请选择最适合你项目的版本：
 
-- **[Mantine](/docs/getting-started/mantine)** (`@blocknote/mantine`) - Recommended for new projects
+- **[Mantine](/docs/getting-started/mantine)** (`@blocknote/mantine`) - 推荐用于新项目
 - **[Shadcn](/docs/getting-started/shadcn)** (`@blocknote/shadcn`)
 - **[Ariakit](/docs/getting-started/ariakit)** (`@blocknote/ariakit`)
 
-## Create an editor
+## 创建编辑器
 
-The fastest way to get started with the BlockNote is by using the `useCreateBlockNote` hook and `BlockNoteView` component:
+使用 `useCreateBlockNote` 钩子和 `BlockNoteView` 组件，是开始使用 BlockNote 的最快方式：
 
 ```tsx
 import React from "react";
 import { useCreateBlockNote } from "@blocknote/react";
-// Or, you can use ariakit, shadcn, etc.
+// 或者，你可以使用 ariakit、shadcn 等
 import { BlockNoteView } from "@blocknote/mantine";
-// Default styles for the mantine editor
+// mantine 编辑器的默认样式
 import "@blocknote/mantine/style.css";
-// Include the included Inter font
+// 包含的 Inter 字体
 import "@blocknote/core/fonts/inter.css";
 
 export default function MyEditor() {
-  // Create a new editor instance
+  // 创建一个新的编辑器实例
   const editor = useCreateBlockNote();
 
-  // Render the editor
+  // 渲染编辑器
   return <BlockNoteView editor={editor} />;
 }
 ```
 
-For more information about the `useCreateBlockNote` hook and the `BlockNoteView` component, see [React Overview](/docs/react/overview).
+关于 `useCreateBlockNote` 钩子和 `BlockNoteView` 组件的更多信息，请参见 [React 概览](/docs/react/overview)。
 
 <Callout
   type="warning"
-  title="Next.js usage (or other server-side React frameworks)"
+  title="Next.js 使用指南（或其他服务端 React 框架）"
 >
-  Are you using Next.js (`create-next-app`)? Because BlockNote is a client-only
-  component, make sure to disable server-side rendering of BlockNote. [Read our
-  guide on setting up Next.js + BlockNote](/docs/getting-started/nextjs)
+  你是否使用 Next.js（`create-next-app`）？由于 BlockNote 是客户端组件，请确保禁用 BlockNote 的服务端渲染。请阅读我们的 [Next.js + BlockNote 配置指南](/docs/getting-started/nextjs)
 </Callout>
 
-## Next steps
+## 下一步
 
-You now know how to integrate BlockNote into your React app! However, this is just scratching the surface of what you can do with BlockNote.
+你现在已经知道如何将 BlockNote 集成到你的 React 应用中！不过，这只是你可以用 BlockNote 做的事情的冰山一角。
 
-- Learn about [blocks and the editor basics](/docs/foundations/document-structure) and how to interact with the editor using the [editor API](/docs/reference/editor/manipulating-content)
-- See [UI Components](/docs/react/components) to customize built-in menus and toolbars and [Styling & Theming](/docs/react/styling-theming) to customize the look and feel of the editor
-- Further extend the editor with your own Blocks using [Custom Schemas](/docs/features/custom-schemas) or add [Real-Time Collaboration](/docs/features/collaboration)
+- 了解 [块和编辑器基础](/docs/foundations/document-structure) 以及如何使用 [编辑器 API](/docs/reference/editor/manipulating-content) 进行交互
+- 查看 [UI 组件](/docs/react/components) 以自定义内置菜单和工具栏，以及 [样式与主题](/docs/react/styling-theming) 来定制编辑器的外观和风格
+- 通过 [自定义模式](/docs/features/custom-schemas) 进一步扩展编辑器，或者添加 [实时协作](/docs/features/collaboration)

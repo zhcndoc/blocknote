@@ -1,20 +1,17 @@
 ---
-title: YJS Utilities
-description: Utilities for converting between BlockNote blocks and YJS collaborative documents
+title: YJS 工具
+description: 用于在 BlockNote 块和 YJS 协作文档之间转换的工具
 ---
 
-# YJS Utilities
+# YJS 工具
 
-The `@blocknote/core/yjs` export provides utilities for converting between BlockNote blocks and YJS collaborative documents. These utilities are useful when you need to work with YJS documents outside of the standard collaboration setup, such as importing existing content or working with YJS documents programmatically.
+`@blocknote/core/yjs` 导出提供了在 BlockNote 块和 YJS 协作文档之间转换的工具。当你需要在标准协作环境之外操作 YJS 文档时（例如导入已有内容或编程操作 YJS 文档），这些工具非常有用。
 
 <Callout type="warning">
-  **Important:** This package is for advanced use cases where you need to
-  convert between BlockNote blocks and YJS documents programmatically. For most
-  use cases, you should use the [collaboration
-  features](/docs/features/collaboration) directly instead.
+  <strong>重要：</strong> 本包适用于需要程序化在 BlockNote 块和 YJS 文档之间转换的高级用例。大多数用例应直接使用[协作功能](/docs/features/collaboration)。
 </Callout>
 
-## Import
+## 导入
 
 ```typescript
 import {
@@ -25,28 +22,27 @@ import {
 } from "@blocknote/core/yjs";
 ```
 
-## Overview
+## 概述
 
-YJS utilities enable bidirectional conversion between:
+YJS 工具支持双向转换：
 
-- **BlockNote blocks** ↔ **Y.Doc** (YJS document)
-- **BlockNote blocks** ↔ **Y.XmlFragment** (YJS XML fragment)
+- **BlockNote 块** ↔ **Y.Doc**（YJS 文档）
+- **BlockNote 块** ↔ **Y.XmlFragment**（YJS XML 片段）
 
-These conversions are essential for:
+这些转换对以下情况很重要：
 
-- Importing existing BlockNote content into a YJS document for collaboration
-- Exporting content from a YJS document back to BlockNote blocks
-- Working with YJS documents programmatically without an active editor instance
+- 将已有的 BlockNote 内容导入到 YJS 文档以实现协作
+- 将 YJS 文档中的内容导出回 BlockNote 块
+- 在无编辑器实例的环境下，编程操作 YJS 文档
 
-## Converting Blocks to YJS Documents
+## 将块转换为 YJS 文档
 
 ### `blocksToYDoc`
 
-Converts BlockNote blocks into a Y.Doc. This is useful when importing existing content to a Y.Doc for the first time.
+将 BlockNote 块转换为一个 Y.Doc。适合首次将已有内容导入 Y.Doc 的场景。
 
 <Callout type="warning">
-  **Important:** This should not be used to rehydrate a Y.Doc from a database
-  once collaboration has begun, as all history will be lost.
+  <strong>重要：</strong> 协作开始后，不应使用此方法从数据库重新生成 Y.Doc，否则所有历史记录将丢失。
 </Callout>
 
 ```typescript
@@ -61,15 +57,15 @@ function blocksToYDoc<
 ): Y.Doc;
 ```
 
-**Parameters:**
+**参数：**
 
-- `editor` - The BlockNote editor instance
-- `blocks` - Array of blocks to convert
-- `xmlFragment` - Optional XML fragment name (defaults to `"prosemirror"`)
+- `editor` - BlockNote 编辑器实例
+- `blocks` - 需要转换的块数组
+- `xmlFragment` - 可选的 XML 片段名称（默认 `"prosemirror"`）
 
-**Returns:** A new Y.Doc containing the converted blocks
+**返回：** 包含转换后块的新 Y.Doc
 
-**Example:**
+**示例：**
 
 ```typescript
 import { BlockNoteEditor } from "@blocknote/core";
@@ -90,16 +86,16 @@ const blocks = [
   },
 ];
 
-// Convert blocks to Y.Doc
+// 将块转换为 Y.Doc
 const ydoc = blocksToYDoc(editor, blocks);
 
-// Now you can use this Y.Doc with a YJS provider for collaboration
+// 之后可以使用这个 Y.Doc 和 YJS 提供者进行协作
 const provider = new WebrtcProvider("my-room", ydoc);
 ```
 
 ### `blocksToYXmlFragment`
 
-Converts BlockNote blocks into a Y.XmlFragment. This is useful when you want to work with a specific XML fragment within a Y.Doc.
+将 BlockNote 块转换为 Y.XmlFragment。当你希望操作 Y.Doc 中的特定 XML 片段时非常有用。
 
 ```typescript
 function blocksToYXmlFragment<
@@ -113,15 +109,15 @@ function blocksToYXmlFragment<
 ): Y.XmlFragment;
 ```
 
-**Parameters:**
+**参数：**
 
-- `editor` - The BlockNote editor instance
-- `blocks` - Array of blocks to convert
-- `xmlFragment` - Optional existing Y.XmlFragment to populate (creates new one if not provided)
+- `editor` - BlockNote 编辑器实例
+- `blocks` - 需要转换的块数组
+- `xmlFragment` - 可选的现有 Y.XmlFragment，用于填充（若无则创建新的）
 
-**Returns:** A Y.XmlFragment containing the converted blocks
+**返回：** 包含转换后块的 Y.XmlFragment
 
-**Example:**
+**示例：**
 
 ```typescript
 import { BlockNoteEditor } from "@blocknote/core";
@@ -139,15 +135,15 @@ const blocks = [
   },
 ];
 
-// Convert blocks to the XML fragment
+// 将块转换为 XML 片段
 blocksToYXmlFragment(editor, blocks, fragment);
 ```
 
-## Converting YJS Documents to Blocks
+## 将 YJS 文档转换为块
 
 ### `yDocToBlocks`
 
-Converts a Y.Doc back into BlockNote blocks. This is useful for reading content from a YJS document.
+将 Y.Doc 转换回 BlockNote 块。适用于读取 YJS 文档中的内容。
 
 ```typescript
 function yDocToBlocks<
@@ -161,15 +157,15 @@ function yDocToBlocks<
 ): Block<BSchema, ISchema, SSchema>[];
 ```
 
-**Parameters:**
+**参数：**
 
-- `editor` - The BlockNote editor instance
-- `ydoc` - The Y.Doc to convert
-- `xmlFragment` - Optional XML fragment name (defaults to `"prosemirror"`)
+- `editor` - BlockNote 编辑器实例
+- `ydoc` - 要转换的 Y.Doc
+- `xmlFragment` - 可选的 XML 片段名称（默认 `"prosemirror"`）
 
-**Returns:** Array of BlockNote blocks
+**返回：** BlockNote 块数组
 
-**Example:**
+**示例：**
 
 ```typescript
 import { BlockNoteEditor } from "@blocknote/core";
@@ -179,17 +175,17 @@ import * as Y from "yjs";
 const editor = BlockNoteEditor.create();
 const ydoc = new Y.Doc();
 
-// ... Y.Doc is populated through collaboration or other means ...
+// ... Y.Doc 通过协作或其他方式填充 ...
 
-// Convert Y.Doc back to blocks
+// 将 Y.Doc 转换回块
 const blocks = yDocToBlocks(editor, ydoc);
 
-console.log(blocks); // Array of BlockNote blocks
+console.log(blocks); // BlockNote 块数组
 ```
 
 ### `yXmlFragmentToBlocks`
 
-Converts a Y.XmlFragment back into BlockNote blocks.
+将 Y.XmlFragment 转换回 BlockNote 块。
 
 ```typescript
 function yXmlFragmentToBlocks<
@@ -202,14 +198,14 @@ function yXmlFragmentToBlocks<
 ): Block<BSchema, ISchema, SSchema>[];
 ```
 
-**Parameters:**
+**参数：**
 
-- `editor` - The BlockNote editor instance
-- `xmlFragment` - The Y.XmlFragment to convert
+- `editor` - BlockNote 编辑器实例
+- `xmlFragment` - 要转换的 Y.XmlFragment
 
-**Returns:** Array of BlockNote blocks
+**返回：** BlockNote 块数组
 
-**Example:**
+**示例：**
 
 ```typescript
 import { BlockNoteEditor } from "@blocknote/core";
@@ -220,15 +216,15 @@ const editor = BlockNoteEditor.create();
 const doc = new Y.Doc();
 const fragment = doc.getXmlFragment("my-fragment");
 
-// ... Fragment is populated through collaboration or other means ...
+// ... 片段通过协作或其他方式填充 ...
 
-// Convert fragment back to blocks
+// 将片段转换回块
 const blocks = yXmlFragmentToBlocks(editor, fragment);
 ```
 
-## Round-trip Conversion
+## 循环转换
 
-All conversion functions support round-trip conversion, meaning you can convert blocks → YJS → blocks and get back the same content:
+所有转换函数支持循环转换，即你可以实现块 → YJS → 块，并得到相同内容：
 
 ```typescript
 import { BlockNoteEditor } from "@blocknote/core";
@@ -243,16 +239,16 @@ const originalBlocks = [
   },
 ];
 
-// Convert to Y.Doc and back
+// 转换到 Y.Doc 并转换回
 const ydoc = blocksToYDoc(editor, originalBlocks);
 const convertedBlocks = yDocToBlocks(editor, ydoc);
 
-// originalBlocks and convertedBlocks are equivalent
-console.log(originalBlocks); // Same structure as convertedBlocks
+// originalBlocks 和 convertedBlocks 结构相同
+console.log(originalBlocks); // 与 convertedBlocks 结构相同
 ```
 
-## Related Documentation
+## 相关文档
 
-- [Real-time Collaboration](/docs/features/collaboration) - Learn how to set up collaboration in BlockNote
-- [Manipulating Content](/docs/reference/editor/manipulating-content) - Working with blocks and inline content
-- [Server Processing](/docs/features/server-processing) - Server-side processing for BlockNote (uses these YJS utilities internally)
+- [实时协作](/docs/features/collaboration) - 了解如何在 BlockNote 中设置协作
+- [内容操作](/docs/reference/editor/manipulating-content) - 操作块和内联内容
+- [服务器端处理](/docs/features/server-processing) - BlockNote 的服务器端处理（内部使用这些 YJS 工具）

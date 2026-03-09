@@ -19,31 +19,26 @@ export const WelcomeEmail = ({ name }: WelcomeEmailProps) => {
     <Html>
       <Head />
       <Body style={main}>
-        <Preview>BlockNote - Next Steps & Subscription</Preview>
+        <Preview>BlockNote - 下一步与订阅</Preview>
         <Container style={container}>
           <Img
-            src="https://www.blocknotejs.org/img/logos/icon_light_500.png"
+            src="https://blocknote.zhcndoc.com/img/logos/icon_light_500.png"
             width="40"
             height="40"
             alt="BlockNote"
           />
           <Section>
-            <Text style={text}>Hi{name ? ` ${name}` : ""},</Text>
+            <Text style={text}>你好{name ? ` ${name}` : ""}，</Text>
+            <Text style={text}>感谢你完成邮箱验证，欢迎来到 BlockNote！</Text>
             <Text style={text}>
-              Thanks for verifying your email address and welcome to BlockNote!
+              下一步，你可以订阅 BlockNote 套餐以解锁更多功能。订阅商业版后，
+              你将获得 XL 扩展包许可。所有付费套餐也都会通过 GitHub 获得更高
+              优先级的问题支持。
             </Text>
-            <Text style={text}>
-              Your next step is to subscribe to a BlockNote plan to unlock more
-              features. Subscribing to the Business plan grants you a license
-              for our XL packages. All paid plans also receive prioritized bug
-              support through GitHub.
-            </Text>
-            <Link style={button} href="https://www.blocknotejs.org/pricing">
-              View Plans & Subscribe
+            <Link style={button} href="https://blocknote.zhcndoc.com/pricing">
+              查看套餐并订阅
             </Link>
-            <Text style={text}>
-              We appreciate your support for our open-source project!
-            </Text>
+            <Text style={text}>感谢你对我们开源项目的支持！</Text>
           </Section>
         </Container>
       </Body>

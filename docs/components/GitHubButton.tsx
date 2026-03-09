@@ -9,9 +9,9 @@ export default function GitHubButton() {
       data-icon="octicon-star"
       data-size="large"
       data-show-count="true"
-      aria-label="Star TypeCellOS/BlockNote on GitHub"
+      aria-label="在 GitHub 上收藏 TypeCellOS/BlockNote"
     >
-      Star
+      收藏
     </GHB>
   );
 }

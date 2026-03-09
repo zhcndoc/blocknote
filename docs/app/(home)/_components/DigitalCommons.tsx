@@ -33,24 +33,24 @@ export const DigitalCommons: React.FC = () => {
             <div className="mb-6 flex items-center gap-3">
               <span className="text-xl">🇪🇺</span>
               <span className="text-xs font-bold uppercase tracking-widest text-amber-200/80">
-                Digital Commons
+                数字公共品
               </span>
             </div>
 
             {/* Headline - editorial style */}
             <h2 className="mb-6 font-serif text-3xl leading-tight text-white md:text-4xl">
-              Three nations choose <br />
+              三个国家选择 <br />
               <span className="bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">
-                open source
+                开源
               </span>{" "}
-              to power
+              作为驱动力
               <br />
-              their digital future.
+              建设数字未来。
             </h2>
 
             {/* Short punchy copy */}
             <p className="mb-8 text-base leading-relaxed text-stone-400">
-              France, Germany, and the Netherlands partner to build{" "}
+              法国、德国和荷兰联合打造{" "}
               <Link
                 href="https://github.com/suitenumerique/docs"
                 target="_blank"
@@ -59,14 +59,15 @@ export const DigitalCommons: React.FC = () => {
               >
                 Docs
               </Link>
-              , a collaborative writing tool for thousands of public servants.{" "}
-              <strong className="text-white">BlockNote is the engine.</strong>
+              ，一个服务于数千名公共部门工作人员的协作写作工具。{" "}
+              <strong className="text-white">
+                BlockNote 是它背后的编辑引擎。
+              </strong>
             </p>
 
             {/* Compelling social proof - simpler */}
             <p className="mb-8 text-sm italic text-stone-500">
-              &quot;Building Digital Commons means better tools, data
-              sovereignty, and shared progress.&quot;
+              &quot;建设数字公共品，意味着更好的工具、数据主权，以及共享的进步。&quot;
             </p>
 
             {/* CTA */}
@@ -77,7 +78,7 @@ export const DigitalCommons: React.FC = () => {
               // rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-medium text-purple-300 transition-colors hover:text-purple-200"
             >
-              <span>Partner with us</span>
+              <span>与我们合作</span>
               <span>→</span>
             </Link>
           </div>
@@ -105,7 +106,7 @@ export const DigitalCommons: React.FC = () => {
                 <button
                   onClick={handlePlayPause}
                   className="absolute inset-0 flex items-center justify-center bg-black/20 transition-all hover:bg-black/30"
-                  aria-label="Play video"
+                  aria-label="播放视频"
                 >
                   <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-xl transition-transform hover:scale-110">
                     <svg

@@ -19,37 +19,37 @@ const fallbackPages: SearchResult[] = [
   {
     id: "/docs/getting-started",
     type: "page",
-    content: "Getting Started",
+    content: "快速开始",
     url: "/docs/getting-started",
   },
   {
     id: "/docs",
     type: "page",
-    content: "Introduction",
+    content: "简介",
     url: "/docs",
   },
   {
     id: "/examples/basic/minimal",
     type: "page",
-    content: "Basic Example",
+    content: "基础示例",
     url: "/examples/basic/minimal",
   },
   {
     id: "/docs/react/components",
     type: "page",
-    content: "React Components",
+    content: "React 组件",
     url: "/docs/react/components",
   },
   {
     id: "/docs/foundations/document-structure",
     type: "page",
-    content: "Document Structure",
+    content: "文档结构",
     url: "/docs/foundations/document-structure",
   },
   {
     id: "/docs/features/ai",
     type: "page",
-    content: "AI Features",
+    content: "AI 功能",
     url: "/docs/features/ai",
   },
 ];
@@ -66,7 +66,7 @@ export default function NotFound() {
         const searchTerms = pathSegments.slice(-2).join(" ");
 
         if (!searchTerms) {
-          throw new Error("No search terms");
+          throw new Error("没有搜索词");
         }
 
         const response = await fetch(
@@ -103,11 +103,10 @@ export default function NotFound() {
               404
             </div>
             <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-white">
-              Page Not Found
+              页面未找到
             </h1>
             <p className="mx-auto max-w-2xl text-xl text-gray-600 dark:text-gray-300">
-              We couldn&apos;t find the page you&apos;re looking for, but here
-              are some pages that might help:
+              我们没有找到你访问的页面，不过下面这些页面也许能帮到你：
             </p>
           </div>
 
@@ -116,12 +115,12 @@ export default function NotFound() {
             {isLoading ? (
               <div className="flex items-center justify-center space-x-3 py-12 text-gray-600 dark:text-gray-400">
                 <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-blue-600"></div>
-                <span className="text-lg">Searching for similar pages...</span>
+                <span className="text-lg">正在查找相似页面...</span>
               </div>
             ) : searchResults.length > 0 ? (
               <div className="space-y-6">
                 <h2 className="mb-8 text-center text-2xl font-semibold text-gray-900 dark:text-white">
-                  {useFallback ? "Popular Pages" : "Similar Pages"}
+                  {useFallback ? "热门页面" : "相似页面"}
                 </h2>
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {searchResults.map((result, index) => (
@@ -156,8 +155,7 @@ export default function NotFound() {
             ) : (
               <div className="py-12 text-center text-gray-600 dark:text-gray-400">
                 <p className="text-lg">
-                  No similar pages found. Try searching or browsing our
-                  documentation.
+                  没有找到相似页面。你可以尝试搜索，或浏览我们的文档。
                 </p>
               </div>
             )}

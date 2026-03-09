@@ -1,43 +1,43 @@
 ---
-title: Overriding CSS
-description: You can change any styles applied to the editor by setting your own CSS styles.
+title: 覆盖 CSS
+description: 你可以通过设置自定义的 CSS 样式来更改应用于编辑器的任何样式。
 ---
 
-# Overriding CSS
+# 覆盖 CSS
 
-BlockNote provides several ways to customize the editor's appearance through CSS. You can override default styles using CSS classes and attributes.
+BlockNote 提供了多种通过 CSS 自定义编辑器外观的方法。你可以使用 CSS 类和属性来覆盖默认样式。
 
-## Basic Example
+## 基本示例
 
-In the demo below, we create additional CSS rules to make the editor text and hovered slash menu items blue:
+在下面的演示中，我们创建了额外的 CSS 规则，使编辑器文本和鼠标悬停时的斜杠菜单项变为蓝色：
 
 <Example name="theming/theming-css" />
 
-## CSS Selectors Reference
+## CSS 选择器参考
 
-### BlockNote CSS Classes
+### BlockNote CSS 类
 
-BlockNote uses classes with the `bn-` prefix to style editor elements. Here are the key classes you can target:
+BlockNote 使用带有 `bn-` 前缀的类来为编辑器元素添加样式。以下是你可以针对的主要类：
 
-#### Editor Structure
+#### 编辑器结构
 
-- `.bn-container`: Container for editor and all menus/toolbars.
-- `.bn-editor`: Main editor element.
-- `.bn-block`: Individual block element (including nested).
-- `.bn-block-group`: Container for nested blocks.
-- `.bn-block-content`: Block content wrapper.
-- `.bn-inline-content`: Block's editable rich text content.
+- `.bn-container`：编辑器及所有菜单/工具栏的容器。
+- `.bn-editor`：主编辑器元素。
+- `.bn-block`：单个块元素（包括嵌套块）。
+- `.bn-block-group`：嵌套块的容器。
+- `.bn-block-content`：块内容包装器。
+- `.bn-inline-content`：块的可编辑富文本内容。
 
-#### UI Components
+#### UI 组件
 
-- `.bn-toolbar`: Formatting & link toolbars.
-- `.bn-side-menu`: Side menu element.
-- `.bn-drag-handle-menu`: Drag handle menu.
-- `.bn-suggestion-menu`: Suggestion menu.
+- `.bn-toolbar`：格式化和链接工具栏。
+- `.bn-side-menu`：侧边菜单元素。
+- `.bn-drag-handle-menu`：拖拽手柄菜单。
+- `.bn-suggestion-menu`：建议菜单。
 
-### BlockNote CSS Attributes
+### BlockNote CSS 属性
 
-BlockNote uses data attributes to target specific block types and properties:
+BlockNote 使用数据属性来针对特定的块类型和属性：
 
-- `[data-content-type="blockType"]`: Targets blocks of type `blockType`.
-- `[data-propName="propValue"]`: Targets blocks with specific prop values. If the value is the same as the default value, the `data-propName` attribute will not be added.
+- `[data-content-type="blockType"]`：针对类型为 `blockType` 的块。
+- `[data-propName="propValue"]`：针对具有特定属性值的块。如果该值与默认值相同，则不会添加 `data-propName` 属性。

@@ -1,17 +1,17 @@
 ---
-title: List Types
-description: How to use list types in BlockNote.
+title: 列表类型
+description: 如何在 BlockNote 中使用列表类型。
 ---
 
-# List Item Blocks
+# 列表项块
 
-List item blocks are used to create different types of lists in your documents. BlockNote supports various list item blocks to help you structure and format your content effectively.
+列表项块用于在文档中创建不同类型的列表。BlockNote 支持各种列表项块，帮助您有效地构建和格式化内容。
 
-### Bullet List Item
+### 项目符号列表项
 
-A bullet list item is a list item that is not numbered.
+项目符号列表项是不带编号的列表项。
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type BulletListItemBlock = {
@@ -23,11 +23,11 @@ type BulletListItemBlock = {
 };
 ```
 
-### Numbered List Item
+### 编号列表项
 
-A numbered list item is a list item that is numbered.
+编号列表项是带编号的列表项。
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type NumberedListItemBlock = {
@@ -41,13 +41,13 @@ type NumberedListItemBlock = {
 };
 ```
 
-`start:` The number of this list item. If not provided, it defaults to `1`, or is incremented from the previous item.
+`start:` 该列表项的编号。如果未提供，默认值为 `1`，或自动递增。
 
-### Check List Item
+### 复选列表项
 
-A check list item is a list item that can be checked or unchecked.
+复选列表项是可勾选或取消勾选的列表项。
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type CheckListItemBlock = {
@@ -61,13 +61,13 @@ type CheckListItemBlock = {
 };
 ```
 
-`checked:` Whether the list item is checked or not.
+`checked:` 表示该列表项是否被勾选。
 
-### Toggle List Item
+### 切换列表项
 
-A toggle list item is a list item that can show or hide it's children.
+切换列表项是可以显示或隐藏其子项的列表项。
 
-**Type & Props**
+**类型与属性**
 
 ```typescript
 type ToggleListItemBlock = {

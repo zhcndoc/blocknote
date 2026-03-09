@@ -1,42 +1,42 @@
 ---
-title: Localization (i18n)
-description: Learn how to localize BlockNote to support multiple languages and customize text strings
+title: 本地化 (i18n)
+description: 学习如何本地化 BlockNote 以支持多语言并自定义文本字符串
 ---
 
-# Localization (i18n)
+# 本地化 (i18n)
 
-BlockNote is designed to be fully localized, with support for multiple languages. You can easily change the language of your editor or create custom translations.
+BlockNote 设计支持完全本地化，支持多种语言。您可以轻松更改编辑器语言或创建自定义翻译。
 
-## Supported Languages
+## 支持的语言
 
-BlockNote supports the following languages out of the box:
+BlockNote 开箱即用支持以下语言：
 
-- **Arabic** (`ar`) - العربية
-- **Chinese (Simplified)** (`zh`) - 中文
-- **Chinese (Traditional)** (`zh-tw`) - 繁體中文
-- **Croatian** (`hr`) - Hrvatski
-- **Dutch** (`nl`) - Nederlands
-- **English** (`en`) - English
-- **French** (`fr`) - Français
-- **German** (`de`) - Deutsch
-- **Hebrew** (`he`) - עברית
-- **Icelandic** (`is`) - Íslenska
-- **Italian** (`it`) - Italiano
-- **Japanese** (`ja`) - 日本語
-- **Korean** (`ko`) - 한국어
-- **Norwegian** (`no`) - Norsk
-- **Polish** (`pl`) - Polski
-- **Portuguese** (`pt`) - Português
-- **Russian** (`ru`) - Русский
-- **Slovak** (`sk`) - Slovenčina
-- **Spanish** (`es`) - Español
-- **Ukrainian** (`uk`) - Українська
-- **Uzbek** (`uz`) - O'zbekcha
-- **Vietnamese** (`vi`) - Tiếng Việt
+- **阿拉伯语** (`ar`) - العربية
+- **简体中文** (`zh`) - 中文
+- **繁体中文** (`zh-tw`) - 繁體中文
+- **克罗地亚语** (`hr`) - Hrvatski
+- **荷兰语** (`nl`) - Nederlands
+- **英语** (`en`) - English
+- **法语** (`fr`) - Français
+- **德语** (`de`) - Deutsch
+- **希伯来语** (`he`) - עברית
+- **冰岛语** (`is`) - Íslenska
+- **意大利语** (`it`) - Italiano
+- **日语** (`ja`) - 日本語
+- **韩语** (`ko`) - 한국어
+- **挪威语** (`no`) - Norsk
+- **波兰语** (`pl`) - Polski
+- **葡萄牙语** (`pt`) - Português
+- **俄语** (`ru`) - Русский
+- **斯洛伐克语** (`sk`) - Slovenčina
+- **西班牙语** (`es`) - Español
+- **乌克兰语** (`uk`) - Українська
+- **乌兹别克语** (`uz`) - O'zbekcha
+- **越南语** (`vi`) - Tiếng Việt
 
-## Basic Usage
+## 基本用法
 
-To use a different language, import the desired locale and pass it to the `dictionary` option:
+要使用不同语言，导入所需语言包并传递给 `dictionary` 选项：
 
 ```tsx
 import { useCreateBlockNote, BlockNoteView } from "@blocknote/react";
@@ -51,9 +51,9 @@ function FrenchEditor() {
 }
 ```
 
-## Dynamic Language Switching
+## 动态切换语言
 
-You can dynamically change the language based on user preferences or your app's locale:
+您可以根据用户偏好或应用的语言环境动态更改语言：
 
 ```tsx
 import { useCreateBlockNote, BlockNoteView } from "@blocknote/react";
@@ -67,15 +67,15 @@ function LocalizedEditor({ language = "en" }) {
   return <BlockNoteView editor={editor} />;
 }
 
-// Usage
+// 使用示例
 <LocalizedEditor language="fr" />
 <LocalizedEditor language="de" />
 <LocalizedEditor language="ja" />
 ```
 
-## Customizing Text Strings
+## 自定义文本字符串
 
-You can customize specific text strings by extending an existing dictionary:
+您可以通过扩展现有字典来自定义特定文本字符串：
 
 ```tsx
 import { useCreateBlockNote, BlockNoteView } from "@blocknote/react";
@@ -87,16 +87,16 @@ function CustomEditor() {
       ...en,
       placeholders: {
         ...en.placeholders,
-        default: "Start typing your story...",
-        heading: "Enter your title here",
-        emptyDocument: "Begin your document",
+        default: "开始输入您的故事...",
+        heading: "在此输入标题",
+        emptyDocument: "开始您的文档",
       },
       slash_menu: {
         ...en.slash_menu,
         paragraph: {
           ...en.slash_menu.paragraph,
-          title: "Text Block",
-          subtext: "Regular text content",
+          title: "文本块",
+          subtext: "常规文本内容",
         },
       },
     },
@@ -106,77 +106,77 @@ function CustomEditor() {
 }
 ```
 
-## Dictionary Structure
+## 字典结构
 
-The dictionary object contains translations for various parts of the editor:
+字典对象包含编辑器各部分的翻译：
 
-### Placeholders
+### 占位符
 
-Text that appears when blocks are empty:
+块为空时显示的文本：
 
 ```tsx
 placeholders: {
-  default: "Enter text or type '/' for commands",
-  heading: "Heading",
-  bulletListItem: "List",
-  numberedListItem: "List",
-  checkListItem: "List",
-  new_comment: "Write a comment...",
-  edit_comment: "Edit comment...",
-  comment_reply: "Add comment...",
+  default: "输入文本或键入 '/' 命令",
+  heading: "标题",
+  bulletListItem: "列表",
+  numberedListItem: "列表",
+  checkListItem: "列表",
+  new_comment: "写评论...",
+  edit_comment: "编辑评论...",
+  comment_reply: "添加评论...",
 }
 ```
 
-### Slash Menu
+### 斜杠菜单
 
-Commands that appear when typing `/`:
+输入 `/` 时出现的命令：
 
 ```tsx
 slash_menu: {
   paragraph: {
-    title: "Paragraph",
-    subtext: "The body of your document",
+    title: "段落",
+    subtext: "文档主体内容",
     aliases: ["p", "paragraph"],
-    group: "Basic blocks",
+    group: "基本块",
   },
   heading: {
-    title: "Heading 1",
-    subtext: "Top-level heading",
+    title: "一级标题",
+    subtext: "顶级标题",
     aliases: ["h", "heading1", "h1"],
-    group: "Headings",
+    group: "标题",
   },
-  // ... more menu items
+  // ... 更多菜单项
 }
 ```
 
-### UI Elements
+### 界面元素
 
-Text for buttons, menus, and other interface elements:
+按钮、菜单及其他界面元素的文本：
 
 ```tsx
 side_menu: {
-  add_block_label: "Add block",
-  drag_handle_label: "Open block menu",
+  add_block_label: "添加块",
+  drag_handle_label: "打开块菜单",
 },
 table_handle: {
-  delete_column_menuitem: "Delete column",
-  add_left_menuitem: "Add column left",
-  // ... more table options
+  delete_column_menuitem: "删除列",
+  add_left_menuitem: "左侧添加列",
+  // ... 更多表格选项
 },
 color_picker: {
-  text_title: "Text",
-  background_title: "Background",
+  text_title: "文字",
+  background_title: "背景",
   colors: {
-    default: "Default",
-    gray: "Gray",
-    // ... more colors
+    default: "默认",
+    gray: "灰色",
+    // ... 更多颜色
   },
 }
 ```
 
-## Integration with i18n Libraries
+## 与 i18n 库集成
 
-You can integrate BlockNote with popular i18n libraries like `react-i18next` or `next-intl`:
+您可以将 BlockNote 与流行的 i18n 库如 `react-i18next` 或 `next-intl` 集成：
 
 ```tsx
 import { useCreateBlockNote, BlockNoteView } from "@blocknote/react";
@@ -194,26 +194,26 @@ function I18nEditor() {
 }
 ```
 
-## Adding New Languages
+## 添加新语言
 
-To add support for a new language, you can:
+要添加对新语言的支持，您可以：
 
-1. **Submit a Pull Request** to the BlockNote repository with your translations
-2. **Create a custom dictionary** in your application for immediate use
+1. **提交 Pull Request** 到 BlockNote 仓库，贡献您的翻译
+2. **在您的应用中创建自定义字典** 立即使用
 
-When creating translations, make sure to:
+创建翻译时，请确保：
 
-- Translate all text strings in the dictionary
-- Maintain the same structure as the English dictionary
-- Test the translations with different content types
-- Consider cultural differences in UI text
+- 翻译字典中的所有文本字符串
+- 保持与英文字典相同的结构
+- 用不同内容类型测试翻译效果
+- 考虑界面文本的文化差异
 
-## Examples
+## 示例
 
-### Basic Localization
+### 基础本地化
 
 <Example name="basic/localization" />
 
-### Custom Placeholders
+### 自定义占位符
 
 <Example name="basic/custom-placeholder" />

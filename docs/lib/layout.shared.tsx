@@ -332,7 +332,7 @@ const links: LinkItemType[] = [
   //   ],
   // },
   {
-    text: "Docs",
+    text: "文档",
     url: "/docs",
     active: "nested-url",
   },
@@ -342,12 +342,12 @@ const links: LinkItemType[] = [
     active: "nested-url",
   },
   {
-    text: "Examples",
+    text: "示例",
     url: "/examples",
     active: "nested-url",
   },
   {
-    text: "Pricing",
+    text: "定价",
     url: "/pricing",
     active: "url",
   },

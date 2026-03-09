@@ -27,21 +27,18 @@ function TierCTAButton({ tier }: { tier: Tier }) {
   const { data: session } = useSession();
   let text =
     tier.cta === "get-started"
-      ? "Get Started"
+      ? "开始使用"
       : tier.cta === "buy"
-        ? "Sign up"
+        ? "注册"
         : tier.cta === "contact"
-          ? "Contact us"
-          : "Sign up";
+          ? "联系我们"
+          : "注册";
 
   if (session && tier.cta === "buy") {
     if (session.planType === "free") {
-      text = "Buy now";
+      text = "立即购买";
     } else {
-      text =
-        session.planType === tier.id
-          ? "Manage subscription"
-          : "Update subscription";
+      text = session.planType === tier.id ? "管理订阅" : "更新订阅";
     }
   }
 
@@ -184,7 +181,7 @@ export function Tiers({
             {tier.mostPopular && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span className="rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
-                  {tier.badge ?? "Most Popular"}
+                  {tier.badge ?? "最受欢迎"}
                 </span>
               </div>
             )}
@@ -214,7 +211,7 @@ export function Tiers({
                     ${tier.price[frequency]}
                   </span>
                   <span className="text-sm font-medium text-stone-400">
-                    /{frequency}
+                    /{frequency === "month" ? "月" : "年"}
                   </span>
                 </div>
               )}

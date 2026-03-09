@@ -41,6 +41,10 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
           })}
         />
       </DocsBody>
+      <div
+        className="wwads-cn wwads-horizontal my-4 w-full"
+        data-id="354"
+      ></div>
     </DocsPage>
   );
 }

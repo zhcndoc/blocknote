@@ -1,48 +1,45 @@
 ---
-title: Format Interoperability
-description: Learn about the formats BlockNote supports for importing and exporting content.
+title: 格式互操作性
+description: 了解 BlockNote 支持的导入和导出内容格式。
 ---
 
-# Format Interoperability
+# 格式互操作性
 
-BlockNote is compatible with a few different storage formats, each with its own advantages and disadvantages. This guide will show you how to use each of them.
+BlockNote 兼容几种不同的存储格式，每种格式都有其优缺点。本指南将向您展示如何使用它们。
 
-## Overview
+## 概述
 
-When it comes to editors, formats can be tricky. The editor needs to be able to both read and write to each format.
+对于编辑器来说，格式可能比较棘手。编辑器需要能够读取和写入每种格式。
 
 <Callout type="info">
-  If elements are not preserved in this transformation, we call the conversion
-  _lossy_. While we'd ideally support every format, **other formats may not
-  support all BlockNote content.**
+  如果元素在此转换过程中未被保留，我们称转换为
+  _有损_。虽然我们理想上支持每种格式，但 **其他格式可能不支持所有 BlockNote 内容。**
 </Callout>
 
-See the table below for a summary of the formats we support and their lossiness:
+请参阅下表以查看我们支持的格式及其有损性的总结：
 
-| Format                                                                    | Import     | Export     | [Pro Only](/pricing) |
-| :------------------------------------------------------------------------ | :--------- | :--------- | :------------------- |
-| **BlockNote JSON (`editor.document`)**                                    | ✅         | ✅         | ❌                   |
-| **BlockNote HTML (`blocksToFullHTML`)**                                   | ✅         | ✅         | ❌                   |
-| **Standard HTML (`blocksToHTMLLossy`)**                                   | ✅ (lossy) | ✅ (lossy) | ❌                   |
-| **Markdown (`blocksToMarkdownLossy`)**                                    | ✅ (lossy) | ✅ (lossy) | ❌                   |
-| **[PDF](/docs/features/export/pdf)** (`@blocknote/xl-pdf-exporter`)       | ❌         | ✅         | ✅                   |
-| **[DOCX](/docs/features/export/docx)** (`@blocknote/xl-docx-exporter`)    | ❌         | ✅         | ✅                   |
-| **[ODT](/docs/features/export/odt)** (`@blocknote/xl-odt-exporter`)       | ❌         | ✅         | ✅                   |
-| **[Email](/docs/features/export/email)** (`@blocknote/xl-email-exporter`) | ❌         | ✅         | ✅                   |
+| 格式                                                                     | 导入       | 导出       | [仅限专业版](/pricing) |
+| :---------------------------------------------------------------------- | :--------- | :--------- | :-------------------- |
+| **BlockNote JSON (`editor.document`)**                                 | ✅         | ✅         | ❌                    |
+| **BlockNote HTML (`blocksToFullHTML`)**                                | ✅         | ✅         | ❌                    |
+| **标准 HTML (`blocksToHTMLLossy`)**                                    | ✅（有损） | ✅（有损） | ❌                    |
+| **Markdown (`blocksToMarkdownLossy`)**                                 | ✅（有损） | ✅（有损） | ❌                    |
+| **[PDF](/docs/features/export/pdf)** (`@blocknote/xl-pdf-exporter`)    | ❌         | ✅         | ✅                    |
+| **[DOCX](/docs/features/export/docx)** (`@blocknote/xl-docx-exporter`) | ❌         | ✅         | ✅                    |
+| **[ODT](/docs/features/export/odt)** (`@blocknote/xl-odt-exporter`)    | ❌         | ✅         | ✅                    |
+| **[Email](/docs/features/export/email)** (`@blocknote/xl-email-exporter`)| ❌       | ✅         | ✅                    |
 
 <Callout>
-  **Tip:** It's recommended to use **BlockNote JSON (`editor.document`)** for
-  storing your documents, as it's the most durable format & guaranteed to be
-  lossless.
+  **提示：** 推荐使用 **BlockNote JSON (`editor.document`)** 来存储文档，因为它是最持久的格式且保证无损。
 </Callout>
 
-## Working with Blocks (JSON)
+## 使用区块（JSON）
 
-BlockNote uses a JSON structure (an array of `Block` objects) as its native format. This is the recommended way to store documents as it's **lossless**, preserving the exact structure and all attributes of your content.
+BlockNote 使用 JSON 结构（一个 `Block` 对象数组）作为其原生格式。这是推荐的存储文档方式，因为它是**无损**的，能够完整保留内容的精确结构和所有属性。
 
-### Saving Blocks
+### 保存区块
 
-The best way to get the latest content is to use the `editor.onChange` callback if using vanilla JS or `useEditorChange` hook if using React. This function is called every time the editor's content changes.
+获取最新内容的最佳方法是在使用原生 JS 时使用 `editor.onChange` 回调，或在 React 中使用 `useEditorChange` 钩子。每当编辑器内容发生变化时，该函数都会被调用。
 
 ```tsx twoslash
 import React from "react";
@@ -59,7 +56,7 @@ export default function App() {
   const editor = useCreateBlockNote();
 
   useEditorChange((editor) => {
-    // The current document content as a string
+    // 当前文档内容的字符串形式
     const savedBlocks = JSON.stringify(editor.document);
     //                                 ^^^^^^^^^^^^^^^
 
@@ -70,9 +67,9 @@ export default function App() {
 }
 ```
 
-### Loading Blocks
+### 加载区块
 
-To load content, you can use the `initialContent` prop when creating the editor. You can pass the array of `Block` objects you previously saved.
+加载内容时，可以在创建编辑器时使用 `initialContent` 属性。您可以传入之前保存的 `Block` 对象数组。
 
 ```tsx
 import { useCreateBlockNote } from "@blocknote/react";
@@ -92,13 +89,13 @@ export default function App({
 }
 ```
 
-## Working with HTML
+## 使用 HTML
 
-BlockNote provides utilities to convert content between `Block` objects and HTML. Note that converting to standard HTML can be **lossy**.
+BlockNote 提供了将内容在 `Block` 对象和 HTML 之间转换的工具。请注意，转换为标准 HTML 可能是**有损**的。
 
-### Saving as HTML
+### 保存为 HTML
 
-To convert the document to an HTML string, you can use `editor.blocksToFullHTML(blocks: Block[])`:
+要将文档转换为 HTML 字符串，可以使用 `editor.blocksToFullHTML(blocks: Block[])`：
 
 ```tsx twoslash
 import React from "react";
@@ -117,7 +114,7 @@ export default function App() {
   useEditorChange(async (editor) => {
     const html = await editor.blocksToFullHTML(editor.document);
     //                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    // You can now save this HTML string
+    // 你现在可以保存这个 HTML 字符串
     storeToDB(html);
   }, editor);
 
@@ -126,14 +123,12 @@ export default function App() {
 ```
 
 <Callout type="info">
-  The `editor.blocksToFullHTML` method will output HTML in the BlockNote
-  internal format. If you want to export to standard HTML, you can use
-  `editor.blocksToHTMLLossy` instead.
+  `editor.blocksToFullHTML` 方法会输出 BlockNote 内部格式的 HTML。如果想导出为标准 HTML，可以改用 `editor.blocksToHTMLLossy`。
 </Callout>
 
-### Loading from HTML
+### 从 HTML 加载
 
-To load HTML content, you first need to convert it to an array of `Block` objects using `editor.tryParseHTMLToBlocks()`. Then, you can insert it into the editor.
+加载 HTML 内容时，首先需要使用 `editor.tryParseHTMLToBlocks()` 将 HTML 转换为 `Block` 对象数组，然后再插入编辑器。
 
 ```tsx twoslash
 import React from "react";
@@ -141,14 +136,14 @@ import { useEffect } from "react";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 
-const myHTML = "<p>This is a paragraph.</p>";
+const myHTML = "<p>这是一个段落。</p>";
 
 export default function App() {
   const editor = useCreateBlockNote();
 
   useEffect(() => {
-    // Replaces the blocks on initialization
-    // But, you can also call this before rendering the editor
+    // 初始化时替换区块内容
+    // 你也可以在渲染编辑器之前调用此方法
     async function loadHTML() {
       const blocks = await editor.tryParseHTMLToBlocks(myHTML);
       //                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -161,13 +156,13 @@ export default function App() {
 }
 ```
 
-## Working with Markdown
+## 使用 Markdown
 
-BlockNote also supports converting to and from Markdown. However, converting to and from Markdown is a **lossy** conversion.
+BlockNote 也支持 Markdown 的相互转换。但转换为 Markdown 及从 Markdown 转换都是**有损**的。
 
-### Saving as Markdown
+### 保存为 Markdown
 
-To convert the document to a Markdown string, you can use `editor.blocksToMarkdownLossy()`:
+要将文档转换为 Markdown 字符串，可以使用 `editor.blocksToMarkdownLossy()`：
 
 ```tsx twoslash
 import React from "react";
@@ -186,7 +181,7 @@ export default function App() {
   useEditorChange(async (editor) => {
     const markdown = await editor.blocksToMarkdownLossy(editor.document);
     //                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    // You can now save this Markdown string
+    // 你现在可以保存这个 Markdown 字符串
     storeToDB(markdown);
   }, editor);
 
@@ -194,9 +189,9 @@ export default function App() {
 }
 ```
 
-### Loading from Markdown
+### 从 Markdown 加载
 
-To load Markdown content, you first need to convert it to an array of `Block` objects using `editor.tryParseMarkdownToBlocks()`. Then, you can insert it into the editor.
+加载 Markdown 内容时，首先需要使用 `editor.tryParseMarkdownToBlocks()` 将 Markdown 转换为 `Block` 对象数组，然后插入编辑器。
 
 ```tsx twoslash
 import React from "react";
@@ -204,7 +199,7 @@ import { useEffect } from "react";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 
-const myMarkdown = "This is a paragraph with **bold** text.";
+const myMarkdown = "这是一个带有 **加粗** 文字的段落。";
 
 export default function App() {
   const editor = useCreateBlockNote();
@@ -222,15 +217,15 @@ export default function App() {
 }
 ```
 
-## Export Only
+## 仅导出格式
 
-BlockNote can also export to these additional formats:
+BlockNote 还支持导出到以下额外格式：
 
 - DOCX
-  - Via the [`@blocknote/xl-docx-exporter` package](/docs/features/export/docx)
+  - 通过 [`@blocknote/xl-docx-exporter` 包](/docs/features/export/docx)
 - PDF
-  - Via the [`@blocknote/xl-pdf-exporter` package](/docs/features/export/pdf)
+  - 通过 [`@blocknote/xl-pdf-exporter` 包](/docs/features/export/pdf)
 - ODT
-  - Via the [`@blocknote/xl-odt-exporter` package](/docs/features/export/odt)
-- Email
-  - Via the [`@blocknote/xl-email-exporter` package](/docs/features/export/email)
+  - 通过 [`@blocknote/xl-odt-exporter` 包](/docs/features/export/odt)
+- 电子邮件
+  - 通过 [`@blocknote/xl-email-exporter` 包](/docs/features/export/email)

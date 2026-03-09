@@ -1,24 +1,24 @@
 ---
-title: Adding DOM Attributes
-description: BlockNote allows you to change how the editor UI looks. You can change the theme of the default UI, or override its CSS styles.
+title: 添加 DOM 属性
+description: BlockNote 允许你更改编辑器 UI 的外观。你可以更改默认 UI 的主题，或者覆盖其 CSS 样式。
 ---
 
-# Adding DOM Attributes
+# 添加 DOM 属性
 
-BlockNote allows you to add custom HTML attributes to various DOM elements within the editor. This gives you fine-grained control over styling and functionality.
+BlockNote 允许你向编辑器中的各种 DOM 元素添加自定义的 HTML 属性。这使你能够对样式和功能进行精细控制。
 
-## Available DOM Elements
+## 可用的 DOM 元素
 
-The following DOM elements can receive custom attributes:
+以下 DOM 元素可以接收自定义属性：
 
-- **`editor`**: The main editor container, excluding menus & toolbars
-- **`block`**: The container element for individual blocks
-- **`blockGroup`**: Wrapper for top-level and nested blocks
-- **`blockContent`**: Wrapper for a block's content
-- **`inlineContent`**: Wrapper for rich-text content within blocks
+- **`editor`**：主编辑器容器，不包括菜单和工具栏
+- **`block`**：单个区块的容器元素
+- **`blockGroup`**：顶级和嵌套区块的包装容器
+- **`blockContent`**：区块内容的包装容器
+- **`inlineContent`**：区块内富文本内容的包装容器
 
-## Example Usage
+## 示例用法
 
-The demo below shows how to add a custom class to the `block` element to create a border around each block:
+下面的演示展示了如何向 `block` 元素添加自定义类，为每个区块创建边框：
 
 <Example name="theming/theming-dom-attributes" />

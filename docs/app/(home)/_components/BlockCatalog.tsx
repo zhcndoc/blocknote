@@ -49,56 +49,55 @@ export const BlockCatalog: React.FC = () => {
             🧩
           </div>
           <h2 className="mb-6 font-serif text-4xl text-stone-900 md:text-6xl">
-            Build anything, block by block.
+            逐块构建，创造一切。
           </h2>
           <p className="mx-auto max-w-2xl text-xl font-light leading-relaxed text-stone-600">
-            Every BlockNote document is a collection of blocks—headings, lists,
-            images, and more. Use the built-in blocks, customize them to fit
-            your needs, or create entirely new ones.
+            每一份 BlockNote 文档都是由区块组成的集合，包括标题、列表、
+            图片等。你可以使用内置区块、按需定制它们，或者干脆创建全新的区块。
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-6">
           <BlockCatalogItem
-            name="Paragraph"
+            name="段落"
             icon={<Pilcrow className="h-4 w-4" />}
           />
           <BlockCatalogItem
-            name="Headings"
+            name="标题"
             icon={<Heading className="h-4 w-4" />}
           />
-          <BlockCatalogItem name="List" icon={<List className="h-4 w-4" />} />
+          <BlockCatalogItem name="列表" icon={<List className="h-4 w-4" />} />
           <BlockCatalogItem
-            name="Ordered List"
+            name="有序列表"
             icon={<ListOrdered className="h-4 w-4" />}
           />
           <BlockCatalogItem
-            name="Checklist"
+            name="清单"
             icon={<ListTodo className="h-4 w-4" />}
           />
           <BlockCatalogItem
-            name="Toggle List"
+            name="折叠列表"
             icon={<ChevronRight className="h-4 w-4" />}
           />
-          <BlockCatalogItem name="Code" icon={<Code2 className="h-4 w-4" />} />
-          <BlockCatalogItem name="Quote" icon={<Quote className="h-4 w-4" />} />
+          <BlockCatalogItem name="代码" icon={<Code2 className="h-4 w-4" />} />
+          <BlockCatalogItem name="引用" icon={<Quote className="h-4 w-4" />} />
           <BlockCatalogItem
-            name="Divider"
+            name="分隔线"
             icon={<Minus className="h-4 w-4" />}
           />
-          <BlockCatalogItem name="Table" icon={<Table className="h-4 w-4" />} />
-          <BlockCatalogItem name="Image" icon={<Image className="h-4 w-4" />} />
-          <BlockCatalogItem name="Video" icon={<Video className="h-4 w-4" />} />
+          <BlockCatalogItem name="表格" icon={<Table className="h-4 w-4" />} />
+          <BlockCatalogItem name="图片" icon={<Image className="h-4 w-4" />} />
+          <BlockCatalogItem name="视频" icon={<Video className="h-4 w-4" />} />
           <BlockCatalogItem
-            name="Audio"
+            name="音频"
             icon={<AudioWaveform className="h-4 w-4" />}
           />
           <BlockCatalogItem
-            name="File"
+            name="文件"
             icon={<FileText className="h-4 w-4" />}
           />
           <BlockCatalogItem
-            name="Your Own"
+            name="自定义区块"
             icon={<Puzzle className="h-4 w-4" />}
           />
         </div>

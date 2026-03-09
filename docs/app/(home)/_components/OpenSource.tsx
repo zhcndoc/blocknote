@@ -4,9 +4,9 @@ import React from "react";
 const pillars = [
   {
     icon: "🏛️",
-    title: "Built on Giants",
+    title: "构建在成熟基石之上",
     description:
-      "ProseMirror and Yjs are battle-tested foundations trusted by teams worldwide, we're excited to build with these technologies.",
+      "ProseMirror 和 Yjs 是久经验证的基础设施，受到全球团队信赖，我们很高兴在这些技术之上继续构建。",
   },
   // {
   //   icon: "🤝",
@@ -28,15 +28,14 @@ const pillars = [
   // },
   {
     icon: "⬆️",
-    title: "Contributing Upstream",
+    title: "持续反哺上游",
     description:
-      "We're significant contributors to Yjs, Hocuspocus, and Tiptap. When we improve the ecosystem, everyone benefits.",
+      "我们持续为 Yjs、Hocuspocus 和 Tiptap 做出重要贡献。生态越好，每个人都会受益。",
   },
   {
     icon: "🌱",
-    title: "Sustainable by Design",
-    description:
-      "Bootstrapped and independent. We're building for the long term, not the next funding round.",
+    title: "以可持续为设计原则",
+    description: "自力更生、保持独立。我们关注长期建设，而不是下一轮融资。",
   },
 ];
 
@@ -68,13 +67,12 @@ export const OpenSource: React.FC = () => {
       <div className="relative mx-auto max-w-6xl px-6">
         <div className="mb-16 text-center">
           <h2 className="mb-6 font-serif text-4xl text-white md:text-5xl">
-            Committed to open source.
+            坚定投入开源。
           </h2>
           <p className="mx-auto max-w-3xl text-lg leading-relaxed text-stone-300">
-            Document editing is foundational infrastructure for the modern
-            workforce. We believe the tools we use to create and share knowledge
-            should be open, transparent, and free from lock-in. That&apos;s why
-            everything we build is open source.
+            文档编辑是现代知识工作的重要基础设施。我们相信，用来创建和分享
+            知识的工具应该开放、透明、不受厂商锁定。这也是为什么我们构建的
+            一切都坚持开源。
           </p>
         </div>
 
@@ -117,7 +115,7 @@ export const OpenSource: React.FC = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <span>View on GitHub</span>
+            <span>在 GitHub 上查看</span>
           </a>
         </div>
       </div>

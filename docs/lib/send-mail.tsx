@@ -23,15 +23,15 @@ const transporter = nodemailer.createTransport({
 
 const TEMPLATE_COMPONENTS = {
   verifyEmail: {
-    subject: "BlockNote - Verify your email address",
+    subject: "BlockNote - 验证你的邮箱地址",
     component: VerifyEmail,
   },
   magicLink: {
-    subject: "BlockNote - Sign in to your account",
+    subject: "BlockNote - 登录你的账号",
     component: MagicLinkEmail,
   },
   welcome: {
-    subject: "BlockNote - Welcome to BlockNote",
+    subject: "BlockNote - 欢迎使用 BlockNote",
     component: WelcomeEmail,
   },
 } as const;

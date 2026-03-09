@@ -20,31 +20,27 @@ export const VerifyEmail = ({ name, url }: VerifyEmailProps) => {
     <Html>
       <Head />
       <Body style={main}>
-        <Preview>BlockNote - Verify your email address</Preview>
+        <Preview>BlockNote - 验证你的邮箱地址</Preview>
         <Container style={container}>
           <Img
-            src="https://www.blocknotejs.org/img/logos/icon_light_500.png"
+            src="https://blocknote.zhcndoc.com/img/logos/icon_light_500.png"
             width="40"
             height="40"
             alt="BlockNote"
           />
           <Section>
-            <Text style={text}>Hi{name ? ` ${name}` : ""},</Text>
+            <Text style={text}>你好{name ? ` ${name}` : ""}，</Text>
             <Text style={text}>
-              Thanks for signing up for BlockNote! To complete your
-              registration, please verify your email address by clicking the
-              button below:
+              感谢注册 BlockNote！为了完成注册，请点击下方按钮验证你的邮箱地址：
             </Text>
             <Button style={button} href={url}>
-              Verify Email
+              验证邮箱
             </Button>
             <Text style={text}>
-              If you didn&apos;t create a BlockNote account, you can safely
-              ignore this email.
+              如果你没有创建 BlockNote 账号，可以放心忽略这封邮件。
             </Text>
             <Text style={text}>
-              To keep your account secure, please don&apos;t forward this email
-              to anyone.
+              为了确保账号安全，请不要将这封邮件转发给任何人。
             </Text>
           </Section>
         </Container>

@@ -1,4 +1,10 @@
 {
-  "title": "Editor",
-  "pages": ["overview", "manipulating-content", "cursor-selections", "yjs-utilities", "..."]
+  "title": "编辑器",
+  "pages": [
+    "overview",
+    "manipulating-content",
+    "cursor-selections",
+    "yjs-utilities",
+    "..."
+  ]
 }

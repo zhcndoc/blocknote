@@ -20,10 +20,9 @@ export default function Error({
   return (
     <div className="mx-auto max-w-3xl pt-8">
       <DocsBody>
-        <h1>Whoops. What the blocks!?</h1>
+        <h1>哎呀，区块出错了！</h1>
         <div>
-          We encountered an error trying to show this page. If this keeps
-          occuring, an issue can be filed on GitHub at{" "}
+          展示此页面时发生了错误。如果问题持续出现，请前往 GitHub 提交 issue：{" "}
           <a href="https://github.com/TypeCellOS/BlockNote/issues">
             https://github.com/TypeCellOS/BlockNote/issues
           </a>

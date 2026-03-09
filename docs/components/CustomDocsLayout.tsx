@@ -87,16 +87,16 @@ export function CustomDocsLayout({
               icon: (
                 <FaBook className="border-fd-primary text-fd-primary bg-fd-primary/10 h-full w-full rounded-sm border p-2 md:p-0.5" />
               ),
-              title: "Documentation",
-              description: "Learn how to use BlockNote",
+              title: "文档",
+              description: "了解如何使用 BlockNote",
               url: "/docs",
             },
             {
               icon: (
                 <FaCode className="border-fd-primary text-fd-primary bg-fd-primary/10 h-full w-full rounded-sm border p-2 md:p-0.5" />
               ),
-              title: "Examples",
-              description: "See BlockNote in action",
+              title: "示例",
+              description: "查看 BlockNote 的实际效果",
               url: "/examples",
             },
           ],

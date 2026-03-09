@@ -19,12 +19,12 @@ export const FeatureCollab: React.FC<{
     comments: {
       type: "image",
       src: "/img/screenshots/home/comments.png",
-      alt: "Comments",
+      alt: "评论",
     },
     suggestions: {
       type: "image",
       src: "/img/screenshots/home/versioning.png",
-      alt: "Versioning",
+      alt: "版本记录",
     },
   };
 
@@ -32,28 +32,27 @@ export const FeatureCollab: React.FC<{
     {
       id: "realtime",
       icon: <span>👯</span>,
-      label: "Real-Time Sync",
-      description: "Yjs-powered with automatic conflict resolution.",
+      label: "实时同步",
+      description: "基于 Yjs，并自动处理冲突。",
     },
     {
       id: "comments",
       icon: <span>💬</span>,
-      label: "Comments",
-      description: "Inline threads and mentions keep conversations in context.",
+      label: "评论",
+      description: "行内讨论串和提及功能让协作始终贴合上下文。",
     },
     {
       id: "suggestions",
       icon: <span>📝</span>,
-      label: "Suggestions & Versioning (coming soon)",
-      description:
-        "Track changes, accept or reject edits. Full document history.",
+      label: "建议模式与版本记录（即将推出）",
+      description: "跟踪改动，接受或拒绝编辑，并保留完整文档历史。",
     },
   ];
 
   return (
     <FeatureSection
-      title="Local-first collaboration."
-      description="First-class Yjs integration for real-time collaboration. Works offline and syncs seamlessly. Deploy anywhere."
+      title="本地优先的协作体验。"
+      description="一流的 Yjs 集成带来实时协作能力。可离线工作、无缝同步，并可部署在任何地方。"
       tabs={tabs}
       activeTabId={activeTab}
       onTabChange={(id) => setActiveTab(id as any)}

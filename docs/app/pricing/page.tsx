@@ -11,7 +11,7 @@ import { getFullMetadata } from "@/lib/getFullMetadata";
 import Link from "next/link";
 
 export const metadata = getFullMetadata({
-  title: "Pricing",
+  title: "定价",
   path: "/pricing",
 });
 
@@ -31,41 +31,39 @@ const sponsors = [
 const tiers: Tier[] = [
   {
     id: "free",
-    title: "Community",
+    title: "社区版",
     icon: "💚",
-    tagline: "Get Started",
+    tagline: "开始使用",
     description: (
       <>
-        Everything you need to get started.{" "}
+        开始使用所需的一切功能。{" "}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger
               delay={100}
               className="cursor-default font-medium underline decoration-stone-400 decoration-dotted decoration-1 underline-offset-4"
             >
-              Liberally licensed
+              宽松许可
             </TooltipTrigger>
             <TooltipContent className="max-w-[280px] p-3 leading-normal">
-              BlockNote is MPL-licensed. This is close to MIT and free for any
-              use. The key difference is a &quot;share-alike&quot; requirement:
-              if you modify BlockNote&apos;s internal files, you must share
-              those specific changes.
+              BlockNote 采用 MPL 许可证。它与 MIT 很接近，可免费用于任意
+              用途。关键区别在于“相同方式共享”要求：如果你修改了 BlockNote
+              的内部文件，就必须公开这些特定修改。
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>{" "}
-        and free for any project.
+        且可免费用于任何项目。
       </>
     ),
-    price: "Free",
+    price: "免费",
     features: [
-      "All blocks & UI components",
-
-      "Drag-and-drop editing",
-      "Slash commands & menus",
-      "Real-time collaboration",
-      "Comments",
+      "全部区块与 UI 组件",
+      "拖放式编辑",
+      "斜杠菜单与命令",
+      "实时协作",
+      "评论功能",
       <span key="xl" className="text-stone-500">
-        XL Packages free for OSS under GPL-3.0
+        XL 扩展包对 GPL-3.0 开源项目免费
       </span>,
     ],
     cta: "get-started",
@@ -73,64 +71,63 @@ const tiers: Tier[] = [
   },
   {
     id: "business",
-    title: "Business",
+    title: "商业版",
     icon: "⚡",
-    tagline: "Go premium",
+    tagline: "升级进阶",
     mostPopular: true,
-    badge: "Recommended",
-    description:
-      "Commercial license for access to advanced features and technical support.",
+    badge: "推荐",
+    description: "商业许可，解锁高级功能并获得技术支持。",
     price: { month: 390, year: 48 },
     features: [
       <span key="commercial" className="font-semibold text-stone-900">
-        Commercial license for XL packages:
+        XL 扩展包商业许可：
       </span>,
       <span key="ai" className="ml-4 text-stone-500">
-        • AI integration
+        • AI 集成
       </span>,
       <span key="layouts" className="ml-4 text-stone-500">
-        • Multi-column layouts
+        • 多栏布局
       </span>,
       <span key="export" className="ml-4 text-stone-500">
-        • Export to PDF, Docx, ODT, Email
+        • 导出为 PDF、Docx、ODT、Email
       </span>,
-      "Logo on website and repositories",
+      "官网与代码仓库展示 Logo",
       <span key="sla">
-        Standard Support (
+        标准支持（
         <Link
           href="/legal/service-level-agreement"
           className="text-purple-600 hover:underline"
         >
-          see SLA
+          查看 SLA
         </Link>
-        )
+        ）
       </span>,
     ],
     cta: "buy",
   },
   {
     id: "enterprise",
-    title: "Enterprise",
+    title: "企业版",
     icon: "🏢",
-    tagline: "Sustainable partnerships",
-    description: "Custom licensing, dedicated support, and design partnership.",
-    price: "Custom",
+    tagline: "长期合作",
+    description: "定制授权、专属支持与联合设计合作。",
+    price: "定制报价",
     features: [
       <span key="stack" className="font-semibold text-purple-600">
-        Everything in Business, plus:
+        包含商业版全部内容，另外还提供：
       </span>,
-      "Custom BlockNote feature development",
-      "Private Slack channel with maintainers",
-      "Onboarding and integration guidance",
+      "定制开发 BlockNote 功能",
+      "与维护者的专属 Slack 频道",
+      "上手与集成指导",
       <span key="sla">
-        Priority Support (
+        优先支持（
         <Link
           href="/legal/service-level-agreement"
           className="text-purple-600 hover:underline"
         >
-          see SLA
+          查看 SLA
         </Link>
-        )
+        ）
       </span>,
     ],
     href: "mailto:team@blocknotejs.org",
@@ -145,20 +142,19 @@ export default function Pricing() {
         {/* Header */}
         <div className="mb-12 text-center">
           <p className="mb-4 text-xs font-bold uppercase tracking-widest text-purple-600">
-            Pricing
+            定价
           </p>
           <h1 className="mb-6 font-serif text-5xl text-stone-900 md:text-7xl">
-            100% Open Source.
+            100% 开源。
             <br />
             <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              Fair Pricing.
+              透明定价。
             </span>
           </h1>
           <p className="mx-auto max-w-2xl text-xl text-stone-500">
-            The majority of BlockNote is liberally licensed and free to use for
-            any purpose. The dual-licensed XL features (like AI) are free for
-            open source projects, but require a commercial license for
-            closed-source applications.
+            BlockNote 的大部分功能都采用宽松许可证，可免费用于任何用途。
+            双重授权的 XL 功能（例如 AI）对开源项目免费，但闭源应用需要
+            商业许可。
           </p>
         </div>
 
@@ -168,7 +164,7 @@ export default function Pricing() {
         {/* Social proof */}
         <div className="mt-24 w-full border-t border-stone-200 pt-16">
           <p className="mb-8 text-center text-sm font-medium text-stone-500">
-            Trusted by teams building the future of collaboration
+            受到构建下一代协作产品团队的信赖
           </p>
           <InfiniteSlider gap={48} speed={30} speedOnHover={15}>
             {sponsors.map((sponsor) => (
@@ -189,18 +185,17 @@ export default function Pricing() {
         {/* Startup Discounts */}
         <div className="mt-24 w-full max-w-4xl rounded-3xl border border-purple-100 bg-gradient-to-br from-purple-50 to-white p-8 text-center sm:p-12">
           <h2 className="mb-4 text-2xl font-bold text-stone-900 sm:text-3xl">
-            Discounts for Startups
+            初创团队优惠
           </h2>
           <p className="mx-auto mb-8 max-w-2xl text-lg text-stone-600">
-            Building the next big thing? We love supporting early-stage
-            companies. If you&apos;re a seed-stage startup or non-profit, get in
-            touch for special pricing on our Business plan.
+            正在打造下一件大事？我们很乐意支持早期团队。如果你是种子轮
+            初创公司或非营利组织，欢迎联系我们获取商业版特别价格。
           </p>
           <a
             href="mailto:team@blocknotejs.org?subject=Startup%20Discount%20Inquiry"
             className="inline-flex items-center rounded-full bg-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
           >
-            Apply for Startup Program
+            申请初创扶持计划
           </a>
         </div>
 

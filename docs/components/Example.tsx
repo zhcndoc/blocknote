@@ -117,12 +117,11 @@ function ExampleProPrompt() {
       <div className={"z-[5] flex w-2/3 flex-col items-center"}>
         <SectionHeader>Pro Example</SectionHeader>
         <p className={"text-center"}>
-          Get access to the full source code for pro examples by subscribing to
-          BlockNote Pro
+          订阅 BlockNote Pro 后即可获取高级示例的完整源码
         </p>
         <div className={"mt-8"}>
           <CTAButton href={"/pricing"} variant={"colored"} hoverGlow={true}>
-            Get BlockNote Pro
+            获取 BlockNote Pro
           </CTAButton>
         </div>
         {/* {!props.isProExample?.userStatus && (
@@ -153,8 +152,7 @@ export default function Example(props: { exampleData: ExampleData }) {
     <Sentry.ErrorBoundary
       fallback={
         <div>
-          We encountered an error trying to show this example. Please report
-          this to us on GitHub at{" "}
+          展示此示例时发生了错误。请前往 GitHub 向我们反馈：{" "}
           <a href="https://github.com/TypeCellOS/BlockNote/issues">
             https://github.com/TypeCellOS/BlockNote/issues
           </a>

@@ -34,7 +34,7 @@ import {
   AIToolbarButton,
   getAISlashMenuItems,
 } from "@blocknote/xl-ai";
-import { en as aiEnFile } from "@blocknote/xl-ai/locales";
+import { zh as aiZhFile } from "@blocknote/xl-ai/locales";
 import "@blocknote/xl-ai/style.css";
 import {
   DOCXExporter,
@@ -129,7 +129,7 @@ export function DemoEditor() {
         disabled={true}
       />
       <div className="relative flex flex-1 items-center justify-center overflow-hidden">
-        <div className="text-stone-400">Loading...</div>
+        <div className="text-stone-400">加载中...</div>
       </div>
     </div>
   ) : (
@@ -140,7 +140,7 @@ export function DemoEditor() {
     <div className="flex w-full max-w-5xl flex-col gap-4">
       <div className="flex w-full items-center justify-between rounded-lg border border-stone-200 bg-white p-3 shadow-sm">
         <span className="text-sm font-medium text-stone-600">
-          ⚡️ Collaborate live! Share this URL:
+          ⚡️ 实时协作中！分享这个链接：
         </span>
         <div className="flex flex-1 items-center gap-2 px-4">
           <input
@@ -153,10 +153,10 @@ export function DemoEditor() {
             className="whitespace-nowrap rounded-md bg-purple-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-purple-700"
             onClick={() => {
               navigator.clipboard.writeText(url);
-              alert("URL copied to clipboard!");
+              alert("链接已复制到剪贴板！");
             }}
           >
-            Copy Link
+            复制链接
           </button>
         </div>
       </div>
@@ -170,7 +170,7 @@ export function DemoEditor() {
           rel="noopener noreferrer"
           className="rounded-full bg-stone-900 px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-stone-700 hover:shadow-lg md:text-base"
         >
-          Read the Documentation →
+          阅读文档 →
         </a>
       </div>
     </div>
@@ -220,9 +220,9 @@ function DemoEditorInner({
 
       // Locales
       dictionary: {
-        ...locales.en,
+        ...locales.zh,
         // multi_column: multiColumnLocales.en,
-        ai: aiEnFile,
+        ai: aiZhFile,
       },
 
       // Collaboration
@@ -266,7 +266,7 @@ function DemoEditorInner({
       editor.replaceBlocks(editor.document, [
         {
           type: "heading",
-          content: "Welcome to BlockNote!",
+          content: "欢迎使用 BlockNote！",
         },
         {
           type: "paragraph",
@@ -276,32 +276,32 @@ function DemoEditorInner({
           content: [
             {
               type: "text",
-              text: "This is a demo of BlockNote with ",
+              text: "这是一个 BlockNote 演示，包含 ",
               styles: {},
             },
             {
               type: "text",
-              text: "multi-cursor collaboration",
+              text: "多光标协作",
               styles: { bold: true },
             },
             {
               type: "text",
-              text: ", ",
+              text: "、",
               styles: {},
             },
             {
               type: "text",
-              text: "live comments",
+              text: "实时评论",
               styles: { bold: true },
             },
             {
               type: "text",
-              text: ", and ",
+              text: " 和 ",
               styles: {},
             },
             {
               type: "text",
-              text: "AI features",
+              text: "AI 功能",
               styles: { bold: true },
             },
             {
@@ -316,7 +316,7 @@ function DemoEditorInner({
         },
         {
           type: "paragraph",
-          content: "Share the URL above to collaborate with others ⚡️",
+          content: "分享上方链接，与他人一起实时协作 ⚡️",
         },
         {
           type: "paragraph",

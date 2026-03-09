@@ -14,7 +14,7 @@ export const FeatureDX: React.FC<{
     types: {
       type: "image",
       src: "/img/screenshots/home/code-typescript-support.png",
-      alt: "Type-Safe Schema",
+      alt: "类型安全的 Schema",
     },
     theming: {
       type: "code",
@@ -32,27 +32,27 @@ export const FeatureDX: React.FC<{
     {
       id: "types",
       icon: <span>📐</span>,
-      label: "Type-Safe",
-      description: "Full autocompletion and type inference for custom schemas.",
+      label: "类型安全",
+      description: "为自定义 Schema 提供完整自动补全与类型推导。",
     },
     {
       id: "theming",
       icon: <span>🎨</span>,
-      label: "Bring your Design System",
-      description: "Works with Mantine, shadcn/ui, or go headless.",
+      label: "接入你的设计系统",
+      description: "兼容 Mantine、shadcn/ui，也可以走 Headless 方案。",
     },
     {
       id: "extend",
       icon: <span>🔧</span>,
-      label: "Extend Everything",
-      description: "Create custom blocks, inline content, menus and more.",
+      label: "全面可扩展",
+      description: "可创建自定义区块、行内内容、菜单等更多能力。",
     },
   ];
 
   return (
     <FeatureSection
-      title="An intuitive API for developers."
-      description="The block-based architecture unlocks a powerful API for engineers with full TypeScript support and a clean React API."
+      title="为开发者打造的直观 API。"
+      description="基于块的架构为工程团队提供强大的 API，同时具备完整 TypeScript 支持与清晰的 React 接口。"
       tabs={tabs}
       activeTabId={activeTab}
       onTabChange={(id) => setActiveTab(id as any)}

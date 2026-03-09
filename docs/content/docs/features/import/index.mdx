@@ -1,38 +1,38 @@
 ---
-title: Import
-description: It's possible to import content into BlockNote.
-imageTitle: Importing Content
+title: 导入
+description: 可以将内容导入到 BlockNote 中。
+imageTitle: 导入内容
 ---
 
-# Importing Content
+# 导入内容
 
-There are two main paths to importing content into BlockNote:
+将内容导入到 BlockNote 中有两种主要途径：
 
-- **HTML**: (Recommended) Import HTML content into BlockNote.
-- **Markdown**: Import Markdown content into BlockNote.
+- **HTML**：（推荐）将 HTML 内容导入到 BlockNote 中。
+- **Markdown**：将 Markdown 内容导入到 BlockNote 中。
 
-## Migrating Between Editors
+## 编辑器之间的迁移
 
-When switching editors, there are several migration strategies to consider:
+切换编辑器时，需要考虑几种迁移策略：
 
-- **Legacy Editor Approach**: Keep both the old and new editors running in parallel. Use the legacy editor for existing content while creating new content in BlockNote.
-  - Minimizes disruption to your existing application
-  - Can segment usage by content type, organization, or other criteria
-- **Hard Cutoff**: Migrate all content at once on a specific date
-  - Provides a clean break and fresh start
-  - May require more upfront preparation
-- **Gradual Migration**: Convert content progressively, such as when files are opened
-  - Smoother transition with less immediate impact
-  - Migration period may extend over a longer time
+- **传统编辑器方案**：同时运行旧编辑器和新编辑器。使用传统编辑器处理已有内容，而在 BlockNote 中创建新内容。
+  - 最大限度减少对现有应用的影响
+  - 可以根据内容类型、组织或其他标准进行分段使用
+- **硬切换**：在特定日期一次性迁移所有内容
+  - 实现干净的切换，从头开始
+  - 可能需要更多的前期准备
+- **渐进迁移**：逐步转换内容，比如在打开文件时进行转换
+  - 过渡更平滑，影响较小
+  - 迁移周期可能较长
 
-Choose the strategy that best fits your specific needs and constraints.
+请选择最适合您具体需求和限制的策略。
 
-### Importing to BlockNote
+### 导入到 BlockNote
 
-The recommended approach for importing content into BlockNote is to convert your source content to HTML first, then use `editor.tryParseHTMLToBlocks`:
+将内容导入 BlockNote 的推荐方法是先将源内容转换为 HTML，然后使用 `editor.tryParseHTMLToBlocks`：
 
 ```tsx
-const existingContent = "<p>This is a paragraph.</p>";
+const existingContent = "<p>这是一个段落。</p>";
 
 const blocks = await editor.tryParseHTMLToBlocks(existingContent);
 
@@ -40,17 +40,15 @@ await storeToDB(blocks);
 ```
 
 <Callout type="info">
-  For details on server-side processing, see our [server-side
-  guide](/docs/features/server-processing).
+  有关服务器端处理的详细信息，请参见我们的[服务器端指南](/docs/features/server-processing)。
 </Callout>
 
-### Migrating from BlockNote
+### 从 BlockNote 迁出
 
-To migrate content out of BlockNote, convert it to HTML using the `editor.blocksToHTMLLossy` method.
+要将内容从 BlockNote 迁出，请使用 `editor.blocksToHTMLLossy` 方法将其转换为 HTML。
 
-HTML is widely supported and can be easily imported into most other editors.
+HTML 被广泛支持，并且可以轻松导入大多数其他编辑器。
 
 <Callout type="info">
-  For details on server-side processing, see our [server-side
-  guide](/docs/features/server-processing).
+  有关服务器端处理的详细信息，请参见我们的[服务器端指南](/docs/features/server-processing)。
 </Callout>

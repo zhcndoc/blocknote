@@ -1,26 +1,26 @@
 ---
-title: Email Export
-description: Export BlockNote documents to an email using React Email.
+title: 邮件导出
+description: 使用 React Email 将 BlockNote 文档导出为邮件。
 ---
 
-# Email Export
+# 邮件导出
 
-It's possible to export BlockNote documents to email-compatible HTML, completely client-side.
+可以将 BlockNote 文档导出为兼容邮件的 HTML，且完全在客户端完成。
 
 <Callout type={"info"}>
-  This feature is provided by the `@blocknote/xl-email-exporter`. `xl-` packages
-  are fully open source, but released under a copyleft license. A commercial
-  license for usage in closed source, proprietary products comes as part of the
-  [Business subscription](/pricing).
+  此功能由 `@blocknote/xl-email-exporter` 提供。`xl-` 系列包
+  是完全开源的，但采用了 copyleft 许可证。商业许可证
+  用于闭源专有产品，包含在
+  [商业订阅](/pricing) 中。
 </Callout>
 
-First, install the `@blocknote/xl-email-exporter` packages:
+首先，安装 `@blocknote/xl-email-exporter` 包：
 
 ```bash
 npm install @blocknote/xl-email-exporter
 ```
 
-Then, create an instance of the `ReactEmailExporter` class. This exposes the following methods:
+然后，创建 `ReactEmailExporter` 类的实例。它提供以下方法：
 
 ```typescript
 import {
@@ -28,35 +28,35 @@ import {
   reactEmailDefaultSchemaMappings,
 } from "@blocknote/xl-email-exporter";
 
-// Create the exporter
+// 创建导出器
 const exporter = new ReactEmailExporter(
   editor.schema,
   reactEmailDefaultSchemaMappings,
 );
 
-// Convert the blocks to a react-email document
+// 将区块转换为 react-email 文档
 const html = await exporter.toReactEmailDocument(editor.document);
 
-// Use react-email to write to file:
+// 使用 react-email 写入文件：
 await ReactEmail.render(html, `filename.html`);
 ```
 
-See the [full example](/examples/interoperability/converting-blocks-to-react-email) below:
+请参见下面的[完整示例](/examples/interoperability/converting-blocks-to-react-email)：
 
 <Example name="interoperability/converting-blocks-to-react-email" />
 
-### Customizing the Email output
+### 自定义邮件输出
 
-`toReactEmailDocument` takes an optional `options` parameter, which allows you to customize:
+`toReactEmailDocument` 接受一个可选的 `options` 参数，允许你自定义：
 
-- **preview**: Set the preview text for the email (can be a string or an array of strings)
-- **header**: Add content to the top of the email (must be a React-Email compatible component)
-- **footer**: Add content to the bottom of the email (must be a React-Email compatible component)
-- **head**: Inject elements into the [Head element](https://react.email/docs/components/head)
-- **container**: Customize the container element (A component which will wrap the email content including the header and footer)
-- **bodyStyles**: Customize the body styles (a `CSSProperties` object), providing an object here will completely override the default styles with what you provide
+- **preview**：设置邮件预览文本（可以是字符串或字符串数组）
+- **header**：在邮件顶部添加内容（必须是 React-Email 兼容组件）
+- **footer**：在邮件底部添加内容（必须是 React-Email 兼容组件）
+- **head**：向 [Head 组件](https://react.email/docs/components/head) 注入元素
+- **container**：自定义容器组件（将包裹邮件内容，包括头部和底部）
+- **bodyStyles**：自定义正文样式（一个 `CSSProperties` 对象），提供此对象会完全覆盖默认样式
 
-Example usage:
+示例用法：
 
 ```tsx
 import React from "react";
@@ -76,12 +76,12 @@ const exporter = new ReactEmailExporter(
 );
 
 const html = await exporter.toReactEmailDocument(editor.document, {
-  preview: "This is a preview of the email content",
-  header: <Text>Header</Text>,
-  footer: <Text>Footer</Text>,
-  head: <title>My email</title>,
+  preview: "这是邮件内容的预览文本",
+  header: <Text>头部</Text>,
+  footer: <Text>底部</Text>,
+  head: <title>我的邮件</title>,
   container: ({ children }) => <Container>{children}</Container>,
-  // These are the default body styles that are set by default
+  // 以下是默认设置的正文样式
   bodyStyles: {
     fontFamily:
       "'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
@@ -92,13 +92,13 @@ const html = await exporter.toReactEmailDocument(editor.document, {
 });
 ```
 
-### Custom mappings / custom schemas
+### 自定义映射 / 自定义 Schema
 
-The `ReactEmailExporter` constructor takes a `schema` and `mappings` parameter.
-A _mapping_ defines how to convert a BlockNote schema element (a Block, Inline Content, or Style) to a React-Email element.
-If you're using a [custom schema](/docs/features/custom-schemas) in your editor, or if you want to overwrite how default BlockNote elements are converted to React Email, you can pass your own `mappings`:
+`ReactEmailExporter` 构造函数接受 `schema` 和 `mappings` 参数。
+映射定义了如何将 BlockNote 的 schema 元素（区块、内联内容或样式）转换为 React-Email 元素。
+如果你在编辑器中使用了[自定义 schema](/docs/features/custom-schemas)，或者想覆盖默认 BlockNote 元素转换为 React Email 的行为，可以传入你自己的 `mappings`：
 
-For example, use the following code in case your schema has an `extraBlock` type:
+例如，当你的 schema 有一个 `extraBlock` 类型时：
 
 ```typescript
 import { ReactEmailExporter, reactEmailDefaultSchemaMappings } from "@blocknote/xl-email-exporter";
@@ -108,7 +108,7 @@ new ReactEmailExporter(schema, {
     blockMapping: {
         ...reactEmailDefaultSchemaMappings.blockMapping,
         myCustomBlock: (block, exporter) => {
-            return <Text>My custom block</Text>;
+            return <Text>我的自定义区块</Text>;
         },
     },
     inlineContentMapping: reactEmailDefaultSchemaMappings.inlineContentMapping,
@@ -116,24 +116,24 @@ new ReactEmailExporter(schema, {
 });
 ```
 
-### Exporter options
+### 导出器选项
 
-The `ReactEmailExporter` constructor takes an optional `options` parameter.
-While conversion happens on the client-side, the default setup uses a server hosted proxy to resolve files:
+`ReactEmailExporter` 构造函数还接受一个可选的 `options` 参数。
+虽然转换过程在客户端完成，默认配置使用了服务器托管的代理来解决文件解析：
 
 ```typescript
 const defaultOptions = {
-  // a function to resolve external resources in order to avoid CORS issues
-  // by default, this calls a BlockNote hosted server-side proxy to resolve files
+  // 一个用于解析外部资源的函数，避免 CORS 问题
+  // 默认为调用 BlockNote 托管的服务器端代理进行文件解析
   resolveFileUrl: corsProxyResolveFileUrl,
-  // the colors to use in the email for things like highlighting, background colors and font colors.
-  colors: COLORS_DEFAULT, // defaults from @blocknote/core
+  // 邮件中用于高亮、背景和字体颜色等的颜色配置。
+  colors: COLORS_DEFAULT, // @blocknote/core 中的默认颜色
 };
 ```
 
-### Custom styles
+### 自定义样式
 
-Want to tweak the default styles of the email? You can use `reactEmailDefaultSchemaMappingsWithStyles` to create a custom mapping with your own styles.
+想调整邮件的默认样式？你可以使用 `reactEmailDefaultSchemaMappingsWithStyles` 来创建带有自定义样式的映射。
 
 ```tsx
 import {
@@ -157,11 +157,11 @@ const { blockMapping, inlineContentMapping, styleMapping } =
   });
 
 new ReactEmailExporter(schema, {
-  // You can still use the default block mapping, but you can also overwrite it
+  // 你依然可以使用默认区块映射，也可以覆盖它
   blockMapping: {
     ...blockMapping,
     audio: (block, exporter) => {
-      return <Text>Audio block</Text>;
+      return <Text>音频区块</Text>;
     },
   },
   inlineContentMapping,

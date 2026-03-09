@@ -1,4 +1,4 @@
 {
-  "title": "Export",
+  "title": "导出",
   "pages": ["markdown", "html", "pdf", "docx", "email", "odt", "..."]
 }

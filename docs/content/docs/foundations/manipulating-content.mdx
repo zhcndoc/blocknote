@@ -1,59 +1,59 @@
 ---
-title: Manipulating Blocks
-description: Learn how to manipulate blocks in the editor.
+title: 操作区块
+description: 学习如何在编辑器中操作区块。
 ---
 
-# Manipulating Blocks
+# 操作区块
 
-BlockNote operates on a **block-based architecture**, where all content is organized into discrete blocks. Understanding how to manipulate these blocks is fundamental to working with BlockNote effectively.
+BlockNote 采用了**基于区块的架构**，所有内容都组织成离散的区块。理解如何操作这些区块是高效使用 BlockNote 的基础。
 
-## Block-Based Architecture
+## 基于区块的架构
 
-In BlockNote, everything is a block. A paragraph is a block, a heading is a block, a list item is a block, and even complex structures like tables are composed of blocks. This unified approach makes document manipulation consistent and predictable.
+在 BlockNote 中，一切都是区块。段落是一个区块，标题是一个区块，列表项是一个区块，甚至像表格这样的复杂结构也是由区块组成。这种统一的方法使文档操作保持一致且可预测。
 
-## Core Block Operations
+## 核心区块操作
 
-BlockNote provides a comprehensive set of operations for manipulating blocks, all working at the block level:
+BlockNote 提供了一套全面的区块操作，所有操作均在区块级别进行：
 
-### Reading Blocks
+### 读取区块
 
-- **Get the entire document** - Retrieve all top-level blocks
-- **Get specific blocks** - Access individual blocks by ID or reference
-- **Navigate relationships** - Find previous, next, or parent blocks
-- **Traverse all blocks** - Iterate through the entire document structure
+- **获取整个文档** - 获取所有顶层区块
+- **获取特定区块** - 通过 ID 或引用访问单个区块
+- **导航关系** - 查找上一个、下一个或父级区块
+- **遍历所有区块** - 遍历整个文档结构
 
-[See more in the API reference](/docs/reference/editor/manipulating-content#reading-blocks)
+[详见 API 参考](/docs/reference/editor/manipulating-content#reading-blocks)
 
 ```typescript
-// Get the entire document
+// 获取整个文档
 const document: Block[] = editor.document;
 
-// Get a specific block
+// 获取特定区块
 const block = editor.getBlock(blockId);
 
-// Get the previous block
+// 获取上一个区块
 const previousBlock = editor.getPreviousBlock(blockId);
 
-// Get the next block
+// 获取下一个区块
 const nextBlock = editor.getNextBlock(blockId);
 ```
 
-### Creating Blocks
+### 创建区块
 
-- **Insert new blocks** - Add blocks before or after existing ones
-- **Create complex structures** - Build nested blocks like lists and tables
-- **Generate blocks programmatically** - Create blocks from data or user input
+- **插入新区块** - 在已有区块前后添加区块
+- **创建复杂结构** - 构建嵌套区块，如列表和表格
+- **程序化生成区块** - 根据数据或用户输入创建区块
 
-[See more in the API reference](/docs/reference/editor/manipulating-content#inserting-blocks)
+[详见 API 参考](/docs/reference/editor/manipulating-content#inserting-blocks)
 
 ```typescript
-// Insert a simple paragraph block
+// 插入一个简单的段落区块
 editor.insertBlocks(
   [{ type: "paragraph", content: "Hello, world!" }],
   referenceBlock,
 );
 
-// Create a complex block structure
+// 创建复杂区块结构
 editor.insertBlocks(
   [
     { type: "heading", content: "My Heading" },
@@ -65,78 +65,78 @@ editor.insertBlocks(
 );
 ```
 
-### Modifying Blocks
+### 修改区块
 
-- **Update existing blocks** - Change block type, content, or properties
-- **Replace blocks** - Swap one or more blocks with new blocks
-- **Move blocks** - Reorder blocks by moving them up or down
-- **Nest and unnest** - Change the hierarchy by indenting or outdenting blocks
+- **更新已有区块** - 更改区块类型、内容或属性
+- **替换区块** - 用新区块替换一个或多个区块
+- **移动区块** - 通过上下移动调整区块顺序
+- **嵌套和取消嵌套** - 通过缩进或取消缩进改变层级关系
 
-[See more in the API reference](/docs/reference/editor/manipulating-content#updating-blocks)
+[详见 API 参考](/docs/reference/editor/manipulating-content#updating-blocks)
 
 ```typescript
-// Change a block's type
+// 更改区块类型
 editor.updateBlock(blockId, { type: "heading" });
 
-// Update block content and properties
+// 更新区块内容和属性
 editor.updateBlock(blockId, {
   content: "Updated content",
   props: { level: 2 },
 });
 ```
 
-### Removing Blocks
+### 删除区块
 
-- **Delete specific blocks** - Remove individual blocks or groups of blocks
-- **Clear selections** - Remove blocks based on user selection
+- **删除特定区块** - 移除单个或多个区块
+- **清除选区** - 基于用户选择移除区块
 
-[See more in the API reference](/docs/reference/editor/manipulating-content#removing-blocks)
+[详见 API 参考](/docs/reference/editor/manipulating-content#removing-blocks)
 
 ```typescript
-// Remove specific blocks
+// 删除特定区块
 editor.removeBlocks([blockId1, blockId2]);
 
-// Replace blocks with new blocks
+// 用新区块替换旧区块
 editor.replaceBlocks(
   [oldBlockId],
   [{ type: "paragraph", content: "New content" }],
 );
 ```
 
-## Working with Cursor and Selections
+## 操作光标和选区
 
-- **Read cursor position** - Get information about where the user's cursor is located
-- **Set cursor position** - Move the cursor to specific blocks
-- **Read selections** - Access blocks currently selected by the user
-- **Set selections** - Programmatically select ranges of blocks
+- **读取光标位置** - 获取光标所在位置的信息
+- **设置光标位置** - 移动光标到指定区块
+- **读取选区** - 访问用户当前选择的区块
+- **设置选区** - 程序化选中区块范围
 
-[See more in the API reference](/docs/reference/editor/cursor-selections)
+[详见 API 参考](/docs/reference/editor/cursor-selections)
 
 ```typescript
-// Get cursor position information
+// 获取光标位置信息
 const cursorPosition = editor.getTextCursorPosition();
 
-// Set cursor to a specific block
+// 将光标设置到指定区块
 editor.setTextCursorPosition(blockId, "start");
 
-// Get current selection
+// 获取当前选区
 const selection = editor.getSelection();
 
-// Set selection programmatically
+// 程序化设置选区
 editor.setSelection(startBlockId, endBlockId);
 ```
 
-## Best Practices
+## 最佳实践
 
-1. **Work with block references** - Use existing blocks as references for positioning new blocks
-2. **Handle errors gracefully** - Operations can fail if blocks don't exist or are invalid
-3. **Consider user experience** - Think about how your block manipulations affect the user's workflow
-4. **Group related operations** - Use [transactions](/docs/reference/editor/overview#transactions) to group multiple block changes into a single undo/redo operation
+1. **使用区块引用操作** - 利用已有区块作为新建区块的位置参考
+2. **优雅处理错误** - 操作可能因区块不存在或无效而失败
+3. **考虑用户体验** - 思考区块操作如何影响用户流程
+4. **组合相关操作** - 利用[事务](/docs/reference/editor/overview#transactions)将多次区块变更组合成一次撤销/重做操作
 
-## Next Steps
+## 后续步骤
 
-This overview covers the fundamental concepts of block manipulation in BlockNote. For detailed API reference and specific examples, see:
+本概述涵盖了 BlockNote 中区块操作的基本概念。详细的 API 参考和具体示例，请参阅：
 
-- [Manipulating Blocks Reference](/docs/reference/editor/manipulating-content) - Complete API documentation
-- [Cursor & Selections](/docs/reference/editor/cursor-selections) - Working with user selections
-- [Block Types](/docs/features/blocks) - Understanding different block types and their properties
+- [区块操作参考](/docs/reference/editor/manipulating-content) - 完整的 API 文档
+- [光标与选区](/docs/reference/editor/cursor-selections) - 操作用户选区
+- [区块类型](/docs/features/blocks) - 了解不同区块类型及其属性

@@ -4,18 +4,18 @@
   "icon": "Building2",
   "root": true,
   "pages": [
-    "---Getting Started---",
+    "---入门---",
     "index",
     "introduction",
     "getting-started",
     "getting-started/editor-setup",
-    "---Foundations---",
+    "---基础---",
     "...foundations",
-    "---Features---",
+    "---特性---",
     "...features",
     "---React---",
     "...react",
-    "---Editor Reference---",
+    "---参考---",
     "...reference/editor"
   ]
 }

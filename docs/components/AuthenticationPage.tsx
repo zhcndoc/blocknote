@@ -113,15 +113,14 @@ function AuthenticationBox(props: {
           onSuccess() {
             setSigningInState({
               state: "done",
-              message:
-                "We've sent you an email. Click the link inside to log in.",
+              message: "我们已向你发送邮件，请点击其中的链接完成登录。",
             });
           },
           onError(ctx) {
             if (ctx.error.code === "VALIDATION_ERROR") {
               setSigningInState({
                 state: "error",
-                message: "Invalid email address domain.",
+                message: "邮箱域名无效。",
               });
             } else {
               setSigningInState({
@@ -155,8 +154,7 @@ function AuthenticationBox(props: {
           onSuccess() {
             setSigningInState({
               state: "done",
-              message:
-                "We've sent you an email. Click the link inside to verify your account.",
+              message: "我们已向你发送邮件，请点击其中的链接验证你的账号。",
             });
           },
           onError(ctx) {
@@ -166,7 +164,7 @@ function AuthenticationBox(props: {
             ) {
               setSigningInState({
                 state: "error",
-                message: "Invalid email address domain.",
+                message: "邮箱域名无效。",
               });
             } else {
               setSigningInState({
@@ -205,19 +203,19 @@ function AuthenticationBox(props: {
         {props.variant === "register" && (
           <AuthenticationInput
             type="name"
-            name="Name"
+            name="姓名"
             onChange={(e) => setName(e.target.value)}
           />
         )}
         <AuthenticationInput
           type="email"
-          name="Email address"
+          name="邮箱地址"
           onChange={(e) => setEmail(e.target.value)}
         />
         {(props.variant === "password" || props.variant === "register") && (
           <AuthenticationInput
             type="password"
-            name="Password"
+            name="密码"
             onChange={(e) => setPassword(e.target.value)}
           />
         )}
@@ -243,11 +241,11 @@ function AuthenticationBox(props: {
               <path d="M480-46q-90 0-168.97-34.08-78.97-34.07-137.92-93.03-58.96-58.95-93.03-137.92Q46-390 46-480q0-90.14 34.06-168.88 34.07-78.74 93-137.93Q232-846 311-880t169-34q26 0 44.5 18.5T543-851q0 26-18.5 44.5T480-788q-128.01 0-218.01 89.99-89.99 89.99-89.99 218T261.99-262q89.99 90 218 90T698-261.99q90-90 90-218.01 0-26 18.5-44.5T851-543q26 0 44.5 18.5T914-480q0 90-34.06 169.01-34.07 79.01-93 138Q728-114 649.14-80 570.28-46 480-46Z" />
             </svg>
           ) : props.variant === "password" ? (
-            "Log in"
+            "登录"
           ) : props.variant === "email" ? (
-            "Sign in with magic link"
+            "使用魔法链接登录"
           ) : (
-            "Sign up"
+            "注册"
           )}
         </button>
         {signingInState.state === "error" && (
@@ -286,7 +284,7 @@ function EmailSignInButton() {
 
   return (
     <AlternativeSignInButton
-      name="Continue with email"
+      name="使用邮箱继续"
       icon={
         <svg
           fill="currentColor"
@@ -310,7 +308,7 @@ function PasswordSignInButton() {
 
   return (
     <AlternativeSignInButton
-      name="Continue with password"
+      name="使用密码继续"
       icon={
         <svg
           fill="currentColor"
@@ -342,7 +340,7 @@ function GitHubSignInButton(props: {
 
   return (
     <AlternativeSignInButton
-      name="Continue with GitHub"
+      name="使用 GitHub 继续"
       icon={
         <svg
           fill="currentColor"
@@ -390,7 +388,7 @@ function AlternativeSignInBox(props: {
         </div>
         <div className="relative flex justify-center text-sm/6 font-medium">
           <span className="bg-fd-accent text-fd-accent-foreground px-6">
-            Or
+            或
           </span>
         </div>
       </div>
@@ -424,10 +422,10 @@ export default function AuthenticationPage(props: {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center font-sans text-2xl/9 font-semibold tracking-tight text-gray-900 dark:text-gray-100">
           {props.variant === "password"
-            ? "Login to your BlockNote account"
+            ? "登录你的 BlockNote 账号"
             : props.variant === "email"
-              ? "Login with your email account"
-              : "Create an account"}
+              ? "使用邮箱登录"
+              : "创建账号"}
         </h2>
       </div>
 
@@ -446,10 +444,10 @@ export default function AuthenticationPage(props: {
             }}
           >
             {props.variant === "email"
-              ? "Don't have an account? Sign Up"
+              ? "还没有账号？立即注册"
               : props.variant === "password"
-                ? "Return to email login"
-                : "Already have an account? Log In"}
+                ? "返回邮箱登录"
+                : "已有账号？立即登录"}
           </span>
         </p>
       </div>

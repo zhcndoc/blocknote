@@ -67,7 +67,7 @@ export function AuthNavButton() {
         href={`/signin?redirect=${encodeURIComponent(pathname || "")}`}
         size={"small"}
       >
-        Sign in
+        登录
       </CTAButton>
     );
   }
@@ -91,8 +91,8 @@ export function AuthNavButton() {
             }}
           >
             {session.data.planType === "free"
-              ? "Get BlockNote Pro"
-              : "Manage my subscription"}
+              ? "获取 BlockNote Pro"
+              : "管理我的订阅"}
           </a>
         </Menu.Item>,
         <Menu.Item
@@ -106,7 +106,7 @@ export function AuthNavButton() {
               await authClient.signOut();
             }}
           >
-            Sign out
+            退出登录
           </button>
         </Menu.Item>,
       ]}

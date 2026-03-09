@@ -1,20 +1,20 @@
 ---
-title: Extensions
-description: Add extensions to the editor to add keyboard shortcuts, input rules, and more.
+title: 扩展
+description: 向编辑器添加扩展以增加键盘快捷键、输入规则等功能。
 ---
 
-# Extensions
+# 扩展
 
-BlockNote includes an extensions system which lets you expand the editor's behaviour. Extensions can include any of the following features:
+BlockNote 包含一个扩展系统，允许你扩展编辑器的行为。扩展可以包含以下任意功能：
 
-- Keyboard shortcuts
-- Input rules
-- [ProseMirror plugins](https://prosemirror.net/docs/ref/#state.Plugin_System)
-- [TipTap extensions](https://tiptap.dev/docs/editor/extensions/custom-extensions/create-new)
+- 键盘快捷键
+- 输入规则
+- [ProseMirror 插件](https://prosemirror.net/docs/ref/#state.Plugin_System)
+- [TipTap 扩展](https://tiptap.dev/docs/editor/extensions/custom-extensions/create-new)
 
-## Creating an extension
+## 创建扩展
 
-You can create extensions using the `createExtension` function:
+你可以使用 `createExtension` 函数来创建扩展：
 
 ```typescript
 type Extension = {
@@ -44,56 +44,56 @@ const CustomExtension = createExtension({
 });
 ```
 
-Let's go over the options that can be passed into `createExtension`:
+下面是可以传入 `createExtension` 的选项说明：
 
-`key:` The name of the extension.
+`key:` 扩展的名称。
 
-`keyboardShortcuts?:` Keyboard shortcuts can be used to run code when a key combination is pressed in the editor. The key names are the same as those used in the [`KeyboardEvent.key` property](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values). Takes an object which maps key name combinations (e.g. `Meta+Shift+ArrowDown`) to functions, which return `true` when the key press event is handled, or `false` otherwise. The functions have a single argument:
+`keyboardShortcuts?:` 键盘快捷键用于在编辑器中按下某键组合时执行代码。键名与 [`KeyboardEvent.key` 属性](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values) 中使用的一致。接受一个对象，该对象将键名组合（例如 `Meta+Shift+ArrowDown`）映射到函数，函数在处理该按键事件时返回 `true` ，否则返回 `false`。函数只有一个参数：
 
-- `ctx:` An object containing the BlockNote editor instance.
+- `ctx:` 包含 BlockNote 编辑器实例的对象。
 
-`inputRules?:` Input rules update blocks when given regular expressions are found in them. Takes an array of objects. Each object has a `find` field for the regular expression to find, and a `replace` field, for a function that should run on a match. The function should return a [`PartialBlock`](docs/reference/editor/manipulating-content#partial-blocks) which specifies how the block should be updated, or avoid updating it. It also has a single argument:
+`inputRules?:` 输入规则用于在检测到指定正则表达式时更新区块。接受一个对象数组。每个对象包含 `find` 字段，用于指定要查找的正则表达式，以及 `replace` 字段，用于指定匹配时要执行的函数。该函数应返回一个 [`PartialBlock`](docs/reference/editor/manipulating-content#partial-blocks)，用于指定区块应该如何更新，或者不执行更新。函数也有一个参数：
 
-- `props:` An object containing the result of the regular expression match, a range for the [Prosemirror position indices](https://prosemirror.net/docs/guide/#doc.indexing) spanned by the match, and the BlockNote editor instance.
+- `props:` 一个对象，包含正则匹配的结果、匹配范围对应的 [Prosemirror 位置索引](https://prosemirror.net/docs/guide/#doc.indexing)，以及 BlockNote 编辑器实例。
 
-`plugins?:` An array of [ProseMirror plugins](https://prosemirror.net/docs/ref/#state.Plugin_System).
+`plugins?:` 一个 [ProseMirror 插件](https://prosemirror.net/docs/ref/#state.Plugin_System) 数组。
 
-`tiptapExtensions?:` An array of [TipTap extensions](https://tiptap.dev/docs/editor/extensions/custom-extensions/create-new).
+`tiptapExtensions?:` 一个 [TipTap 扩展](https://tiptap.dev/docs/editor/extensions/custom-extensions/create-new) 数组。
 
-## Adding extensions to the editor
+## 向编辑器添加扩展
 
-Extensions can be added to the editor on their own via the [editor options](/docs/reference/editor/overview#options) or as part of [custom blocks](/docs/features/custom-schemas/custom-blocks).
+扩展可以单独通过 [编辑器选项](/docs/reference/editor/overview#options) 添加到编辑器中，或者作为 [自定义区块](/docs/features/custom-schemas/custom-blocks) 的一部分添加。
 
-### Adding directly to the editor
+### 直接添加到编辑器
 
-The `extensions` [editor option](/docs/reference/editor/overview#options) takes an array of extensions to be added to the editor:
+`extensions` [编辑器选项](/docs/reference/editor/overview#options) 接受一个扩展数组，用于添加到编辑器中：
 
 ```typescript
 const editor = useCreateBlockNote({
   extensions: [
-    // Add extensions here:
+    // 在此添加扩展：
     createExtension({ ... })
   ],
 });
 ```
 
-### Adding to custom blocks
+### 添加到自定义区块
 
-When creating a [custom block](/docs/features/custom-schemas/custom-blocks#creating-a-custom-block-type) using `createReactBlockSpec`, you can pass an array of extensions to the third parameter:
+创建 [自定义区块](/docs/features/custom-schemas/custom-blocks#creating-a-custom-block-type) 时，使用 `createReactBlockSpec`，你可以将扩展数组作为第三个参数传入：
 
 ```typescript
 const createCustomBlock = createReactBlockSpec(
   {
-    // Block config
+    // 区块配置
     ...
   },
   {
-    // Block implementation
+    // 区块实现
     ...
   }
   [
-    // Add extensions here:
+    // 在此添加扩展：
     createExtension({ ... })
   ],
-});
+);
 ```
