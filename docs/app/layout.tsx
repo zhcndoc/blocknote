@@ -29,7 +29,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
                 const firstChild = tocRoot.firstElementChild;
                 if (!firstChild) return;
 
-                if (firstChild.querySelector(".wwads-cn.wwads-vertical")) return;
+                if (tocRoot.querySelector(".wwads-cn.wwads-vertical")) return;
 
                 const verticalAd = document.createElement("div");
                 verticalAd.className = "wwads-cn wwads-vertical";
@@ -38,7 +38,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
                   "max-width: 200px; margin-top: 0; margin-bottom: 1rem; flex-shrink: 0;"
                 );
                 verticalAd.setAttribute("data-id", "354");
-                firstChild.insertBefore(verticalAd, firstChild.firstChild);
+                tocRoot.insertBefore(verticalAd, firstChild);
               }
 
               function runWhenDomReady(fn) {
