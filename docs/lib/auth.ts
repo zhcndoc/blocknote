@@ -207,6 +207,10 @@ export const auth = betterAuth({
               slug: PRODUCTS.business.slug, // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
             },
             {
+              productId: PRODUCTS["business-yearly"].id,
+              slug: PRODUCTS["business-yearly"].slug,
+            },
+            {
               productId: PRODUCTS.starter.id,
               slug: PRODUCTS.starter.slug,
             },

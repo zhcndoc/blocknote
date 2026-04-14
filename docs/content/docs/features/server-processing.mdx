@@ -7,7 +7,7 @@ path: /docs/server-side-processing
 
 # 服务器端处理
 
-虽然你可以在客户端使用 `BlockNoteEditor`，但是你也可以使用来自 `@blocknote/server-util` 的 `ServerBlockNoteEditor` 在服务器端处理 BlockNote 文档。
+虽然你可以在客户端使用 `BlockNoteEditor`，但你也可以使用来自 `@blocknote/server-util` 的 `ServerBlockNoteEditor` 在服务器端处理 BlockNote 文档。
 
 例如，使用以下代码在服务器端将 BlockNote 文档转换为 HTML：
 
@@ -53,4 +53,22 @@ const html = await editor.withReactContext(
   ),
   async () => editor.blocksToFullHTML(blocks),
 );
+```
+
+## Next.js App Router
+
+如果你在 Next.js App Router API 路由（Route Handler）中使用 `@blocknote/server-util`，你需要将 BlockNote 包添加到 `serverExternalPackages` 中的 `next.config.ts`：
+
+```typescript
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  serverExternalPackages: [
+    "@blocknote/core",
+    "@blocknote/react",
+    "@blocknote/server-util",
+  ],
+};
+
+export default nextConfig;
 ```
