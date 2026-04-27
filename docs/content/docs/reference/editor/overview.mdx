@@ -60,18 +60,18 @@ BlockNote 支持事务，允许您将多个更改合并为一个操作。这对�
 ```ts
 // ✅ 推荐 - 这是单次撤销/重做操作
 editor.transact(() => {
-  editor.insertBlocks([{ type: "paragraph", content: "Hello, world!" }], "abc");
+  editor.insertBlocks([{ type: "paragraph", content: "你好，世界！" }], "abc");
   editor.replaceBlocks([{ id: "123" }], {
     type: "paragraph",
-    content: "Hello, world!",
+    content: "你好，世界！",
   });
 });
 
 // ❌ 避免 - 这是两次独立的撤销/重做操作
-editor.insertBlocks([{ type: "paragraph", content: "Hello, world!" }], "abc");
+editor.insertBlocks([{ type: "paragraph", content: "你好，世界！" }], "abc");
 editor.replaceBlocks([{ id: "123" }], {
   type: "paragraph",
-  content: "Hello, world!",
+  content: "你好，世界！",
 });
 ```
 
@@ -113,8 +113,8 @@ editor.pasteMarkdown("# Hello\n\nThis is **bold** text.");
 
 使用 `BlockNoteEditor.create` 创建编辑器时，可以配置以下选项：
 
-<auto-type-table
-  path="../../../../../packages/core/src/editor/BlockNoteEditor.ts"
+<AutoTypeTable
+  path="../packages/core/src/editor/BlockNoteEditor.ts"
   name="BlockNoteEditorOptions"
 />
 

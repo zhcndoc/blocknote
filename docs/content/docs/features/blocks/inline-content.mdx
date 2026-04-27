@@ -79,6 +79,55 @@ type Link = {
 };
 ```
 
+### 自定义链接
+
+你可以使用 `links` 编辑器选项来自定义链接的渲染方式以及它们对点击的响应方式。
+
+```ts
+const editor = BlockNoteEditor.create({
+  links: {
+    HTMLAttributes: {
+      class: "my-link-class",
+      target: "_blank",
+    },
+    onClick: (event) => {
+      // 自定义点击逻辑，例如不重新加载页面的路由。
+    },
+  },
+});
+```
+
+#### `HTMLAttributes`
+
+应添加到已渲染链接元素中的额外 HTML 属性。
+
+```ts
+const editor = BlockNoteEditor.create({
+  links: {
+    HTMLAttributes: {
+      class: "my-link-class",
+      target: "_blank",
+    },
+  },
+});
+```
+
+#### `onClick`
+
+点击链接时调用的自定义处理函数。如果保持为 `undefined`，则链接会在点击时于新窗口中打开（默认行为）。如果提供了该函数，则默认行为会被禁用，并改为调用此函数。
+
+返回 `false` 会让 BlockNote 在此处理函数之后运行其他点击处理函数。返回 `true` 或不返回任何值（默认）会将事件标记为已处理。
+
+```ts
+const editor = BlockNoteEditor.create({
+  links: {
+    onClick: (event) => {
+      // 点击链接时执行某些操作。
+    },
+  },
+});
+```
+
 ## 默认样式
 
 BlockNote 中的默认文本格式设置选项用默认架构中的 `Styles` 表示：
