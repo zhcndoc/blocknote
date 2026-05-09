@@ -60,6 +60,70 @@ type DefaultSuggestionItem = {
 
 `getItems` 应基于用户输入的 `query`（用户在触发字符后输入的内容）返回需要显示在斜杠菜单中的项。在此示例中，我们只是将“Hello World”项添加到默认斜杠菜单项列表，并使用 `filterSuggestionItems` 根据用户查询过滤完整项列表。
 
+### 项分组与排序
+
+斜杠菜单项会按照 `getItems` 返回的顺序进行渲染。相邻且共享相同 `group` 属性的项会被渲染在同一组中，并显示在一个标签下。
+
+#### 排序
+
+菜单中的项会严格按照数组顺序显示。重新排列数组即可重新排列菜单：
+
+```typescript
+getItems={async (query) =>
+  filterSuggestionItems(
+    [
+      insertHelloWorldItem(editor), // 最先显示
+      ...getDefaultReactSlashMenuItems(editor), // 之后显示
+    ],
+    query,
+  )
+}
+```
+
+#### 分组
+
+具有相同 `group` 属性的项必须在数组中**相邻**，才能作为一组渲染。如果相同 `group` 的项被不同 `group` 的项隔开，它们会被渲染成两个独立的组，并且各自拥有自己的标签：
+
+```typescript
+// 渲染为一个名为 "Basic" 的组：
+[
+  { title: "Item A", group: "Basic", /* ... */ },
+  { title: "Item B", group: "Basic", /* ... */ },
+  { title: "Item C", group: "Other", /* ... */ },
+]
+
+// 渲染为两个独立的 "Basic" 组，中间夹着 "Other"：
+[
+  { title: "Item A", group: "Basic", /* ... */ },
+  { title: "Item C", group: "Other", /* ... */ },
+  { title: "Item B", group: "Basic", /* ... */ },
+]
+```
+
+#### 查找、插入、移除与重新排序项
+
+使用常规数组操作来处理这些项。例如，要在默认 `Heading 1` 项后直接插入一个自定义项：
+
+```typescript
+const items = getDefaultReactSlashMenuItems(editor);
+const headingIndex = items.findIndex((item) => item.title === "Heading 1");
+items.splice(headingIndex + 1, 0, insertHelloWorldItem(editor));
+```
+
+要移除一个项：
+
+```typescript
+const items = getDefaultReactSlashMenuItems(editor).filter(
+  (item) => item.title !== "Heading 1",
+);
+```
+
+要重新排序项，只需在从 `getItems` 返回之前对数组进行排序或重新排列即可。
+
+下面的演示结合了这些技巧，只渲染“基础块”和“标题”两个组，并交换它们的顺序：
+
+<Example name="ui-components/suggestion-menus-grouping-ordering" />
+
 ### 替换斜杠菜单组件
 
 你可以用自己的 React 组件替换斜杠菜单中使用的组件，下面的演示展示了这一点。

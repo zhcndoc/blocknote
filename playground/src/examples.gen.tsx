@@ -324,6 +324,25 @@
         "readme": "This example makes the editor read-only while showing the same content as the [Default Schema Showcase](/examples/basic/default-blocks) example.\n\n**Relevant Docs:**\n\n- [Editor Setup](/docs/getting-started/editor-setup)\n- [Document Structure](/docs/foundations/document-structure)\n- [Default Schema](/docs/foundations/schemas)"
       },
       {
+        "projectSlug": "no-trailing-block",
+        "fullSlug": "basic/no-trailing-block",
+        "pathFromRoot": "examples/01-basic/17-no-trailing-block",
+        "config": {
+          "playground": true,
+          "docs": false,
+          "author": "matthewlipski",
+          "tags": [
+            "Basic"
+          ]
+        },
+        "title": "No Trailing Block",
+        "group": {
+          "pathFromRoot": "examples/01-basic",
+          "slug": "basic"
+        },
+        "readme": "This example shows how to disable the automatic creation of a trailing block at the end of the editor by setting the `trailingBlock` option to `false`.\n\n**Relevant Docs:**\n\n- [Editor Setup](/docs/getting-started/editor-setup)"
+      },
+      {
         "projectSlug": "testing",
         "fullSlug": "basic/testing",
         "pathFromRoot": "examples/01-basic/testing",
@@ -476,7 +495,7 @@
             "Custom Schemas"
           ],
           "dependencies": {
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "react-icons": "^5.5.0"
           } as any
         },
@@ -851,6 +870,29 @@
           "slug": "ui-components"
         },
         "readme": "This example demonstrates how to use the `DRAG_EXCLUSION_CLASSNAME` to create separate drag & drop areas that don't interfere with BlockNote's built-in block drag & drop functionality.\n\n## Features\n\n- **Drag Exclusion**: Elements with the `bn-drag-exclude` classname are treated as separate drag & drop operations\n- **Independent Drag Areas**: Create custom drag & drop functionality alongside BlockNote's editor\n- **No Interference**: Custom drag operations won't trigger BlockNote's block reordering\n- **Side-by-side Demo**: Shows the editor and custom drag area working independently\n\n## How It Works\n\nBy adding the `DRAG_EXCLUSION_CLASSNAME` (`bn-drag-exclude`) to an element, you tell BlockNote's drag & drop handlers to ignore all drag events within that element and its children. This allows you to implement your own custom drag & drop logic without conflicts.\n\nThe exclusion check works by traversing up the DOM tree from the drag event target, checking if any ancestor has the exclusion classname. If found, BlockNote's handlers return early, leaving your custom handlers in full control.\n\n## Code Highlights\n\n### Import the constant:\n\n```tsx\nimport { DRAG_EXCLUSION_CLASSNAME } from \"@blocknote/core\";\n```\n\n### Apply it to your custom drag area:\n\n```tsx\n<div className={\"drag-demo-section \" + DRAG_EXCLUSION_CLASSNAME}>\n  {/* Your custom drag & drop UI */}\n  <div draggable onDragStart={handleDragStart} onDrop={handleDrop}>\n    Custom draggable items\n  </div>\n</div>\n```\n\n## Use Cases\n\n- **Custom UI elements**: Add draggable components within or near the editor\n- **File upload areas**: Create drag-and-drop file upload zones\n- **Sortable lists**: Implement custom sortable lists alongside the editor\n- **External integrations**: Integrate with third-party drag & drop libraries\n\n**Relevant Docs:**\n\n- [Side Menu (Drag Handle)](/docs/react/components/side-menu)\n- [Editor Setup](/docs/getting-started/editor-setup)"
+      },
+      {
+        "projectSlug": "suggestion-menus-grouping-ordering",
+        "fullSlug": "ui-components/suggestion-menus-grouping-ordering",
+        "pathFromRoot": "examples/03-ui-components/19-suggestion-menus-grouping-ordering",
+        "config": {
+          "playground": true,
+          "docs": true,
+          "author": "matthewlipski",
+          "tags": [
+            "Intermediate",
+            "Blocks",
+            "UI Components",
+            "Suggestion Menus",
+            "Slash Menu"
+          ]
+        },
+        "title": "Slash Menu Grouping & Ordering",
+        "group": {
+          "pathFromRoot": "examples/03-ui-components",
+          "slug": "ui-components"
+        },
+        "readme": "In this example, we filter and reorder the default Slash Menu items so that only the \"Basic blocks\" and \"Headings\" groups are shown, with \"Basic blocks\" appearing first.\n\n**Try it out:** Press the \"/\" key to open the Slash Menu and see the reordered groups!\n\n**Relevant Docs:**\n\n- [Item Grouping & Ordering](/docs/react/components/suggestion-menus)\n- [Changing Slash Menu Items](/docs/react/components/suggestion-menus)\n- [Editor Setup](/docs/getting-started/editor-setup)"
       }
     ]
   },
@@ -1262,7 +1304,7 @@
             "Slash Menu"
           ],
           "dependencies": {
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "react-icons": "^5.5.0"
           } as any
         },
@@ -1336,7 +1378,7 @@
             "Slash Menu"
           ],
           "dependencies": {
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "react-icons": "^5.5.0"
           } as any,
           "pro": true
@@ -1365,7 +1407,7 @@
             "Slash Menu"
           ],
           "dependencies": {
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "react-icons": "^5.5.0"
           } as any
         },
@@ -1623,7 +1665,7 @@
           ],
           "dependencies": {
             "@y-sweet/react": "^0.6.3",
-            "@mantine/core": "^8.3.11"
+            "@mantine/core": "^9.0.2"
           } as any
         },
         "title": "Comments & Threads",
@@ -1649,7 +1691,7 @@
           "dependencies": {
             "y-partykit": "^0.0.25",
             "yjs": "^13.6.27",
-            "@mantine/core": "^8.3.11"
+            "@mantine/core": "^9.0.2"
           } as any
         },
         "title": "Threads Sidebar",
@@ -1782,7 +1824,7 @@
           ],
           "dependencies": {
             "@blocknote/xl-ai": "latest",
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "ai": "^6.0.5"
           } as any
         },
@@ -1807,7 +1849,7 @@
           ],
           "dependencies": {
             "@blocknote/xl-ai": "latest",
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "ai": "^6.0.5"
           } as any
         },
@@ -1832,7 +1874,7 @@
           ],
           "dependencies": {
             "@blocknote/xl-ai": "latest",
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "ai": "^6.0.5",
             "react-icons": "^5.5.0"
           } as any
@@ -1858,7 +1900,7 @@
           ],
           "dependencies": {
             "@blocknote/xl-ai": "latest",
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "ai": "^6.0.5",
             "y-partykit": "^0.0.25",
             "yjs": "^13.6.27"
@@ -1885,7 +1927,7 @@
           ],
           "dependencies": {
             "@blocknote/xl-ai": "latest",
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "ai": "^6.0.5",
             "y-partykit": "^0.0.25",
             "yjs": "^13.6.27"
@@ -1913,7 +1955,7 @@
           "dependencies": {
             "@ai-sdk/groq": "^3.0.2",
             "@blocknote/xl-ai": "latest",
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "ai": "^6.0.5"
           } as any
         },
@@ -1938,7 +1980,7 @@
           ],
           "dependencies": {
             "@blocknote/xl-ai": "latest",
-            "@mantine/core": "^8.3.11",
+            "@mantine/core": "^9.0.2",
             "ai": "^6.0.5"
           } as any
         },

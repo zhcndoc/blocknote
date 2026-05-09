@@ -15,6 +15,12 @@ imageTitle: Markdown 导入
 
 BlockNote 可以将 Markdown 内容导入到块对象中。请注意，这被视为“有损”的，因为并非所有的 Markdown 结构都能完全表示为 BlockNote 块。
 
+<Callout type={"warning"}>
+    **BlockNote 提供了一个最小化的 Markdown 解析器。** 它涵盖了大多数用户使用的常见子集（CommonMark + GFM 基础：标题、段落、列表、任务列表、表格、代码、引用块、链接、图片、强调、删除线、硬换行）。
+
+    存在许多 Markdown 规范（CommonMark、GFM、MDX、Pandoc 以及各种特定方言的扩展），而在富文本编辑器中支持它们全部并不是 BlockNote 的目标。**如果你需要处理超出这个最小子集的 Markdown，请使用你选择的解析器先将其自行解析为 HTML（例如 [`marked`](https://github.com/markedjs/marked)、[`markdown-it`](https://github.com/markdown-it/markdown-it) 或 [`remark`](https://github.com/remarkjs/remark)），然后将生成的 HTML 传递给 [`tryParseHTMLToBlocks`](/docs/features/import) 代替。** BlockNote 的 HTML 互操作性要广泛得多，因为 HTML 是编辑器在内部用于处理任意粘贴的格式。
+</Callout>
+
 ## Markdown 转块
 
 使用 `tryParseMarkdownToBlocks` 尝试将 Markdown 字符串解析为 `Block` 对象：

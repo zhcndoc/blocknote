@@ -27,7 +27,7 @@ BlockNote 兼容几种不同的存储格式，每种格式都有其优缺点。�
 | **[PDF](/docs/features/export/pdf)** (`@blocknote/xl-pdf-exporter`)    | ❌         | ✅         | ✅                    |
 | **[DOCX](/docs/features/export/docx)** (`@blocknote/xl-docx-exporter`) | ❌         | ✅         | ✅                    |
 | **[ODT](/docs/features/export/odt)** (`@blocknote/xl-odt-exporter`)    | ❌         | ✅         | ✅                    |
-| **[Email](/docs/features/export/email)** (`@blocknote/xl-email-exporter`)| ❌       | ✅         | ✅                    |
+| **[电子邮件](/docs/features/export/email)** (`@blocknote/xl-email-exporter`)| ❌       | ✅         | ✅                    |
 
 <Callout>
   **提示：** 推荐使用 **BlockNote JSON (`editor.document`)** 来存储文档，因为它是最持久的格式且保证无损。
@@ -159,6 +159,19 @@ export default function App() {
 ## 使用 Markdown
 
 BlockNote 也支持 Markdown 的相互转换。但转换为 Markdown 及从 Markdown 转换都是**有损**的。
+
+<Callout type="warning">
+  BlockNote 提供了一个**最小化**的 Markdown 解析器/序列化器，目标是
+  常见的 CommonMark + GFM 子集（标题、段落、列表、任务列表、
+  表格、代码、引用块、链接、图片、强调、删除线、硬换行）。支持所有 Markdown 变体（CommonMark、GFM、MDX、Pandoc
+  以及各种扩展）并不是编辑器的目标。如果您的使用场景
+  需要超出此子集的 Markdown 功能，**请自行将 Markdown 解析为
+  HTML**（使用诸如 [`marked`](https://github.com/markedjs/marked),
+  [`markdown-it`](https://github.com/markdown-it/markdown-it), 或
+  [`remark`](https://github.com/remarkjs/remark) 这样的库），并将生成的
+  HTML 传递给 `editor.tryParseHTMLToBlocks`——HTML 是 BlockNote 用于
+  任意粘贴的格式，且具有更广泛的互操作性。
+</Callout>
 
 ### 保存为 Markdown
 
