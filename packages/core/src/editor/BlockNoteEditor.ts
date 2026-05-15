@@ -306,7 +306,8 @@ export interface BlockNoteEditorOptions<
   };
 
   /**
-   * An option which user can pass with `false` value to disable the automatic creation of a trailing new block on the next line when the user types or edits any block.
+   * When the editor document doesn't end in an empty paragraph block, this option causes the editor to render an element simulating one.
+   * When clicked by the user, it gets turned into an actual block at the end of the document. This element is not shown when the option is `false`.
    *
    * @default true
    */
@@ -731,15 +732,27 @@ export class BlockNoteEditor<
   /**
    * Mount the editor to a DOM element.
    *
+   * @param element The DOM element to mount the editor's contenteditable into.
+   * @param options.portalTarget Where to mount `editor.portalElement` — the
+   *   container that floating UI (toolbars, menus, etc) portals into. When
+   *   omitted, defaults to `element.parentElement` (which is the editor's
+   *   `bn-container` in typical React usage), or to `document.body` /
+   *   the surrounding shadow root when no parent is available.
+   *
    * @warning Not needed to call manually when using React, use BlockNoteView to take care of mounting
    */
-  public mount = (element: HTMLElement) => {
+  public mount = (
+    element: HTMLElement,
+    options?: { portalTarget?: HTMLElement | null },
+  ) => {
     const root = element.getRootNode();
-    if (typeof ShadowRoot !== "undefined" && root instanceof ShadowRoot) {
-      root.appendChild(this.portalElement);
-    } else {
-      document.body.appendChild(this.portalElement);
-    }
+    const isInShadowRoot =
+      typeof ShadowRoot !== "undefined" && root instanceof ShadowRoot;
+    const target =
+      options?.portalTarget ??
+      element.parentElement ??
+      (isInShadowRoot ? (root as ShadowRoot) : document.body);
+    target.appendChild(this.portalElement);
     this._tiptapEditor.mount({ mount: element });
   };
 
@@ -1240,19 +1253,23 @@ export class BlockNoteEditor<
   /**
    * Moves the selected blocks up. If the previous block has children, moves
    * them to the end of its children. If there is no previous block, but the
-   * current blocks share a common parent, moves them out of & before it.
+   * current blocks share a common parent, moves them out of & before it. If a
+   * `blockIdentifier` is provided, that block is moved instead of the
+   * selection, and the selection is left unchanged.
    */
-  public moveBlocksUp() {
-    return this._blockManager.moveBlocksUp();
+  public moveBlocksUp(blockIdentifier?: BlockIdentifier) {
+    return this._blockManager.moveBlocksUp(blockIdentifier);
   }
 
   /**
    * Moves the selected blocks down. If the next block has children, moves
    * them to the start of its children. If there is no next block, but the
-   * current blocks share a common parent, moves them out of & after it.
+   * current blocks share a common parent, moves them out of & after it. If a
+   * `blockIdentifier` is provided, that block is moved instead of the
+   * selection, and the selection is left unchanged.
    */
-  public moveBlocksDown() {
-    return this._blockManager.moveBlocksDown();
+  public moveBlocksDown(blockIdentifier?: BlockIdentifier) {
+    return this._blockManager.moveBlocksDown(blockIdentifier);
   }
 
   /**

@@ -252,11 +252,11 @@ editor.replaceBlocks(
 #### 重新排序块
 
 ```typescript
-moveBlocksUp(): void
-moveBlocksDown(): void
+moveBlocksUp(blockIdentifier?: BlockIdentifier): void
+moveBlocksDown(blockIdentifier?: BlockIdentifier): void
 ```
 
-将当前选择的块上移或下移。
+将当前选中的块在文档中上移或下移。如果提供了 `blockIdentifier`，则会移动该块而不是选区，并且选区保持不变。
 
 ```typescript
 // 上移选中块
@@ -264,6 +264,12 @@ editor.moveBlocksUp();
 
 // 下移选中块
 editor.moveBlocksDown();
+
+// 上移特定块，不改变选区
+editor.moveBlocksUp("block-123");
+
+// 下移特定块，不改变选区
+editor.moveBlocksDown("block-123");
 ```
 
 ### 嵌套块
@@ -412,7 +418,7 @@ const linkUrl = editor.getSelectedLinkUrl();
 
 if (linkUrl) {
   console.log("选中链接 URL:", linkUrl);
-  // 新标签页打开链接
+  // 在新标签页打开链接
   window.open(linkUrl, "_blank");
 } else {
   console.log("未选中链接");

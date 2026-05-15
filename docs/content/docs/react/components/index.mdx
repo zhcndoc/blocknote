@@ -16,3 +16,23 @@ BlockNote 包含许多可以完全自定义的 UI 组件（如菜单和工具栏
   {/* - [图像工具栏](/docs/react/components/image-toolbar) */}
 
 <CardTable path="/react/components" />
+
+## 配置 Portal 目标
+
+默认情况下，所有浮动 UI 元素（工具栏、菜单、表格手柄等）都会 portal 到编辑器的 `bn-container` 中，这样它们就会被限定在编辑器范围内。如果你的布局需要它们脱离该范围——例如，某个 `overflow: hidden` 的祖先元素会裁剪较大的下拉菜单，或者宿主模态框拥有自己的层叠上下文——请向 `BlockNoteView` 传入 `portalElements` 属性：
+
+```tsx
+<BlockNoteView
+  editor={editor}
+  portalElements={{
+    // 所有未在下方列出的元素的全局默认值。
+    default: document.body,
+    // 按元素覆盖。值可以是 HTMLElement、CSS 选择器或 null（= document.body）。
+    tableHandles: ".bn-container",
+  }}
+/>
+```
+
+这些键与默认的 UI 开关一一对应（`formattingToolbar`、`linkToolbar`、`slashMenu`、`emojiPicker`、`sideMenu`、`filePanel`、`tableHandles`、`comments`）。手动挂载的 Controllers 也接受 `portalElement` 属性，并且其优先级高于该映射。另请参见 [Portal 目标示例](/examples/ui-components/portal-elements)。
+
+注意：在挂载后更改 `portalElements.default` 需要重新挂载编辑器（`editor.mount()` 只会在首次挂载时读取它）；按元素的键会实时更新。
