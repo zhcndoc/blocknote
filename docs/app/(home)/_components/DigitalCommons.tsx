@@ -32,7 +32,7 @@ export const DigitalCommons: React.FC = () => {
             {/* Eyebrow with EU flag only */}
             <div className="mb-6 flex items-center gap-3">
               <span className="text-xl">🇪🇺</span>
-              <span className="text-xs font-bold uppercase tracking-widest text-amber-200/80">
+              <span className="text-xs font-bold tracking-widest text-amber-200/80 uppercase">
                 数字公共品
               </span>
             </div>
@@ -66,7 +66,7 @@ export const DigitalCommons: React.FC = () => {
             </p>
 
             {/* Compelling social proof - simpler */}
-            <p className="mb-8 text-sm italic text-stone-500">
+            <p className="mb-8 text-sm text-stone-500 italic">
               &quot;建设数字公共品，意味着更好的工具、数据主权，以及共享的进步。&quot;
             </p>
 

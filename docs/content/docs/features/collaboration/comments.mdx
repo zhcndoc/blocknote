@@ -17,24 +17,28 @@ BlockNote 原生支持评论、评论线程（回复）和表情符号反应。
 - 可选地为评论和评论编辑器提供一个 schema。如果未定义，它们将使用 [默认评论编辑器 schema](https://github.com/TypeCellOS/BlockNote/blob/main/packages/react/src/components/Comments/defaultCommentEditorSchema.ts)。更多关于自定义 schema 的信息请参见 [这里](/docs/features/custom-schemas)。
 
 ```tsx
-const editor = useCreateBlockNote({
-  extensions: [
-    CommentsExtension({
-      // See below.
-      threadStore: ...,
-      // Return user information for the given userIds (see below).
-      resolveUsers: async (userIds: string[]) => { ... },
-      // Optional, can be left undefined
-      schema: BlockNoteSchema.create(...)
-    }),
+import { withCollaboration } from "@blocknote/core/yjs";
+
+const editor = useCreateBlockNote(
+  withCollaboration({
+    extensions: [
+      CommentsExtension({
+        // 见下文。
+        threadStore: ...,
+        // 返回给定 userIds 的用户信息（见下文）。
+        resolveUsers: async (userIds: string[]) => { ... },
+        // 可选，可留空 undefined
+        schema: BlockNoteSchema.create(...)
+      }),
+      ...
+    ],
+    collaboration: {
+      // 见实时协作文档
+      ...
+    },
     ...
-  ],
-  collaboration: {
-    // See real-time collaboration docs
-    ...
-  },
-  ...
-});
+  }),
+);
 ```
 
 **示例**
@@ -51,7 +55,7 @@ BlockNote 提供了几种内置的 ThreadStore 实现：
 `YjsThreadStore` 提供了基于 Yjs 的直接存储评论的功能，在线程数据直接存储于 Yjs 文档中。此实现适合所有用户拥有文档写权限的简单协作场景。
 
 ```tsx
-import { YjsThreadStore } from "@blocknote/core/comments";
+import { YjsThreadStore } from "@blocknote/core/yjs";
 
 const threadStore = new YjsThreadStore(
   userId, // 当前用户 ID
@@ -69,10 +73,8 @@ _注意：这是最简单的实现方式，但要求用户必须对 Yjs 文档�
 本实现通过 REST API 将数据写入 Yjs 文档，并由 REST API 处理访问控制。数据读取仍直接从 Yjs 文档获取（在 REST API 更新后），这样所有评论信息会自动通过已有协作提供者同步到客户端。
 
 ```tsx
-import {
-  RESTYjsThreadStore,
-  DefaultThreadStoreAuth,
-} from "@blocknote/core/comments";
+import { DefaultThreadStoreAuth } from "@blocknote/core/comments";
+import { RESTYjsThreadStore } from "@blocknote/core/yjs";
 
 const threadStore = new RESTYjsThreadStore(
   "https://api.example.com/comments", // REST API 基础 URL

@@ -21,7 +21,7 @@ export const Hero: React.FC = () => {
             {BADGES.map((badge, index) => (
               <div
                 key={index}
-                className="mb-8 inline-flex items-center gap-2 rounded-full border border-purple-200 bg-white/60 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-purple-700 backdrop-blur-sm"
+                className="mb-8 inline-flex items-center gap-2 rounded-full border border-purple-200 bg-white/60 px-3 py-1 text-[11px] font-bold tracking-widest text-purple-700 uppercase backdrop-blur-sm"
               >
                 <span className="flex items-center gap-2">
                   <span className="text-sm">{badge.icon}</span>
@@ -31,11 +31,11 @@ export const Hero: React.FC = () => {
             ))}
           </TextLoop>
 
-          <h1 className="mb-8 text-balance font-serif text-5xl leading-[1.05] tracking-tight text-stone-900 md:text-7xl">
+          <h1 className="mb-8 font-serif text-5xl leading-[1.05] tracking-tight text-balance text-stone-900 md:text-7xl">
             几分钟内构建一个{" "}
             <span className="ai-gradient-text">Notion 风格</span> 编辑器。
           </h1>
-          <p className="mb-10 max-w-lg text-lg font-light leading-relaxed text-stone-600 md:text-xl">
+          <p className="mb-10 max-w-lg text-lg leading-relaxed font-light text-stone-600 md:text-xl">
             面向 <strong>React</strong> 的 <strong>AI 原生</strong>、
             <strong>开源</strong> 富文本编辑器。为你的产品接入
             <strong>可完全定制</strong> 的现代块编辑体验，让用户爱上它。
@@ -59,7 +59,7 @@ export const Hero: React.FC = () => {
             </Link>
           </div>
         </div>
-        <div className="relative w-full md:ml-auto md:mr-4 lg:mt-12 lg:w-[85%]">
+        <div className="relative w-full md:mr-4 md:ml-auto lg:mt-12 lg:w-[85%]">
           <HeroVideo />
         </div>
       </section>

@@ -66,7 +66,7 @@ export const USP = () => {
               >
                 联系我们
               </a>
-              <div className="text-center text-[10px] font-medium uppercase tracking-widest text-stone-400">
+              <div className="text-center text-[10px] font-medium tracking-widest text-stone-400 uppercase">
                 面向企业客户
               </div>
             </div>

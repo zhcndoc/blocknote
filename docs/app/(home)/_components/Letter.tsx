@@ -15,7 +15,7 @@ export const Letter: React.FC = () => {
       <div className="relative mx-auto max-w-4xl px-6">
         <div className="relative">
           <div className="mb-16">
-            <h2 className="font-serif text-6xl font-medium italic tracking-tight text-stone-900 md:text-8xl">
+            <h2 className="font-serif text-6xl font-medium tracking-tight text-stone-900 italic md:text-8xl">
               一起构建吧。
             </h2>
           </div>
@@ -23,7 +23,7 @@ export const Letter: React.FC = () => {
           <div className="grid gap-16 md:grid-cols-12">
             <div className="col-span-12 md:col-span-7">
               <div className="prose prose-lg prose-stone max-w-none">
-                <p className="font-sans text-xl font-medium leading-relaxed text-stone-900">
+                <p className="font-sans text-xl leading-relaxed font-medium text-stone-900">
                   构建富文本编辑器一直是 Web 上最困难的工程挑战之一。过去，
                   这往往意味着数月的专项开发工作。
                 </p>
@@ -86,10 +86,10 @@ export const Letter: React.FC = () => {
                         <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-amber-500 ring-2 ring-stone-900" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">
+                        <span className="text-[10px] font-bold tracking-widest text-stone-500 uppercase">
                           团队
                         </span>
-                        <span className="font-serif italic text-stone-200">
+                        <span className="font-serif text-stone-200 italic">
                           BlockNote 创作者
                         </span>
                       </div>
