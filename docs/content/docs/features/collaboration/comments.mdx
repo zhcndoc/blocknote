@@ -10,14 +10,18 @@ BlockNote 原生支持评论、评论线程（回复）和表情符号反应。
 
 要在你的编辑器中启用评论，你需要：
 
-- 创建一个 `CommentsExtension` 实例，并将其传递给编辑器的 `extensions` 选项。
-- 将 `resolveUsers` 传递给你的 `CommentsExtension` 实例，以便它可以检索和显示用户信息（姓名和头像）。
-- 为你的 `CommentsExtension` 实例提供一个 `ThreadStore`，以便它可以存储和检索评论线程。
-- 启用实时协作（参见 [实时协作](/docs/features/collaboration)）
-- 可选地为评论和评论编辑器提供一个 schema。如果未定义，它们将使用 [默认评论编辑器 schema](https://github.com/TypeCellOS/BlockNote/blob/main/packages/react/src/components/Comments/defaultCommentEditorSchema.ts)。更多关于自定义 schema 的信息请参见 [这里](/docs/features/custom-schemas)。
+- 创建一个 `CommentsExtension` 实例，并将其传递给 `extensions` 编辑器选项。
+- 使用 `createUserStore(resolveUsers)` 创建一个用户存储，并将其传递给你的 `CommentsExtension` 实例，这样它就可以检索并显示用户信息（姓名和头像）。传递存储（而不是直接传递 `resolveUsers`）可以让你与协作功能共享一个去重后的用户缓存，只需将其同样传递给 `collaboration` 选项即可。
+- 为你的 `CommentsExtension` 实例提供一个 `ThreadStore`，这样它就可以存储和检索评论线程。
+- 启用实时协作（参见[实时协作](/docs/features/collaboration)）
+- 可选地，为评论和评论编辑器提供要使用的 schema。如果留空，它们将使用[默认评论编辑器 schema](https://github.com/TypeCellOS/BlockNote/blob/main/packages/react/src/components/Comments/defaultCommentEditorSchema.ts)。更多关于自定义 schema 的信息请参见[这里](/docs/features/custom-schemas)。
 
 ```tsx
+import { createUserStore } from "@blocknote/core";
 import { withCollaboration } from "@blocknote/core/yjs";
+
+// 为给定的 userIds 返回用户信息（见下文）。
+const userStore = createUserStore(async (userIds: string[]) => { ... });
 
 const editor = useCreateBlockNote(
   withCollaboration({
@@ -25,14 +29,18 @@ const editor = useCreateBlockNote(
       CommentsExtension({
         // 见下文。
         threadStore: ...,
-        // 返回给定 userIds 的用户信息（见下文）。
-        resolveUsers: async (userIds: string[]) => { ... },
-        // 可选，可留空 undefined
+        // 一个解析器回调或一个用户存储。传递共享存储，以便用户
+        // 在评论和协作中只解析一次。
+        resolveUsers: userStore,
+        // 可选，可留空
         schema: BlockNoteSchema.create(...)
       }),
       ...
     ],
     collaboration: {
+      // 共享相同的用户存储，以便用户只解析一次。`resolveUsers`
+      // 可以接受解析器回调或预构建的用户存储。
+      resolveUsers: userStore,
       // 见实时协作文档
       ...
     },

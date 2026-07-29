@@ -76,8 +76,33 @@ const tiers: Tier[] = [
     icon: "⚡",
     tagline: "升级进阶",
     mostPopular: true,
-    badge: "推荐",
-    description: "商业许可，解锁高级功能并获得技术支持。",
+    badge: "Recommended",
+    description: (
+      <>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger
+              delay={100}
+              className="cursor-default font-medium underline decoration-stone-400 decoration-dotted decoration-1 underline-offset-4"
+            >
+              Commercial license
+            </TooltipTrigger>
+            <TooltipContent className="max-w-[280px] p-3 leading-normal">
+              A commercial license is required to use the XL packages in
+              closed-source applications. See{" "}
+              <Link
+                href="/legal/blocknote-xl-commercial-license"
+                className="text-purple-600 hover:underline"
+              >
+                full license terms
+              </Link>{" "}
+              for details.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>{" "}
+        for access to advanced features and technical support.
+      </>
+    ),
     price: { month: 390, year: 2340 },
     features: [
       <span key="commercial" className="font-semibold text-stone-900">
