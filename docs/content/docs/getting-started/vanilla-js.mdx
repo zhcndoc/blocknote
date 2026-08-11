@@ -29,112 +29,51 @@ npm install @blocknote/core
 
 ```typescript
 import { BlockNoteEditor } from "@blocknote/core";
+import "@blocknote/core/fonts/inter.css";
+import "@blocknote/core/style.css";
 
 const editor = BlockNoteEditor.create();
 
-editor.mount(document.getElementById("root")); // 挂载编辑器的元素
+editor.mount(document.getElementById("root")!); // 要将编辑器附加到的元素
 ```
 
-现在，你的页面上已经有一个基础的 BlockNote 实例了。但它缺少一些菜单和其他 UI 元素。
+请务必同时导入 `@blocknote/core/style.css`（编辑器的样式）和 `@blocknote/core/fonts/inter.css`（默认字体）。
+
+现在，你的页面上将拥有一个基础的 BlockNote 实例。不过，它还缺少一些菜单和其他 UI 元素。
 
 ## 创建你自己的 UI 元素
 
 因为你无法使用内置的 React [UI 组件](/docs/react/components)，你需要创建并注册你自己的 UI 元素。
 
-虽然你可以自由决定如何渲染这些元素，BlockNote 提供了用于更新元素可见性、位置和状态的方法：
+每个 UI 元素都由一个[扩展](/docs/features/extensions)支持。你可以通过 `editor.getExtension(...)` 从编辑器中获取扩展实例，每个扩展都会公开一个用于保存当前状态的 [store](https://tanstack.com/store)，其中包含可见性、位置以及元素特定的数据。可用的 UI 元素扩展包括：
+
+| UI 元素         | 扩展                     |
+| ------------------ | ----------------------------- |
+| 格式化工具栏 | `FormattingToolbarExtension`  |
+| 链接工具栏       | `LinkToolbarExtension`        |
+| 侧边菜单          | `SideMenuExtension`           |
+| 建议菜单    | `SuggestionMenu`              |
+| 文件面板         | `FilePanelExtension`          |
+| 表格控制柄      | `TableHandlesExtension`       |
+
+UI 元素的具体渲染方式由你决定，而 store 可以让你响应状态变化，从而更新元素的可见性、位置和内容：
 
 ```typescript
-type UIElement =
-  | "formattingToolbar"
-  | "linkToolbar"
-  | "filePanel"
-  | "sideMenu"
-  | "suggestionMenu"
-  | "tableHandles"
+import { SideMenuExtension } from "@blocknote/core";
 
-const uiElement: UIElement = ...;
+const extension = editor.getExtension(SideMenuExtension)!;
 
-editor[uiElement].onUpdate((uiElementState: ...) => {
-  ...;
-})
-```
+// 随时读取当前状态：
+const state = extension.store.state;
 
-接下来，来看一个如何向编辑器添加[侧边菜单]()的示例：
+// 订阅状态变化，例如重新定位或显示/隐藏元素：
+const unsubscribe = extension.store.subscribe(() => {
+  const state = extension.store.state;
 
-```typescript
-import { BlockNoteEditor } from "@blocknote/core";
-
-const editor = BlockNoteEditor.create();
-editor.mount(document.getElementById("root"));
-
-export function createButton(text: string, onClick?: () => void) {
-  const element = document.createElement("a");
-  element.href = "#";
-  element.text = text;
-  element.style.margin = "10px";
-
-  if (onClick) {
-    element.addEventListener("click", (e) => {
-      onClick();
-      e.preventDefault();
-    });
-  }
-
-  return element;
-}
-
-let element: HTMLElement;
-
-editor.sideMenu.onUpdate((sideMenuState) => {
-  if (!element) {
-    element = document.createElement("div");
-    element.style.background = "gray";
-    element.style.position = "absolute";
-    element.style.padding = "10px";
-    element.style.opacity = "0.8";
-    const addBtn = createButton("+", () => {
-      const blockContent = sideMenuState.block.content;
-      const isBlockEmpty =
-        blockContent !== undefined &&
-        Array.isArray(blockContent) &&
-        blockContent.length === 0;
-
-      if (isBlockEmpty) {
-        editor.setTextCursorPosition(sideMenuState.block);
-        editor.openSuggestionMenu("/");
-      } else {
-        const insertedBlock = editor.insertBlocks(
-          [{ type: "paragraph" }],
-          sideMenuState.block,
-          "after",
-        )[0];
-        editor.setTextCursorPosition(insertedBlock);
-        editor.openSuggestionMenu("/");
-      }
-    });
-    element.appendChild(addBtn);
-
-    const dragBtn = createButton("::", () => {});
-
-    dragBtn.addEventListener("dragstart", (evt) =>
-      editor.sideMenu.blockDragStart(evt, sideMenuState.block),
-    );
-    dragBtn.addEventListener("dragend", editor.sideMenu.blockDragEnd);
-    dragBtn.draggable = true;
-    element.style.display = "none";
-    element.appendChild(dragBtn);
-
-    document.getElementById("root")!.appendChild(element);
-  }
-
-  if (sideMenuState.show) {
-    element.style.display = "block";
-
-    element.style.top = sideMenuState.referencePos.top + "px";
-    element.style.left =
-      sideMenuState.referencePos.x - element.offsetWidth + "px";
-  } else {
-    element.style.display = "none";
-  }
+  // ...根据 `state` 更新你的 UI 元素
 });
 ```
+
+下面来看看如何将[侧边菜单](/docs/react/components/side-menu)添加到编辑器中。下面的示例会挂载一个普通编辑器，并从头开始构建一个自定义侧边菜单，使用扩展的 store 来定位它，并使用其 `blockDragStart`/`blockDragEnd` 方法处理拖拽：
+
+<Example name="vanilla-js/vanilla-custom-side-menu" />

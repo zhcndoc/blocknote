@@ -18,7 +18,7 @@ path: /docs/slash-menu
     light: "/img/screenshots/slash_menu.png",
     dark: "/img/screenshots/slash_menu_dark.png",
   }}
-  alt="image"
+  alt="图片"
   width={400}
   height={400}
 />
@@ -137,6 +137,8 @@ const items = getDefaultReactSlashMenuItems(editor).filter(
 ## 创建额外的建议菜单
 
 你可以在编辑器中添加额外的建议菜单，触发字符可以为任意字符。下面的演示添加了一个示例建议菜单，用于提及，使用 `@` 字符打开。
+
+通常，建议菜单旨在通过单个字符触发。不过，也支持更长的触发字符串，例如 `img:` 或 `ref:`。
 
 <Example name="custom-schema/suggestion-menus-mentions" />
 
