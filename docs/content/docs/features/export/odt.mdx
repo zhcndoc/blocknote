@@ -10,8 +10,7 @@ path: /docs/export-to-odt
 可以将 BlockNote 文档导出为 ODT 文件，完全在客户端完成。
 
 <Callout type={"info"}>
-  该功能由 `@blocknote/xl-odt-exporter` 提供。`xl-`
-  系列包完全开源，但采用了 Copyleft 许可证发布。对于在闭源专有产品中的商业使用，商业许可证包含在[商务订阅](/pricing)中。
+  该功能由 `@blocknote/xl-odt-exporter` 提供。`xl-` 系列包完全开源，但采用了 Copyleft 许可证发布。对于在闭源专有产品中的商业使用，商业许可证包含在[商务订阅](/pricing)中。
 </Callout>
 
 首先，安装 `@blocknote/xl-odt-exporter` 包：
@@ -83,6 +82,10 @@ new ODTExporter(schema, {
 });
 ```
 
+### 数学和图表块
+
+[数学](/docs/features/blocks/math)和[图表](/docs/features/blocks/diagrams)块自带 ODT 映射——数学块导出为原生（可编辑）的公式对象，图表块导出为嵌入式图像。有关设置，请参阅[导出数学公式](/docs/features/blocks/math#odt)和[导出图表](/docs/features/blocks/diagrams#exporting)。
+
 ### 导出器选项
 
 `ODTExporter` 构造函数接受一个可选的 `options` 参数。
@@ -93,7 +96,11 @@ const defaultOptions = {
   // 用于解析外部资源以避免 CORS 问题的函数
   // 默认情况下，这会调用 BlockNote 托管的服务器端代理来解析文件
   resolveFileUrl: corsProxyResolveFileUrl,
-  // ODT 中用于高亮、背景色和字体颜色等的颜色配置
-  colors: COLORS_DEFAULT, // 来自 @blocknote/core 的默认值
+  // the strings rendered into the exported document (file link texts, error
+  // placeholders); pass a locale from @blocknote/core/locales (or your
+  // editor's dictionary) to export in another language
+  dictionary: locales.en,
+  // the colors to use in the ODT for things like highlighting, background colors and font colors.
+  colors: COLORS_DEFAULT, // defaults from @blocknote/core
 };
 ```

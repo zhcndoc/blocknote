@@ -109,6 +109,10 @@ new DOCXExporter(schema, {
 });
 ```
 
+### 数学和图表块
+
+[数学](/docs/features/blocks/math)和[图表](/docs/features/blocks/diagrams)块自带 DOCX 映射——数学内容会导出为原生（可编辑）的 Word 公式，图表会导出为嵌入式图像。有关设置，请参阅[导出数学内容](/docs/features/blocks/math#docx)和[导出图表](/docs/features/blocks/diagrams#exporting)。
+
 ### 导出器选项
 
 `DOCXExporter` 构造函数接受一个可选的 `options` 参数。
@@ -119,7 +123,11 @@ const defaultOptions = {
   // 用于解析外部资源以避免 CORS 问题的函数
   // 默认情况下，这会调用 BlockNote 托管的服务器端代理来解析文件
   resolveFileUrl: corsProxyResolveFileUrl,
-  // Docx 中用于高亮、背景色和字体颜色的颜色配置
-  colors: COLORS_DEFAULT, // 来自 @blocknote/core 的默认值
+  // the strings rendered into the exported document (file link texts, error
+  // placeholders); pass a locale from @blocknote/core/locales (or your
+  // editor's dictionary) to export in another language
+  dictionary: locales.en,
+  // the colors to use in the Docx for things like highlighting, background colors and font colors.
+  colors: COLORS_DEFAULT, // defaults from @blocknote/core
 };
 ```

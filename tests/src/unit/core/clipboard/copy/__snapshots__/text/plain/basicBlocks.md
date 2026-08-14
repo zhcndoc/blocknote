@@ -1,24 +1,24 @@
-Paragraph 1
+段落 1
 
-# Heading 1
+# 标题 1
 
-1. Numbered List Item 1
+1. 编号列表项 1
 
-* Bullet List Item 1
-* [ ] Check List Item 1
-* Toggle List Item 1
+* 项目符号列表项 1
+* [ ] 检查列表项 1
+* 切换列表项 1
 
-```text
+```javascript
 console.log("Hello World");
 ```
 
 |              |              |
 | ------------ | ------------ |
-| Table Cell 1 | Table Cell 2 |
-| Table Cell 3 | Table Cell 4 |
+| 表格单元格 1 | 表格单元格 2 |
+| 表格单元格 3 | 表格单元格 4 |
 
 
 
 ***
 
-Paragraph 2
+段落 2

@@ -55,17 +55,21 @@ const createAlert = createReactBlockSpec(
 ```typescript
 type BlockConfig = {
   type: string;
-  content: "inline" | "none";
+  content: "inline" | "plain" | "none";
   readonly propSchema: PropSchema;
 };
 ```
 
 `type:` 定义自定义区块的标识符。
 
-`content:` 如果您的自定义区块应支持富文本内容，则设置为 `inline`，否则设置为 `none`。
+`content:` 定义区块包含哪种可编辑内容：
+
+- `"inline"` 用于富文本内容，即[内联内容](/docs/foundations/document-structure#inline-content-objects)，例如带样式的文本和链接。
+- `"plain"` 用于无样式的纯文本，例如代码区块的源代码。纯文本内容不能包含格式标记（粗体、斜体等）或其他内联内容，并且它是唯一支持[语法高亮](/docs/features/blocks/code-blocks#syntax-highlighting)的内容类型。
+- `"none"` 表示区块不包含可编辑内容。
 
 <Callout type="info">
-  _在警告示例中，我们希望用户可以在警告区块中输入文本，因此将 `content` 设为 `"inline"`。_
+  _在警告演示中，我们希望用户能够在警告区块中输入富文本，因此将 `content` 设置为 `"inline"`。_
 </Callout>
 
 `propSchema:` `PropSchema` 指定区块支持的属性。区块属性（props）是存储在文档中的数据，可用于自定义其外观或行为。
@@ -127,6 +131,10 @@ type ReactCustomBlockImplementation = {
     contest: { nestingLevel: number };
   }>;
   parse?: (element: HTMLElement) => PartialBlock["props"] | undefined;
+  parseContent?: (options: {
+    el: HTMLElement;
+    schema: Schema;
+  }) => Fragment | undefined;
   runsBefore?: string[];
   meta?: {
     hardBreakShortcut?: "shift+enter" | "enter" | "none";
@@ -135,6 +143,7 @@ type ReactCustomBlockImplementation = {
     code?: boolean;
     defining?: boolean;
     isolating?: boolean;
+    highlight?: (block: Block) => string | undefined;
   };
 };
 ```
@@ -145,7 +154,7 @@ type ReactCustomBlockImplementation = {
 
 - `editor:` 区块所在的 BlockNote 编辑器实例。
 
-- `contentRef:` 一个 React `ref`，可用来标记区块中哪些元素可编辑，仅当区块配置包含 `content: "inline"` 时可用。
+- `contentRef:` 可用于标记区块中哪个元素可编辑的 React `ref`。仅当区块配置包含 `content: "inline"` 或 `content: "plain"` 时可用。
 
 `toExternalHTML?:` 该组件在区块导出为 HTML 用于 BlockNote 之外使用时调用，例如复制到剪贴板时。如果未定义，BlockNote 将使用 `render` 进行 HTML 转换。它接收与 `render` 相同的 props 以及一个额外的 `context` 属性，该属性是一个包含以下属性的对象：
 
@@ -159,11 +168,13 @@ type ReactCustomBlockImplementation = {
 
 - `element`: 正在解析的 HTML 元素。
 
-`runsBefore?:` 如果该区块的解析或扩展需要优先于其他区块，可在此传入它们的 `type` 数组。
+`parseContent?:` 与 `parse` 一起使用的高级选项，可让您在将 HTML 转换为区块时进行更多控制。当 `parse` 返回非 `undefined` 值时运行，其作用对应于 ProseMirror API 中的 [getContent](https://prosemirror.net/docs/ref/#model.TagParseRule.getContent)。
+
+`runsBefore?:` 如果该区块具有需要优先于其他区块进行解析的内容或扩展，可以在此处传入其 `type` 数组。
 
 `meta?:` 用于设置区块的各种通用属性的对象。
 
-- `hardBreakShortcut?:` 定义用于在区块的内联内容中插入硬换行的键盘快捷键。默认为 `"shift+enter"`。
+- `hardBreakShortcut?:` 定义用于在区块的内联内容中插入硬换行的键盘快捷键。默认为 `"shift+enter"`。对于 `content: "plain"` 区块（不能包含硬换行节点），该快捷键会改为插入字面换行符（`"\n"`）。
 
 - `selectable?:` 可以设置为 false，使区块不可被鼠标和键盘选中。这也有助于能选中区块中不可编辑的内容。仅当 `content` 为 `none` 时才应设置为 false，默认为 true。
 
@@ -174,6 +185,8 @@ type ReactCustomBlockImplementation = {
 - `defining?:` 该区块是否为 [defining](https://prosemirror.net/docs/ref/#model.NodeSpec.defining)。
 
 - `isolating?:` 该区块是否为 [isolating](https://prosemirror.net/docs/ref/#model.NodeSpec.isolating)。
+
+- `highlight?:` 返回区块文本应进行语法高亮的语言的回调（如果不进行高亮则返回 `undefined`）。只有在编辑器中添加了[语法高亮扩展](/docs/features/blocks/code-blocks#syntax-highlighting)时，高亮才会生效。
 
 ### 区块扩展
 

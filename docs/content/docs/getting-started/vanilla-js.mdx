@@ -45,7 +45,7 @@ editor.mount(document.getElementById("root")!); // 要将编辑器附加到的�
 
 因为你无法使用内置的 React [UI 组件](/docs/react/components)，你需要创建并注册你自己的 UI 元素。
 
-每个 UI 元素都由一个[扩展](/docs/features/extensions)支持。你可以通过 `editor.getExtension(...)` 从编辑器中获取扩展实例，每个扩展都会公开一个用于保存当前状态的 [store](https://tanstack.com/store)，其中包含可见性、位置以及元素特定的数据。可用的 UI 元素扩展包括：
+每个 UI 元素都由一个[扩展](/docs/features/extensions)支持。你可以通过 `editor.getExtension(...)` 从编辑器中获取扩展实例，每个实例都会公开一个保存其当前状态的 store（可见性、位置以及任何元素特定的数据）。store 是一个小型的可观察容器，包含以下主要成员：用于读取当前值的 `state`、用于更新状态的 `setState`，以及用于接收变更通知的 `subscribe`。可用的 UI 元素扩展如下：
 
 | UI 元素         | 扩展                     |
 | ------------------ | ----------------------------- |
@@ -76,4 +76,4 @@ const unsubscribe = extension.store.subscribe(() => {
 
 下面来看看如何将[侧边菜单](/docs/react/components/side-menu)添加到编辑器中。下面的示例会挂载一个普通编辑器，并从头开始构建一个自定义侧边菜单，使用扩展的 store 来定位它，并使用其 `blockDragStart`/`blockDragEnd` 方法处理拖拽：
 
-<Example name="vanilla-js/vanilla-custom-side-menu" />
+<Example name="vanilla-js/vanilla-custom-side-menu" />。

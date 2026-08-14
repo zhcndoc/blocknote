@@ -1,0 +1,108 @@
+---
+title: 源代码预览块
+description: 构建以源代码形式编写、但以预览形式渲染的自定义块和内联内容——就像 BlockNote 的数学和图表块一样
+---
+
+# 源代码预览块
+
+有些块以源代码形式编写，但以代码生成的内容来展示会更有用——例如将 LaTeX 公式渲染为公式，或将 Mermaid 源代码渲染为图表。与[代码块](/docs/features/blocks/code-blocks)不同，这些块会直接显示渲染后的预览，而源代码则在弹出窗口中编辑。
+
+<Callout type="info">
+  此页面上的组件仅适用于 React
+  （`@blocknote/react`）。
+</Callout>
+
+BlockNote 的[数学](/docs/features/blocks/math)和[图表](/docs/features/blocks/diagrams)块就是基于此模式构建的，同时也提供了相同的构建模块来创建你自己的内容：
+
+- `SourceBlockWithPreview`（来自 `@blocknote/react`）——用于[自定义块](/docs/features/custom-schemas/custom-blocks)。
+- `SourceInlineContentWithPreview`（来自 `@blocknote/react`）——用于[自定义内联内容](/docs/features/custom-schemas/custom-inline-content)。
+
+两者都会将你提供的预览渲染到块／内联内容所在的位置，并为你管理可编辑的源代码弹出窗口。弹出窗口的行为本身由编辑器级扩展驱动，BlockNote 默认会注册这些扩展——spec 只需在其 `meta` 中设置 `hasPreview: true` 即可选择启用。
+
+## 自定义块
+
+一个源代码预览块由三个部分组成——[下面的示例](#example)实现了全部三个部分：
+
+**1. 一个包含[“plain”内容](/docs/features/custom-schemas/custom-blocks)的块配置**——源代码以块的纯文本内容形式存储：
+
+```tsx
+const createMyBlockConfig = createBlockConfig(
+  () =>
+    ({
+      type: "myBlock" as const,
+      propSchema: {},
+      content: "plain" as const,
+    }) as const,
+);
+```
+
+**2. 一个渲染组件**，用于读取源代码，以你喜欢的方式渲染，并将结果传递给 `SourceBlockWithPreview`：
+
+```tsx
+// The block's content as plain text, i.e. the source to render.
+const source = plainContentToString(props.block.content).trim();
+// Your own rendering, returning a preview element or an error for invalid
+// source - the example below renders CSV to a table.
+const { preview, error } = renderMySource(source);
+
+return (
+  <SourceBlockWithPreview
+    block={props.block}
+    editor={props.editor}
+    contentRef={props.contentRef}
+    source={source}
+    // The last successfully rendered preview, or `undefined` - an errored
+    // source then shows the error state instead of an empty preview.
+    preview={preview}
+    // Shown below the source in the popup while editing.
+    error={error}
+  />
+);
+```
+
+还有一些 prop 可以自定义各种状态：`errorPreview` 用于替代预览显示紧凑的错误状态，`emptySourcePlaceholder` 用于源代码为空时的状态（传入字符串可以自定义默认占位符的文本，传入元素——例如带有自定义图标的导出组件 `PreviewPlaceholder`——则可以完全替换默认占位符），以及 `sourcePlaceholder` 用于设置弹出窗口输入框的占位符。完整列表请参见 `SourceWithPreviewProps` 类型。
+
+**3. spec 的 `meta`**，用于启用弹出窗口：
+
+```tsx
+const createMyBlockSpec = createReactBlockSpec(createMyBlockConfig, {
+  meta: {
+    code: true,
+    // Marks the block as rendering a preview with an editable source popup.
+    hasPreview: true,
+    // What Enter does while the popup is open: "enter" inserts a newline
+    // (multiline sources, like diagrams), "shift+enter" closes the popup
+    // (single-line sources, like math).
+    hardBreakShortcut: "enter",
+  },
+  render: MyBlockPreview,
+});
+```
+
+由于块使用 `"plain"` 内容，因此你还可以在弹出窗口中为源代码添加语法高亮（数学和图表块就是这样做的）：在 `meta` 中添加一个返回源代码语言的 `highlight` 回调，然后将[语法高亮](/docs/features/blocks/code-blocks#syntax-highlighting)扩展添加到编辑器中。
+
+## 自定义内联内容
+
+内联内容的工作方式相同，但有两个区别：组件接收内联内容的渲染 props（`node`、`getPos`），并且对于 `"plain"` 内联内容，源代码已经是一个纯字符串：
+
+```tsx
+<SourceInlineContentWithPreview
+  editor={props.editor}
+  node={props.node}
+  getPos={props.getPos}
+  contentRef={props.contentRef}
+  source={props.inlineContent.content.trim()}
+  preview={preview}
+  error={error}
+/>
+```
+
+spec 通过 `createReactInlineContentSpec` 创建，并通过 `meta: { code: true, hasPreview: true }` 选择启用。与块不同——块通过点击切换弹出窗口——内联内容会在选区位于其源代码内部时准确地打开弹出窗口，因此它在被选中时始终会显示。
+
+## 示例
+
+一个同时实现了两者的完整示例——CSV 表格块和颜色标记内联内容：
+
+<Example name="custom-schema/source-with-preview" />
+
+`@blocknote/math-block` 和 `@blocknote/diagram-block` 包是同一模式的生产级实现。

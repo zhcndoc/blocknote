@@ -126,8 +126,12 @@ const defaultOptions = {
   // 一个用于解析外部资源的函数，避免 CORS 问题
   // 默认为调用 BlockNote 托管的服务器端代理进行文件解析
   resolveFileUrl: corsProxyResolveFileUrl,
-  // 邮件中用于高亮、背景和字体颜色等的颜色配置。
-  colors: COLORS_DEFAULT, // @blocknote/core 中的默认颜色
+  // the strings rendered into the exported document (file link texts, error
+  // placeholders); pass a locale from @blocknote/core/locales (or your
+  // editor's dictionary) to export in another language
+  dictionary: locales.en,
+  // the colors to use in the email for things like highlighting, background colors and font colors.
+  colors: COLORS_DEFAULT, // defaults from @blocknote/core
 };
 ```
 
@@ -168,3 +172,43 @@ new ReactEmailExporter(schema, {
   styleMapping,
 });
 ```
+
+### 数学和图表区块
+
+[数学](/docs/features/blocks/math)和[图表](/docs/features/blocks/diagrams)区块自带邮件映射，会将其导出为图像，并将 LaTeX/Mermaid 源代码作为 alt 文本。有关设置，请参见[导出数学内容](/docs/features/blocks/math#email)和[导出图表](/docs/features/blocks/diagrams#exporting)。
+
+**图像传递。** 默认情况下，图像会嵌入为数据 URL，这种方式自包含，但某些邮件客户端（尤其是 Gmail 和 Windows 版 Outlook）不会显示数据 URL 图像，而是显示 alt 文本。对于这些客户端，请将图像作为内联 `cid:` 附件传递（这是嵌入生成图像时支持最广泛的方式），并在发送时将收集到的附件传递给邮件发送器：
+
+```typescript
+import {
+  ReactEmailExporter,
+  reactEmailDefaultSchemaMappings,
+  createCIDImageDelivery,
+} from "@blocknote/xl-email-exporter";
+import {
+  createInlineMathMapping,
+  createMathBlockMapping,
+} from "@blocknote/math-block/email-exporter";
+import { createDiagramBlockMapping } from "@blocknote/diagram-block/email-exporter";
+
+const imageDelivery = createCIDImageDelivery();
+const exporter = new ReactEmailExporter(editor.schema, {
+  ...reactEmailDefaultSchemaMappings,
+  blockMapping: {
+    ...reactEmailDefaultSchemaMappings.blockMapping,
+    mathBlock: createMathBlockMapping({ imageDelivery }),
+    diagram: createDiagramBlockMapping({ imageDelivery }),
+  },
+  inlineContentMapping: {
+    ...reactEmailDefaultSchemaMappings.inlineContentMapping,
+    math: createInlineMathMapping({ imageDelivery }),
+  },
+});
+
+const html = await exporter.toReactEmailDocument(editor.document);
+
+// e.g. with nodemailer (works the same with other mailers):
+await transporter.sendMail({ html, attachments: imageDelivery.attachments });
+```
+
+**服务端渲染。** 邮件通常会在发送时于服务端进行渲染——有关所需设置，请参见[导出数学内容](/docs/features/blocks/math#email)和[在服务端导出图表](/docs/features/blocks/diagrams#exporting-server-side)。

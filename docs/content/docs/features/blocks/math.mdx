@@ -1,0 +1,192 @@
+---
+title: 数学与公式
+description: BlockNote 的 LaTeX 数学块和行内数学——在编辑器中渲染为公式，并可导出为 Markdown、PDF、DOCX、ODT 和电子邮件
+---
+
+# 数学与公式
+
+`@blocknote/math-block` 包为文档添加数学表示法：用于独立公式的 **math block**，以及随周围文本一起流动的 **inline math**。两者都在源代码弹窗中以 LaTeX 编写，并渲染为公式——[KaTeX](https://katex.org/) 将 LaTeX 转换为 MathML，由浏览器原生显示。
+
+<Callout type="info">
+  此块仅在 React（`@blocknote/react`）中可用。
+</Callout>
+
+```bash
+npm install @blocknote/math-block
+```
+
+## 添加到编辑器
+
+该包导出 `createReactMathBlockSpec`（块）和 `createReactInlineMathSpec`（行内内容）。分别将它们添加到 schema 的 `blockSpecs` 和 `inlineContentSpecs` 中：
+
+```tsx
+import { BlockNoteSchema } from "@blocknote/core";
+import {
+  createReactMathBlockSpec,
+  createReactInlineMathSpec,
+} from "@blocknote/math-block";
+
+const schema = BlockNoteSchema.create().extend({
+  blockSpecs: {
+    // Adds the Math block to the schema.
+    mathBlock: createReactMathBlockSpec(),
+  },
+  inlineContentSpecs: {
+    // Adds the inline Math content to the schema.
+    math: createReactInlineMathSpec(),
+  },
+});
+```
+
+要在弹窗中高亮 LaTeX 源代码，请将[语法高亮](/docs/features/blocks/code-blocks#syntax-highlighting)扩展添加到编辑器。数学块和行内数学已经声明了它们的源语言（`latex`），因此无需进行逐块配置：
+
+```tsx
+import { syntaxHighlighter } from "@blocknote/code-block";
+
+const editor = useCreateBlockNote({
+  schema,
+  extensions: [syntaxHighlighter],
+});
+```
+
+## 菜单项与本地化
+
+由于数学 spec 位于一个可选包中，它们的编辑器集成也需要选择启用——该包导出了所需的全部内容：
+
+```tsx
+import {
+  getMathSlashMenuItems, // Slash Menu items for inserting math
+  getMathBlockTypeSelectItems, // Block Type Select item for the Formatting Toolbar
+  locales as mathLocales, // dictionary strings, merged under the `math` key
+} from "@blocknote/math-block";
+```
+
+- `getMathSlashMenuItems(editor)` 返回用于插入数学块或行内数学的 [Slash Menu](/docs/react/components/suggestion-menus#slash-menu) 项——通过 `combineByGroup` 将它们与默认项组合。
+- `getMathBlockTypeSelectItems(editor)` 返回一个 [Block Type Select](/docs/react/components/formatting-toolbar) 项，用于将块转换为数学块，并将其展开到默认项旁边。
+- `mathLocales` 翻译数学相关字符串——将一个 locale 合并到编辑器 `dictionary` 的 `math` 键下（参见[本地化](/docs/features/localization)）；如果没有提供，则使用内置的英文字符串。
+
+下面的示例将它们全部连接起来。
+
+## 示例
+
+<Example name="custom-schema/math-block" />
+
+## 导出
+
+数学内容可导出为 BlockNote 支持的所有格式：
+
+- **HTML** 开箱即用——导出结果会生成原生 MathML `<math>` 元素（其中嵌入了 LaTeX，以实现无损往返），将 MathML 粘贴回来时会转换为 LaTeX。
+- **[Markdown](/docs/features/export/markdown)** 同样开箱即用——数学块导出为 `$$` 块，行内数学导出为 `$...$` 片段，这是它们常见的 Markdown 表示法。
+- **PDF、DOCX、ODT 和电子邮件**使用导出器映射，这些映射作为该包的子路径存在——将它们展开到所使用导出器的默认映射中，具体格式如下所示。无效的 LaTeX 会渲染为标识出问题源代码的错误占位符，与编辑器中的行为一致。
+
+### DOCX
+
+使用 [DOCX 导出器](/docs/features/export/docx)时，数学内容会导出为原生（可编辑）的 Word 公式。开箱即用地支持服务端运行——LaTeX 会转换为 OMML，而无需渲染：
+
+```typescript
+import {
+  DOCXExporter,
+  docxDefaultSchemaMappings,
+} from "@blocknote/xl-docx-exporter";
+import {
+  inlineMathMapping,
+  mathBlockMapping,
+} from "@blocknote/math-block/docx-exporter";
+
+const exporter = new DOCXExporter(editor.schema, {
+  ...docxDefaultSchemaMappings,
+  blockMapping: {
+    ...docxDefaultSchemaMappings.blockMapping,
+    mathBlock: mathBlockMapping,
+  },
+  inlineContentMapping: {
+    ...docxDefaultSchemaMappings.inlineContentMapping,
+    math: inlineMathMapping,
+  },
+});
+```
+
+### ODT
+
+使用 [ODT 导出器](/docs/features/export/odt)时，数学内容会导出为原生（可编辑）的公式对象。同样开箱即用地支持服务端运行（LaTeX 会转换为 MathML，而无需渲染）：
+
+```typescript
+import {
+  inlineMathMapping,
+  mathBlockMapping,
+} from "@blocknote/math-block/odt-exporter";
+
+// Spread into the ODTExporter's mappings exactly as for DOCX above.
+```
+
+### PDF
+
+使用 [PDF 导出器](/docs/features/export/pdf)时，数学块会导出为矢量公式——不会进行栅格化，因此同样开箱即用地支持服务端运行。行内数学会栅格化为随文本流动的图像：
+
+```typescript
+import {
+  createInlineMathMapping,
+  mathBlockMapping,
+} from "@blocknote/math-block/pdf-exporter";
+
+// Spread into the PDFExporter's mappings as for DOCX above - note that
+// inline math is a factory here: `math: createInlineMathMapping()`.
+```
+
+行内数学工厂接受一个选项：
+
+```typescript
+createInlineMathMapping(options?: {
+  /**
+   * Rasterizes the formula SVG to an image. Defaults to the built-in
+   * canvas rasterizer, which only works in the browser - when exporting
+   * server-side, pass one backed by e.g. `@resvg/resvg-js` or `sharp`;
+   * without it, a server-side export throws. The `RasterizeSVG` type is
+   * exported from the same subpath.
+   */
+  rasterize?: RasterizeSVG;
+});
+```
+
+数学块需要 `@react-pdf/math` 包（PDF 映射的 peer dependency）。
+
+### 电子邮件
+
+使用[电子邮件导出器](/docs/features/export/email)时，数学内容会导出为图像，并将 LaTeX 源代码作为 alt 文本：数学块会在浏览器中栅格化为 PNG（在其他环境中则嵌入为 SVG），行内数学始终嵌入为 SVG：
+
+```typescript
+import {
+  createInlineMathMapping,
+  createMathBlockMapping,
+} from "@blocknote/math-block/email-exporter";
+
+// Spread into the ReactEmailExporter's mappings as for DOCX above - both
+// are factories here: `mathBlock: createMathBlockMapping()` and
+// `math: createInlineMathMapping()`.
+```
+
+两个工厂都接受与投递相关的选项：
+
+```typescript
+createMathBlockMapping(options?: {
+  /**
+   * Rasterizes the formula SVG to a raster image. Defaults to the built-in
+   * canvas rasterizer in the browser; elsewhere (e.g. server-side email
+   * rendering at send time), the formula is embedded as an SVG instead -
+   * pass a rasterizer (e.g. backed by `@resvg/resvg-js` or `sharp`) to get
+   * PNGs there, which more email clients display.
+   */
+  rasterize?: RasterizeSVG;
+  /**
+   * How generated images get into the email: embedded as data URLs by
+   * default, or as inline `cid:` attachments - see the email exporter's
+   * image delivery docs.
+   */
+  imageDelivery?: ReactEmailImageDelivery;
+});
+
+// `createInlineMathMapping` takes the same `imageDelivery` option (inline
+// math is always SVG, so there's no `rasterize`).
+```
+
+一些电子邮件客户端不会显示 data URL 图像——请参阅电子邮件页面上的[图像投递](/docs/features/export/email#math--diagram-blocks)，了解如何将生成的图像作为内联 `cid:` 附件投递。

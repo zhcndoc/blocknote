@@ -1,14 +1,11 @@
 ---
 title: 代码块
-description: 如何为代码块添加语法高亮。
-imageTitle: 代码块
+description: 如何使用代码块，以及如何为代码块添加语法高亮。
 ---
 
 # 代码块
 
-代码块是一种简单的方式，用于显示带有语法高亮的格式化代码。
-
-代码块默认是一种简单的代码展示方式。但 BlockNote 也支持更高级的功能，比如：
+代码块是一种显示格式化代码的简单方式。默认情况下，代码块会保持刻意的简洁，但 BlockNote 也支持更多高级功能：
 
 - 语法高亮
 - 自定义主题
@@ -30,7 +27,6 @@ type CodeBlockOptions = {
       aliases?: string[];
     }
   >;
-  createHighlighter?: () => Promise<HighlighterGeneric<any, any>>;
 };
 ```
 
@@ -38,7 +34,9 @@ type CodeBlockOptions = {
 
 ## 块结构
 
-以下描述了 BlockNote 中代码块的结构。
+`supportedLanguages:` 代码块支持的语法高亮语言。默认为空。
+
+**类型与属性**
 
 ```ts
 type CodeBlock = {
@@ -47,85 +45,95 @@ type CodeBlock = {
   props: {
     language: string;
   };
-  content: InlineContent[];
+  content: StyledText[];
   children: Block[];
 };
 ```
 
 ## 选项
 
-### 基础设置
+与大多数块不同，代码块的 `content` 是[纯文本](/docs/foundations/document-structure#plain-text-content)。
 
-要启用代码块的语法高亮，可以在 `useCreateBlockNote` 钩子中使用 `codeBlock` 选项。
+## 语法高亮
 
-首先，安装相关包：
+启用语法高亮最简单的方式是使用 `@blocknote/code-block` 包。它提供了一个开箱即用的高亮器，支持广泛的语言：
 
-```sh
+```bash
 npm install @blocknote/code-block
 ```
 
-然后这样使用：
+将其 `syntaxHighlighter` 扩展添加到编辑器中，并将匹配的 `codeBlockOptions`（支持的语言列表）传递给代码块规范：
 
-```tsx
-import { codeBlock } from "@blocknote/code-block";
+```ts
+import { createCodeBlockSpec } from "@blocknote/core";
+import { codeBlockOptions, syntaxHighlighter } from "@blocknote/code-block";
 
-export default function App() {
-  const editor = useCreateBlockNote({
-    codeBlock,
-  });
-
-  return <BlockNoteView editor={editor} />;
-}
+const editor = useCreateBlockNote({
+  extensions: [syntaxHighlighter],
+  schema: BlockNoteSchema.create().extend({
+    blockSpecs: {
+      codeBlock: createCodeBlockSpec(codeBlockOptions),
+    },
+  }),
+});
 ```
 
-### 自定义主题与语言
+就是这样——你可以在[这个示例](/examples/theming/code-block)中查看实际效果。
 
-要配置代码块高亮的主题和语言，可以在 `useCreateBlockNote` 钩子中使用 `codeBlock` 选项。
+<Callout type="info">
+  同一个扩展也会高亮其他由源代码编写的块，例如[数学](/docs/features/blocks/math)块和[图表](/docs/features/blocks/diagrams)块的源代码弹窗。
+</Callout>
 
-这允许你为编辑器的代码块配置一个 [shiki](https://shiki.style) 高亮器，从而定制你想使用的主题和语言。
+## 自定义语法高亮
 
-要创建一个语法高亮器，你可以使用 [shiki-codegen](https://shiki.style/packages/codegen) CLI 来生成创建语法高亮器的代码，支持你的语言和主题。
+在底层，高亮功能分为两部分。你也可以自行连接这两部分，从而完全控制打包内容：
 
-例如，若要使用优化过的 javascript 引擎，指定 javascript、typescript、vue 三种语言，并包含亮色与暗色主题，可以运行以下命令：
+- `SyntaxHighlightingExtension`（来自 `@blocknote/core`）提供高亮器——一个由你选择语言、主题和引擎的 [Shiki](https://shiki.style) 实例：
+
+  ```ts
+  type SyntaxHighlightingOptions = {
+    createHighlighter: () => Promise<HighlighterGeneric<any, any>>;
+  };
+
+  const syntaxHighlighter = SyntaxHighlightingExtension(options);
+  ```
+
+  `createHighlighter:` 创建用于语法高亮的 [Shiki 高亮器](https://shiki.style/guide/load-theme)。
+
+- 每个块都会通过块规范 `meta` 中的 `highlight` 回调决定是否高亮其文本，以及如何进行高亮：
+
+  ```ts
+  // In the block spec's `meta`:
+  highlight?: (block: Block) => string | undefined;
+  ```
+
+  它会针对块的每个实例运行，并返回用于高亮块文本的语言（高亮器支持的语言之一）；如果不进行高亮，则返回 `undefined`。默认代码块已经实现了这一功能，会返回其 `language` 属性，而 `codeBlockOptions` 则为内置高亮器提供匹配的支持语言集合。
+
+要创建自己的高亮器，[shiki-codegen](https://shiki.style/packages/codegen) CLI 可以为你选择的语言和主题生成代码。例如，下面的命令会创建一个使用经过优化的 JavaScript 引擎、支持 javascript、typescript 和 vue，并包含浅色和深色主题的高亮器：
 
 ```bash
 npx shiki-codegen --langs javascript,typescript,vue --themes light-plus,dark-plus --engine javascript --precompiled ./shiki.bundle.ts
 ```
 
-该命令将生成一个 `shiki.bundle.ts` 文件，你可以用它来为编辑器创建语法高亮器。
-
-示例如下：
+这会生成一个 `shiki.bundle.ts` 文件，你可以使用它来创建扩展——就像上面的预配置扩展一样，将其添加到编辑器中，同时使用配置了相匹配语言的 `createCodeBlockSpec`：
 
 ```ts
+import { SyntaxHighlightingExtension } from "@blocknote/core";
 import { createHighlighter } from "./shiki.bundle.js";
 
-export default function App() {
-  const editor = useCreateBlockNote({
-    schema: BlockNoteSchema.create().extend({
-      blockSpecs: {
-        codeBlock: createCodeBlockSpec({
-          indentLineWithTab: true,
-          defaultLanguage: "typescript",
-          supportedLanguages: {
-            typescript: {
-              name: "TypeScript",
-              aliases: ["ts"],
-            },
-          },
-          createHighlighter: () =>
-            createHighlighter({
-              themes: ["light-plus", "dark-plus"],
-              langs: [],
-            }),
-        }),
-      },
+const syntaxHighlighter = SyntaxHighlightingExtension({
+  createHighlighter: () =>
+    createHighlighter({
+      themes: ["light-plus", "dark-plus"],
+      langs: [],
     }),
-  });
-
-  return <BlockNoteView editor={editor} />;
-}
+});
 ```
 
-详见自定义代码块示例以获取更详细的示例。
+下面的示例展示了完整的配置：
 
 <Example name="theming/custom-code-block" />
+
+## 相关内容
+
+想要查找以代码形式*编写*，但会被*渲染*为代码生成结果的块吗？请参阅[数学](/docs/features/blocks/math)块和[图表](/docs/features/blocks/diagrams)块，或者[自行构建](/docs/features/custom-schemas/source-with-preview)。

@@ -82,6 +82,10 @@ new PDFExporter(schema, {
 });
 ```
 
+### 数学和图表区块
+
+[数学](/docs/features/blocks/math)和[图表](/docs/features/blocks/diagrams)区块自带 PDF 映射——数学区块会导出为矢量公式，内联数学公式会导出为随文本流动的图像，图表会导出为嵌入式图像。有关设置，请参阅[导出数学公式](/docs/features/blocks/math#pdf)和[导出图表](/docs/features/blocks/diagrams#exporting)。
+
 ### 导出器选项
 
 `PDFExporter` 构造函数还接受一个可选的 `options` 参数。
@@ -98,7 +102,11 @@ const defaultOptions = {
   // 一个函数，用于解析外部资源以避免 CORS 问题
   // 默认调用 BlockNote 托管的服务器代理来解析文件
   resolveFileUrl: corsProxyResolveFileUrl,
-  // PDF 中使用的颜色，作用于高亮、背景色和字体颜色等
-  colors: COLORS_DEFAULT, // 来自 @blocknote/core 的默认值
+  // the strings rendered into the exported document (file link texts, error
+  // placeholders); pass a locale from @blocknote/core/locales (or your
+  // editor's dictionary) to export in another language
+  dictionary: locales.en,
+  // the colors to use in the PDF for things like highlighting, background colors and font colors.
+  colors: COLORS_DEFAULT, // defaults from @blocknote/core
 };
 ```

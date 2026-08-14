@@ -50,14 +50,18 @@ const Mention = createReactInlineContentSpec(
 ```typescript
 type CustomInlineContentConfig = {
   type: string;
-  content: "styled" | "none";
+  content: "styled" | "plain" | "none";
   readonly propSchema: PropSchema;
 };
 ```
 
 `type:` 定义自定义内联内容的标识符。
 
-`content:` 如果您的自定义内联内容应包含 [`StyledText`](/docs/foundations/document-structure#inline-content-objects)，则设置为 `styled`，如果不包含，则设置为 `none`。
+`content:` 定义内联内容包含哪种可编辑内容：
+
+- `"styled"` 用于富文本，即 [`StyledText`](/docs/foundations/document-structure#inline-content-objects)。
+- `"plain"` 用于未设置样式的纯文本，例如内联代码或内联数学源代码。纯文本内容不能包含格式标记（粗体、斜体等），并且它是唯一支持[语法高亮](/docs/features/blocks/code-blocks#syntax-highlighting)的内容类型。
+- `"none"` 表示内联内容不包含可编辑内容。
 
 <Callout type="info">
   在提及演示中，我们希望每个提及都是一个单一的、不可编辑的元素，因此我们将
@@ -128,7 +132,7 @@ type ReactCustomInlineContentImplementation = {
 
 - `inlineContent:` 应渲染的内联内容。其类型和属性将匹配内联内容配置中定义的类型和 `PropSchema`。
 
-- `contentRef:` 一个 React `ref`，可用于标记内联内容中可编辑的元素，仅当内联内容配置包含 `content: "styled"` 时可用。
+- `contentRef:` 一个 React `ref`，您可以使用它来标记内联内容中可编辑的元素。只有当您的内联内容配置包含 `content: "styled"` 或 `content: "plain"` 时，此属性才可用。
 
 - `draggable:` 指定内联内容是否可以在编辑器内拖动。设置为 `true` 时，内联内容将可拖动。若未指定，默认为 `false`。若为 `true`，应在用作拖动句柄的 DOM 元素上添加 `data-drag-handle` 属性。
 
