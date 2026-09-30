@@ -68,7 +68,7 @@ import {
 
 图表可以导出为 BlockNote 支持的所有格式。[Markdown](/docs/features/export/markdown) 开箱即用——图表会导出为 ` ```mermaid ` 围栏代码块，这是它们常见的 Markdown 表示方式。
 
-[PDF](/docs/features/export/pdf)、[DOCX](/docs/features/export/docx)、[ODT](/docs/features/export/odt) 和[电子邮件](/docs/features/export/email)导出器通过各自的映射将图表嵌入为图像——这些映射位于此包的子路径中，并且每个子路径都导出一个 `createDiagramBlockMapping` 工厂函数，可将其展开到导出器的默认映射中。下面展示的是 [DOCX 导出器](/docs/features/export/docx)；[PDF](/docs/features/export/pdf)、[ODT](/docs/features/export/odt) 和[电子邮件](/docs/features/export/email)导出器使用各自的子路径，方式相同：
+[PDF](/docs/features/export/pdf)（以及 [Typst](/docs/features/export/typst)）、[DOCX](/docs/features/export/docx)、[ODT](/docs/features/export/odt) 和[电子邮件](/docs/features/export/email)导出器通过各自的映射将图表嵌入为图像——这些映射位于此包的子路径中，并且每个子路径都导出一个 `createDiagramBlockMapping` 工厂函数，可将其展开到导出器的默认映射中。下面展示的是 [DOCX 导出器](/docs/features/export/docx)；其他导出器使用各自的子路径，方式相同：
 
 ```typescript
 import {
@@ -76,7 +76,8 @@ import {
   docxDefaultSchemaMappings,
 } from "@blocknote/xl-docx-exporter";
 import { createDiagramBlockMapping } from "@blocknote/diagram-block/docx-exporter";
-// ...or "@blocknote/diagram-block/pdf-exporter",
+// ...or "@blocknote/diagram-block/typst-exporter" (PDF + Typst - embeds
+//       vector SVG with labels as real text),
 //       "@blocknote/diagram-block/odt-exporter",
 //       "@blocknote/diagram-block/email-exporter"
 

@@ -176,3 +176,9 @@ BlockNote 还提供了另一种查看和操作评论的方式，通过侧边栏�
 **`maxCommentsBeforeCollapse`**：线程中文本回复数超过该值后自动折叠回复。默认值为 5。
 
 `ThreadsSidebar` 组件的独立示例见[此处](https://playground.blocknotejs.org/collaboration/comments-with-sidebar?hideMenu=true)。
+
+## 键盘提交
+
+默认情况下，按 Enter 会提交评论、回复或编辑内容。在 `CommentsExtension` 选项中设置 `submitOnEnter: false`，即可让 Enter 改为插入新段落。
+
+无论使用哪种设置，Shift+Enter 都会插入换行符，Cmd+Enter（Mac）或 Ctrl+Enter（Windows/Linux）都会提交。

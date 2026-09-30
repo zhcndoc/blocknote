@@ -19,15 +19,16 @@ BlockNote 兼容几种不同的存储格式，每种格式都有其优缺点。�
 请参阅下表以查看我们支持的格式及其有损性的总结：
 
 | 格式                                                                     | 导入       | 导出       | [仅限专业版](/pricing) |
-| :---------------------------------------------------------------------- | :--------- | :--------- | :-------------------- |
-| **BlockNote JSON (`editor.document`)**                                 | ✅         | ✅         | ❌                    |
-| **BlockNote HTML (`blocksToFullHTML`)**                                | ✅         | ✅         | ❌                    |
-| **标准 HTML (`blocksToHTMLLossy`)**                                    | ✅（有损） | ✅（有损） | ❌                    |
-| **Markdown (`blocksToMarkdownLossy`)**                                 | ✅（有损） | ✅（有损） | ❌                    |
-| **[PDF](/docs/features/export/pdf)** (`@blocknote/xl-pdf-exporter`)    | ❌         | ✅         | ✅                    |
-| **[DOCX](/docs/features/export/docx)** (`@blocknote/xl-docx-exporter`) | ❌         | ✅         | ✅                    |
-| **[ODT](/docs/features/export/odt)** (`@blocknote/xl-odt-exporter`)    | ❌         | ✅         | ✅                    |
-| **[电子邮件](/docs/features/export/email)** (`@blocknote/xl-email-exporter`)| ❌       | ✅         | ✅                    |
+| :------------------------------------------------------------------------ | :--------- | :--------- | :-------------------- |
+| **BlockNote JSON (`editor.document`)**                                   | ✅         | ✅         | ❌                    |
+| **BlockNote HTML (`blocksToFullHTML`)**                                  | ✅         | ✅         | ❌                    |
+| **标准 HTML (`blocksToHTMLLossy`)**                                      | ✅（有损） | ✅（有损） | ❌                    |
+| **Markdown (`blocksToMarkdownLossy`)**                                   | ✅（有损） | ✅（有损） | ❌                    |
+| **[PDF](/docs/features/export/pdf)** (`@blocknote/xl-pdf-exporter`)      | ❌         | ✅         | ✅                    |
+| **[DOCX](/docs/features/export/docx)** (`@blocknote/xl-docx-exporter`)   | ❌         | ✅         | ✅                    |
+| **[ODT](/docs/features/export/odt)** (`@blocknote/xl-odt-exporter`)       | ❌         | ✅         | ✅                    |
+| **[电子邮件](/docs/features/export/email)** (`@blocknote/xl-email-exporter`) | ❌       | ✅         | ✅                    |
+| **[Typst](/docs/features/export/typst)** (`@blocknote/xl-typst-exporter`) | ❌         | ✅         | ✅                    |
 
 <Callout>
   **提示：** 推荐使用 **BlockNote JSON (`editor.document`)** 来存储文档，因为它是最持久的格式且保证无损。
@@ -242,3 +243,5 @@ BlockNote 还支持导出到以下额外格式：
   - 通过 [`@blocknote/xl-odt-exporter` 包](/docs/features/export/odt)
 - 电子邮件
   - 通过 [`@blocknote/xl-email-exporter` 包](/docs/features/export/email)
+- Typst
+  - 通过 [`@blocknote/xl-typst-exporter` 包](/docs/features/export/typst)

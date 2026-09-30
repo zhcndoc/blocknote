@@ -1,13 +1,13 @@
 ---
 title: 格式化工具栏
-description: 当您在编辑器中高亮文本时，格式化工具栏会出现。
+description: 在桌面设备上选中编辑器中的内容时，或在触摸设备上编辑器获得焦点时，格式化工具栏会出现，并在触摸设备上显示于虚拟键盘上方。
 imageTitle: 格式化工具栏
 path: /docs/formatting-toolbar
 ---
 
 # 格式化工具栏
 
-当您在编辑器中高亮文本时，格式化工具栏会出现。
+在桌面设备上，格式化工具栏会出现在高亮文本的上方或下方。在触摸设备上打开屏幕键盘时，它会显示在键盘上方。
 
 <ThemedImage
   src={{
@@ -29,7 +29,7 @@ path: /docs/formatting-toolbar
 
 我们使用 `FormattingToolbar` 组件创建自定义格式化工具栏。通过指定其子元素，我们可以用自己的按钮替换工具栏中的默认按钮。
 
-这个自定义格式化工具栏被传递给一个 `FormattingToolbarController`，它控制工具栏的位置和可见性（在高亮文本的上方或下方）。
+这个自定义格式化工具栏被传递给一个 `FormattingToolbarController`，它控制工具栏的位置和可见性，并自动在桌面和移动布局之间切换。自定义工具栏会用于两种布局。
 
 在 `BlockNoteView` 上设置 `formattingToolbar={false}` 告诉 BlockNote 不显示默认的格式化工具栏。
 
@@ -40,3 +40,27 @@ path: /docs/formatting-toolbar
 <Example name="ui-components/formatting-toolbar-block-type-items" />
 
 这里，我们使用了 `FormattingToolbar` 组件，但保留了默认按钮（没有传递任何子元素）。相反，我们通过 `blockTypeSelectItems` 属性传入了自定义的块类型选择项。
+
+## 移动端格式化工具栏
+
+在触摸设备上，当屏幕键盘打开且编辑器获得焦点时，BlockNote 会将移动端格式化工具栏显示在屏幕键盘上方，而不是让它围绕选中的内容浮动。它包含与常规格式化工具栏相同的项目，并且默认启用，无需额外设置。在手机上打开上面的任一示例即可查看效果。
+
+### 浏览器限制
+
+移动浏览器处理屏幕键盘的方式各不相同，这可能会影响工具栏。本文假设你的页面已经按照[移动端兼容性指南](/docs/getting-started#mobile-compatibility)添加了 viewport meta 标签；如果尚未添加，请先完成添加。
+
+尤其是 iOS 不支持上述 viewport meta 标签，这可能导致滚动时出现抖动或延迟。
+
+解决方法是将应用的所有内容包裹在一个带有 `bn-scroll-container` 类的元素中：
+
+```tsx
+<div className="bn-scroll-container">{/* nav, editor, page content... */}</div>
+```
+
+我们建议将此元素直接放置在 `<body>` 内，并包裹页面的所有内容。BlockNote 会使其尺寸与[视觉视口](https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport)保持同步，并在其外部渲染格式化工具栏，从而消除抖动或延迟。
+
+<Callout type="warning">
+  应用中只能有一个 `bn-scroll-container` 元素。请将所有可滚动的页面内容包裹在其中。
+</Callout>
+
+独立的[移动端格式化工具栏示例](https://playground.blocknotejs.org/ui-components/mobile-formatting-toolbar?hideMenu=true)支持在文档滚动和固定滚动容器之间切换，以便比较它们的行为。

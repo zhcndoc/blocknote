@@ -1,13 +1,13 @@
 ---
 title: PDF
-description: 将 BlockNote 文档导出为 PDF。
+description: 将 BlockNote 文档导出为可访问的带标签 PDF（PDF/UA）。
 imageTitle: BlockNote PDF 导出
 path: /docs/export-to-pdf
 ---
 
 # PDF 导出
 
-可以将 BlockNote 文档完全在客户端导出为 PDF。
+可以将 BlockNote 文档完全在客户端导出为 PDF。导出器由 [Typst](https://typst.app) 排版引擎（编译为 WebAssembly）驱动，并生成可访问的带标签文档；请参见 [PDF/UA 一致性](#pdfua-conformance)。
 
 <Callout type={"info"}>
   此功能由 `@blocknote/xl-pdf-exporter` 提供。`xl-`
@@ -15,98 +15,189 @@ path: /docs/export-to-pdf
   [商业订阅](/pricing) 中。
 </Callout>
 
-首先，安装 `@blocknote/xl-pdf-exporter` 和 `@react-pdf/renderer` 包：
+首先，安装 `@blocknote/xl-pdf-exporter` 包：
 
 ```bash
-npm install @blocknote/xl-pdf-exporter @react-pdf/renderer
+npm install @blocknote/xl-pdf-exporter
 ```
 
-然后，创建 `PDFExporter` 类的实例。该类提供以下方法：
+然后，创建 `PDFExporter` 类的实例并导出文档：
 
 ```typescript
 import {
   PDFExporter,
-  pdfDefaultSchemaMappings,
+  typstDefaultSchemaMappings,
 } from "@blocknote/xl-pdf-exporter";
-import * as ReactPDF from "@react-pdf/renderer";
 
-// 创建导出器
-const exporter = new PDFExporter(editor.schema, pdfDefaultSchemaMappings);
+// Create the exporter
+const exporter = new PDFExporter(editor.schema, typstDefaultSchemaMappings);
 
-// 将区块转换为 react-pdf 文档
-const pdfDocument = await exporter.toReactPDFDocument(editor.document);
-
-// 使用 react-pdf 写入文件：
-await ReactPDF.render(pdfDocument, `filename.pdf`);
+// Export the document; the result carries the PDF as bytes and as a Blob
+const result = await exporter.toPDF(editor.document, {
+  title: "My document",
+  lang: "en",
+});
+if (!result.error) {
+  const url = URL.createObjectURL(result.blob);
+  // e.g. open or download `url`
+}
 ```
 
-下面查看带有实时 PDF 预览的[完整示例](/examples/interoperability/converting-blocks-to-pdf)：
+这开箱即用且完全离线：导出结果与编辑器的外观一致，所需的一切（默认字体和编译器本身）都包含在包中。不会从 CDN 获取任何内容。
+
+下面是带有实时 PDF 预览的[完整示例](/examples/interoperability/converting-blocks-to-pdf)：
 
 <Example name="interoperability/converting-blocks-to-pdf" />
 
 ### PDF 自定义
 
-`toReactPDFDocument` 接受一个可选的 `options` 参数，可以自定义 PDF 的页眉和页脚：
-
-示例用法：
+`toPDF` 接受每次导出的选项，用于设置文档元数据和页面布局。
 
 ```typescript
-import { Text } from "@react-pdf/renderer";
-const pdfDocument = await exporter.toReactPDFDocument(editor.document, {
-  header: <Text>页眉</Text>,
-  footer: <Text>页脚</Text>,
+const result = await exporter.toPDF(editor.document, {
+  // Document title, shown in the viewer's title bar
+  title: "My document",
+  // Document author, written to the PDF metadata
+  author: "John Doe",
+  // BCP-47 language tag of the document's natural language
+  lang: "en",
+  // Typst paper name, e.g. "a4" (default) or "us-letter"
+  paper: "a4",
+  // Page margin as a Typst length
+  margin: "48pt",
+  // Raw Typst markup for the running page header / footer, e.g. a
+  // page counter: "#context counter(page).display()"
+  header: "My document",
+  footer: "#context counter(page).display()",
 });
 ```
+
+其余导出选项包括 [`tryDeclarePdfUA`](#pdfua-conformance)、`assets`（供调用方提供的页眉/页脚标记使用的额外文件）以及 `creationTimestamp`（用于生成字节可复现输出的固定 Unix 时间戳）。
+
+如果文档编译失败（例如，文本使用了已加载字体不支持的文字），结果会报告 `{ error: "compile-failed" }` 及编译器诊断信息，而不是抛出异常。
+
+### PDF/UA 一致性
+
+生成的 PDF 始终带有 _标签_：它包含逻辑结构树（标题、段落、列表、表格、带替代文本的图形、链接），屏幕阅读器可以使用它进行导航。此外，只有当文档满足条件时，导出器才会**声明 PDF/UA-1 一致性**：Typst 会在编译期间验证一致性；不符合要求的文档会以带标签但未声明的形式导出，并在结果中报告违规内容：
+
+```typescript
+const result = await exporter.toPDF(editor.document, {
+  title: "My document",
+  lang: "en",
+});
+if (
+  !result.error &&
+  !result.pdfUA.declared &&
+  result.pdfUA.reason === "nonconforming"
+) {
+  // e.g. "PDF/UA-1 error: the first heading must be of level 1"
+  console.info(result.pdfUA.violations.map((v) => v.message));
+}
+```
+
+该文档要满足的一致性要求：
+
+- **标题和语言**：在导出选项中传入 `title` 和 `lang`。`lang` 是尝试声明一致性的必要参数：错误的语言声明属于任何验证器都无法捕获的可访问性缺陷，因此不传入它会抛出异常。
+- **标题层级**：第一个标题必须为 1 级，且层级必须连续（不能从 H1 跳到 H3）。
+
+图像始终会获得 PDF/UA 要求的替代文本，该文本取自标题，文件名作为后备。标题通常是更好的替代文本，因此应鼓励用户添加标题。
+
+在导出选项中传入 `tryDeclarePdfUA: false` 可以完全跳过验证和声明，例如用于实时预览时，避免浪费验证编译的开销。对于实时预览，还应为每次导出创建新的导出器，因为一个实例会累积其解析的图像资源。
 
 ### 自定义映射 / 自定义 Schema
 
-`PDFExporter` 构造函数接受两个参数：`schema` 和 `mappings`。
-一个 _mapping_ 定义了如何将 BlockNote schema 元素（区块、内联内容或样式）转换为 React-PDF 元素。
-如果您在编辑器中使用了[自定义 schema](/docs/features/custom-schemas)，或者想覆盖默认 BlockNote 元素的 PDF 转换方式，您可以传入自定义的 `mappings`：
-
-例如，如果您的 schema 中有 `extraBlock` 类型，可以使用如下代码：
-
-```typescript
-import { PDFExporter, pdfDefaultSchemaMappings } from "@blocknote/xl-pdf-exporter";
-import { Text } from "@react-pdf/renderer";
-
-new PDFExporter(schema, {
-    blockMapping: {
-        ...pdfDefaultSchemaMappings.blockMapping,
-        myCustomBlock: (block, exporter) => {
-            return <Text>我的自定义区块</Text>;
-        },
-    },
-    inlineContentMapping: pdfDefaultSchemaMappings.inlineContentMapping,
-    styleMapping: pdfDefaultSchemaMappings.styleMapping,
-});
-```
+`PDFExporter` 构造函数接受 `schema` 和 `mappings` 参数。一个 _mapping_ 会将 BlockNote schema 元素转换为 **Typst 标记字符串**，这些映射与独立的 Typst 导出共用。请参阅其中的[自定义映射](/docs/features/export/typst#custom-mappings--custom-schemas)；关于编写映射的所有内容同样适用于此导出器。
 
 ### 数学和图表区块
 
-[数学](/docs/features/blocks/math)和[图表](/docs/features/blocks/diagrams)区块自带 PDF 映射——数学区块会导出为矢量公式，内联数学公式会导出为随文本流动的图像，图表会导出为嵌入式图像。有关设置，请参阅[导出数学公式](/docs/features/blocks/math#pdf)和[导出图表](/docs/features/blocks/diagrams#exporting)。
+[数学](/docs/features/blocks/math)和[图表](/docs/features/blocks/diagrams)区块自带 Typst 映射：数学内容会导出为原生 Typst 公式（真实文本，而非图像），图表会导出为嵌入式矢量图形。有关设置，请参阅[导出数学公式](/docs/features/blocks/math#typst--pdf)和[导出图表](/docs/features/blocks/diagrams#exporting)。
+
+### 字体
+
+默认情况下，导出使用与编辑器匹配的内置字体集：Inter（正文）、Geist Mono（代码）、New Computer Modern Math（数学）和 Noto Color Emoji。若要改用自己的字体，请将字体字节和对应的字体系列名称传递给构造函数：
+
+```typescript
+const exporter = new PDFExporter(editor.schema, typstDefaultSchemaMappings, {
+  fontFamily: "My Font",
+  monoFontFamily: "My Mono Font",
+  // Uint8Array[], or a promise of them
+  fonts: [myFontBytes, myMonoFontBytes],
+  // An emoji-capable font; replaces the default independently of `fonts`
+  emojiFont: myEmojiFontBytes,
+});
+```
+
+Typst 会根据字体文件本身嵌入的字体系列名称选择字体，因此 `fontFamily` 选项必须与文件声明的名称匹配。不匹配时，结果的 `compileWarnings` 中会出现 `unknown font family` 条目。
+
+要扩展默认字体而不是替换它们（例如添加 CJK 字体作为逐字形后备），请展开导出的默认加载器：
+
+```typescript
+import {
+  DEFAULT_FONT_FAMILY,
+  loadDefaultBodyFonts,
+  PDFExporter,
+  typstDefaultSchemaMappings,
+} from "@blocknote/xl-pdf-exporter";
+
+const exporter = new PDFExporter(editor.schema, typstDefaultSchemaMappings, {
+  fontFamily: [DEFAULT_FONT_FAMILY, "Noto Sans SC"],
+  fonts: loadDefaultBodyFonts().then((fonts) => [...fonts, notoSansSCBytes]),
+});
+```
+
+### 自托管编译器
+
+Typst 编译器是来自 `@blocknote/xl-typst-compiler` 的约 25 MB wasm 文件，默认情况下由你的 bundler 作为资源输出。要控制其提供位置（例如设置缓存标头），请传入其 URL 或字节：
+
+```typescript
+import compilerWasmUrl from "@blocknote/xl-typst-compiler/wasm?url";
+
+const exporter = new PDFExporter(editor.schema, typstDefaultSchemaMappings, {
+  wasm: compilerWasmUrl,
+});
+```
 
 ### 导出器选项
 
-`PDFExporter` 构造函数还接受一个可选的 `options` 参数。
-虽然转换在客户端完成，默认配置使用了两个基于服务器的资源：
+`PDFExporter` 构造函数接受一个可选的第三个 `options` 参数：
 
 ```typescript
 const defaultOptions = {
-  // emoji 资源，这会传给 react-pdf 库(https://react-pdf.org/fonts#registeremojisource)
-  // 默认从 cloudflare + twemoji 加载
-  emojiSource: {
-    format: "png",
-    url: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/",
-  },
-  // 一个函数，用于解析外部资源以避免 CORS 问题
-  // 默认调用 BlockNote 托管的服务器代理来解析文件
+  // a function to resolve external resources (e.g. images) in order to avoid
+  // CORS issues; by default, this calls a BlockNote hosted server-side proxy
   resolveFileUrl: corsProxyResolveFileUrl,
   // the strings rendered into the exported document (file link texts, error
   // placeholders); pass a locale from @blocknote/core/locales (or your
   // editor's dictionary) to export in another language
   dictionary: locales.en,
-  // the colors to use in the PDF for things like highlighting, background colors and font colors.
+  // the colors used for highlighting, background colors and font colors
   colors: COLORS_DEFAULT, // defaults from @blocknote/core
+  // font families (DEFAULT_FONT_FAMILY / DEFAULT_MONO_FONT_FAMILY) and the
+  // font bytes they resolve against - see "Fonts" above
+  fontFamily: "Inter 18pt",
+  monoFontFamily: "Geist Mono",
+  fonts: loadDefaultBodyFonts(),
+  emojiFont: loadDefaultEmojiFont(),
+  // base font size in points
+  fontSize: 12,
+  // where the compiler wasm loads from - see "Self-hosting the compiler"
+  wasm: undefined, // the packaged wasm
 };
 ```
+
+### 导出 Typst 标记
+
+底层 Typst 源代码导出可以独立使用（例如使用你自己的 Typst 工具链，包括在服务端进行编译）；请参阅 [Typst 导出](/docs/features/export/typst)。
+
+### 已弃用：react-pdf 导出器
+
+之前版本的 `@blocknote/xl-pdf-exporter` 使用 [react-pdf](https://react-pdf.org) 导出 PDF，生成不带标签（不可访问）的文档。该导出器已弃用，并将在几个版本后移除；在此之前，它仍可通过 `@blocknote/xl-pdf-exporter/react-pdf` 子路径保持原样使用：
+
+```typescript
+import {
+  PDFExporter,
+  pdfDefaultSchemaMappings,
+} from "@blocknote/xl-pdf-exporter/react-pdf";
+```
+
+请注意，它的映射是 react-pdf 映射；迁移到新导出器时，自定义区块需要改用 [Typst 映射](#custom-mappings--custom-schemas)。旧导出器的示例仍位于[此处](/examples/interoperability/converting-blocks-to-pdf-react-pdf-deprecated)。

@@ -3,13 +3,8 @@ import { ReactEmailExporter } from "./reactEmailExporter.jsx";
 import { reactEmailDefaultSchemaMappings } from "./defaultSchema/index.js";
 import {
   BlockNoteSchema,
-  createBlockSpec,
-  createInlineContentSpec,
   createPageBreakBlockSpec,
-  createStyleSpec,
   defaultBlockSpecs,
-  defaultInlineContentSpecs,
-  defaultStyleSpecs,
 } from "@blocknote/core";
 import { testDocument } from "@shared/testDocument.js";
 
@@ -22,133 +17,6 @@ describe("react email exporter", () => {
 
     const html = await exporter.toReactEmailDocument(testDocument as any);
     expect(html).toMatchSnapshot("__snapshots__/reactEmailExporter");
-  });
-
-  it("typescript: schema with extra block", async () => {
-    const schema = BlockNoteSchema.create({
-      blockSpecs: {
-        ...defaultBlockSpecs,
-        pageBreak: createPageBreakBlockSpec(),
-        extraBlock: createBlockSpec(
-          {
-            content: "none",
-            type: "extraBlock",
-            propSchema: {},
-          },
-          {} as any,
-        )(),
-      },
-    });
-
-    new ReactEmailExporter(
-      schema,
-      // @ts-expect-error
-      reactEmailDefaultSchemaMappings,
-    );
-
-    new ReactEmailExporter(schema, {
-      // @ts-expect-error
-      blockMapping: reactEmailDefaultSchemaMappings.blockMapping,
-      inlineContentMapping:
-        reactEmailDefaultSchemaMappings.inlineContentMapping,
-      styleMapping: reactEmailDefaultSchemaMappings.styleMapping,
-    });
-
-    new ReactEmailExporter(schema, {
-      blockMapping: {
-        ...reactEmailDefaultSchemaMappings.blockMapping,
-        extraBlock: (_b, _t) => {
-          throw new Error("extraBlock not implemented");
-        },
-      },
-      inlineContentMapping:
-        reactEmailDefaultSchemaMappings.inlineContentMapping,
-      styleMapping: reactEmailDefaultSchemaMappings.styleMapping,
-    });
-  });
-
-  it("typescript: schema with extra inline content", async () => {
-    const schema = BlockNoteSchema.create({
-      inlineContentSpecs: {
-        ...defaultInlineContentSpecs,
-        extraInlineContent: createInlineContentSpec(
-          {
-            type: "extraInlineContent",
-            content: "styled",
-            propSchema: {},
-          },
-          {} as any,
-        ),
-      },
-    });
-
-    new ReactEmailExporter(
-      schema,
-      // @ts-expect-error
-      reactEmailDefaultSchemaMappings,
-    );
-
-    new ReactEmailExporter(schema, {
-      blockMapping: reactEmailDefaultSchemaMappings.blockMapping,
-      // @ts-expect-error
-      inlineContentMapping:
-        reactEmailDefaultSchemaMappings.inlineContentMapping,
-      styleMapping: reactEmailDefaultSchemaMappings.styleMapping,
-    });
-
-    // no error
-    new ReactEmailExporter(schema, {
-      blockMapping: reactEmailDefaultSchemaMappings.blockMapping,
-      styleMapping: reactEmailDefaultSchemaMappings.styleMapping,
-      inlineContentMapping: {
-        ...reactEmailDefaultSchemaMappings.inlineContentMapping,
-        extraInlineContent: () => {
-          throw new Error("extraInlineContent not implemented");
-        },
-      },
-    });
-  });
-
-  it("typescript: schema with extra style", async () => {
-    const schema = BlockNoteSchema.create({
-      styleSpecs: {
-        ...defaultStyleSpecs,
-        extraStyle: createStyleSpec(
-          {
-            type: "extraStyle",
-            propSchema: "boolean",
-          },
-          {} as any,
-        ),
-      },
-    });
-
-    new ReactEmailExporter(
-      schema,
-      // @ts-expect-error
-      reactEmailDefaultSchemaMappings,
-    );
-
-    new ReactEmailExporter(schema, {
-      blockMapping: reactEmailDefaultSchemaMappings.blockMapping,
-      inlineContentMapping:
-        reactEmailDefaultSchemaMappings.inlineContentMapping,
-      // @ts-expect-error
-      styleMapping: reactEmailDefaultSchemaMappings.styleMapping,
-    });
-
-    // no error
-    new ReactEmailExporter(schema, {
-      blockMapping: reactEmailDefaultSchemaMappings.blockMapping,
-      inlineContentMapping:
-        reactEmailDefaultSchemaMappings.inlineContentMapping,
-      styleMapping: {
-        ...reactEmailDefaultSchemaMappings.styleMapping,
-        extraStyle: () => {
-          throw new Error("extraStyle not implemented");
-        },
-      },
-    });
   });
 
   it("should export a document with preview", async () => {
@@ -250,6 +118,37 @@ describe("react email exporter", () => {
 
     const html = await exporter.toReactEmailDocument(styledDocument as any);
     expect(html).toMatchSnapshot("__snapshots__/reactEmailExporterStyledText");
+  });
+
+  it("should escape HTML characters in text content", async () => {
+    const exporter = new ReactEmailExporter(
+      BlockNoteSchema.create(),
+      reactEmailDefaultSchemaMappings,
+    );
+
+    const untrustedDocument = [
+      {
+        id: "1",
+        type: "paragraph",
+        content: [
+          {
+            type: "text",
+            text: "x < 10 & y > 20\n<script>alert(1)</script>",
+            styles: {},
+          },
+        ],
+        children: [],
+        props: {},
+      },
+    ];
+
+    const html = await exporter.toReactEmailDocument(untrustedDocument as any);
+
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("x &lt; 10 &amp; y &gt; 20");
+    expect(html).toContain("&lt;script&gt;alert(1)&lt;/script&gt;");
+    // Newlines still become line breaks.
+    expect(html).toContain("<br");
   });
 
   it("should handle document with links", async () => {

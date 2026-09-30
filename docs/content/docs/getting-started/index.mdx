@@ -65,6 +65,24 @@ export default function MyEditor() {
   你是否使用 Next.js（`create-next-app`）？由于 BlockNote 是客户端组件，请确保禁用 BlockNote 的服务端渲染。请阅读我们的 [Next.js + BlockNote 配置指南](/docs/getting-started/nextjs)
 </Callout>
 
+## 移动端兼容性
+
+在触摸设备上，BlockNote 的 UI 会自动适配：具体来说，[格式化工具栏](/docs/react/components/formatting-toolbar#mobile-formatting-toolbar)会移动到屏幕键盘上方。
+为了确保工具栏相对于屏幕键盘平稳定位，你仍然需要在应用中做两件事：
+
+首先，我们建议将 `interactive-widget=resizes-content` 添加到页面的 viewport meta 标签中：
+
+```html
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
+/>
+```
+
+这并非 BlockNote 特有的设置：它会告诉浏览器在键盘上方的空间中布局页面，而不是将部分页面留在键盘后面。这样 BlockNote 就能可靠地将工具栏定位在那里，不会发生抖动。
+
+其次，iOS 不支持该标签，因此在 iOS 上滚动仍可能感觉卡顿。我们建议使用[滚动容器](/docs/react/components/formatting-toolbar#browser-limitations)布局来解决此问题。
+
 ## 下一步
 
 你现在已经知道如何将 BlockNote 集成到你的 React 应用中！不过，这只是你可以用 BlockNote 做的事情的冰山一角。

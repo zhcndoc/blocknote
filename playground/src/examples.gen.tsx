@@ -353,7 +353,7 @@ export const examples = {
           slug: "backend",
         },
         readme:
-          'This example allows users to upload files and use them in the editor. The files are uploaded to [/TMP/Files](https://tmpfiles.org/), and can be used for File, Image, Video, and Audio blocks.\n\n**Try it out:** Click the "Add Image" button and see there\'s now an "Upload" tab in the toolbar!\n\n**Relevant Docs:**\n\n- [Editor Setup](/docs/getting-started/editor-setup)\n- [File Block](/docs/features/blocks/embeds#file)',
+          'This example allows users to upload files and use them in the editor. For simplicity, files are encoded as data URLs rather than uploaded to a server, but you\'d swap the `uploadFile` function for an upload to your own backend. The uploaded files can be used for File, Image, Video, and Audio blocks.\n\n**Try it out:** Click the "Add Image" button and see there\'s now an "Upload" tab in the toolbar!\n\n**Relevant Docs:**\n\n- [Editor Setup](/docs/getting-started/editor-setup)\n- [File Block](/docs/features/blocks/embeds#file)',
       },
       {
         projectSlug: "saving-loading",
@@ -734,13 +734,12 @@ export const examples = {
           "In this example, we implement a basic editor interface using components from Material UI. We replace the Formatting Toolbar, Slash Menu, and Block Side Menu while disabling the other default elements. Additionally, the Formatting Toolbar is made static and always visible above the editor.\n\n**Relevant Docs:**\n\n- [Formatting Toolbar](/docs/react/components/formatting-toolbar)\n- [Manipulating Inline Content](/docs/reference/editor/manipulating-content)\n- [Slash Menu](/docs/react/components/suggestion-menus)\n- [Side Menu](/docs/react/components/side-menu)\n- [Editor Setup](/docs/getting-started/editor-setup)",
       },
       {
-        projectSlug: "experimental-mobile-formatting-toolbar",
-        fullSlug: "ui-components/experimental-mobile-formatting-toolbar",
-        pathFromRoot:
-          "examples/03-ui-components/14-experimental-mobile-formatting-toolbar",
+        projectSlug: "mobile-formatting-toolbar",
+        fullSlug: "ui-components/mobile-formatting-toolbar",
+        pathFromRoot: "examples/03-ui-components/14-mobile-formatting-toolbar",
         config: {
           playground: true,
-          docs: true,
+          docs: false,
           author: "areknawo",
           tags: [
             "Intermediate",
@@ -749,13 +748,13 @@ export const examples = {
             "Appearance & Styling",
           ],
         },
-        title: "Experimental Mobile Formatting Toolbar",
+        title: "Mobile Formatting Toolbar",
         group: {
           pathFromRoot: "examples/03-ui-components",
           slug: "ui-components",
         },
         readme:
-          "This example shows how to use the experimental mobile formatting toolbar, which uses [Visual Viewport API](https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API) to position the toolbar right above the virtual keyboard on mobile devices.\n\nController is currently marked **experimental** due to the flickering issue with positioning (caused by delays of the Visual Viewport API)\n\n**Relevant Docs:**\n\n- [Changing the Formatting Toolbar](/docs/react/components/formatting-toolbar)\n- [Editor Setup](/docs/getting-started/editor-setup)",
+          "This example demos the opt-in **scroll container**: adding the `bn-scroll-container` class to the element wrapping your page content pins it to the visual viewport (using styles from BlockNote's stylesheet), so your content scrolls inside it and the toolbar stays perfectly in place while scrolling and zooming. Use the switch in the nav bar to toggle it off and compare.\n\n**Relevant Docs:**\n\n- [Mobile Formatting Toolbar](/docs/react/components/formatting-toolbar#mobile-formatting-toolbar)\n- [Editor Setup](/docs/getting-started/editor-setup)",
       },
       {
         projectSlug: "advanced-tables",
@@ -890,7 +889,7 @@ export const examples = {
           slug: "ui-components",
         },
         readme:
-          "By default, BlockNote's floating UI elements (formatting toolbar, slash menu, table handles, etc.) mount inside the editor's `bn-container`. The `portalElements` prop on `BlockNoteView` lets you change that — globally via `default`, or per element by key.\n\nThis example renders two editors side-by-side, both wrapped in a small `overflow: hidden` container. The left editor uses the default — the slash menu is clipped by the editor's bounds. The right editor passes `portalElements={{ default: document.body }}` so floating UI escapes the wrapper and renders fully.\n\n```tsx\n<BlockNoteView editor={editor} portalElements={{ default: document.body }} />\n```\n\n**Relevant Docs:**\n\n- [UI Components](/docs/react/components)",
+          "By default, BlockNote's floating components (formatting toolbar, slash menu, table handles, etc.) mount next to the editor, inside its `bn-container` (or inside whatever you render `BlockNoteViewEditor` into). The `portalElements` prop on `BlockNoteView` lets you change that: globally via `default`, or per component by key. The menus and popovers a floating component opens follow it wherever it mounts.\n\nThis example renders two editors side-by-side, both wrapped in a small `overflow: hidden` container. The left editor uses the default, so the slash menu is clipped by the editor's bounds. The right editor passes `portalElements={{ default: document.body }}` so the floating components escape the wrapper and render fully.\n\n```tsx\n<BlockNoteView editor={editor} portalElements={{ default: document.body }} />\n```\n\n**Relevant Docs:**\n\n- [UI Components](/docs/react/components)\n- [Mobile Formatting Toolbar](/docs/react/components/formatting-toolbar#mobile-formatting-toolbar)",
       },
     ],
   },
@@ -1125,25 +1124,24 @@ export const examples = {
           playground: true,
           docs: true,
           author: "yousefed",
-          tags: ["Interoperability"],
+          tags: ["Interoperability", "Accessibility"],
+          sharedTestDocument: true,
           dependencies: {
-            "@blocknote/diagram-block": "latest",
-            "@blocknote/math-block": "latest",
-            "@blocknote/xl-multi-column": "latest",
             "@blocknote/xl-pdf-exporter": "latest",
-            "@react-pdf/math": "^2.0.1",
-            "@react-pdf/renderer": "^4.5.1",
-            "mathjax-full": "^3.2.2",
+            "@blocknote/xl-multi-column": "latest",
+            "@blocknote/math-block": "latest",
+            "@blocknote/diagram-block": "latest",
+            "@blocknote/xl-typst-compiler": "latest",
           } as any,
           pro: true,
         },
-        title: "Exporting documents to PDF",
+        title: "Exporting documents to PDF (PDF/UA)",
         group: {
           pathFromRoot: "examples/05-interoperability",
           slug: "interoperability",
         },
         readme:
-          'This example exports the current document (all blocks) as an PDF file and downloads it to your computer.\n\n**Try it out:** Edit the document and click "Download .pdf" at the top to download the PDF file.',
+          'This example exports the current document to an **accessible, tagged PDF/UA-1**\nfile using the Typst-powered `@blocknote/xl-pdf-exporter`. Unlike a plain PDF,\na tagged PDF carries a logical structure tree (headings, paragraphs, lists,\ntables, figures with alt text, links) that screen readers can navigate.\n\n**Try it out:** Edit the document — the PDF preview updates live. Click\n"Download" to save it, then verify it with a tool like\n[veraPDF](https://verapdf.org/) (`--flavour ua1`) or the Acrobat Tags panel.\n\n> The first export downloads the Typst compiler (wasm) and fonts, so it may take\n> a moment. Images render as tagged placeholder figures for now.',
       },
       {
         projectSlug: "converting-blocks-to-docx",
@@ -1155,12 +1153,13 @@ export const examples = {
           docs: true,
           author: "yousefed",
           tags: [""],
+          sharedTestDocument: true,
           dependencies: {
             "@blocknote/diagram-block": "latest",
             "@blocknote/math-block": "latest",
             "@blocknote/xl-docx-exporter": "latest",
             "@blocknote/xl-multi-column": "latest",
-            katex: "^0.16.11",
+            katex: "^0.18.9",
           } as any,
           pro: true,
         },
@@ -1182,12 +1181,13 @@ export const examples = {
           docs: true,
           author: "areknawo",
           tags: [""],
+          sharedTestDocument: true,
           dependencies: {
             "@blocknote/diagram-block": "latest",
             "@blocknote/math-block": "latest",
             "@blocknote/xl-multi-column": "latest",
             "@blocknote/xl-odt-exporter": "latest",
-            katex: "^0.16.11",
+            katex: "^0.18.9",
           } as any,
           pro: true,
         },
@@ -1209,10 +1209,12 @@ export const examples = {
           docs: true,
           author: "jmarbutt",
           tags: [""],
+          sharedTestDocument: true,
           dependencies: {
             "@blocknote/diagram-block": "latest",
             "@blocknote/math-block": "latest",
             "@blocknote/xl-email-exporter": "latest",
+            "@blocknote/xl-multi-column": "latest",
             "@react-email/render": "^2.0.4",
           } as any,
           pro: true,
@@ -1261,6 +1263,33 @@ export const examples = {
         },
         readme:
           "This example exports the current document (all blocks) as HTML and renders it.\n\n**Relevant Docs:**\n\n- [Converting Blocks to HTML](/docs/features/export/html)",
+      },
+      {
+        projectSlug: "converting-blocks-to-pdf-react-pdf-deprecated",
+        fullSlug:
+          "interoperability/converting-blocks-to-pdf-react-pdf-deprecated",
+        pathFromRoot:
+          "examples/05-interoperability/11-converting-blocks-to-pdf-react-pdf-deprecated",
+        config: {
+          playground: true,
+          docs: true,
+          author: "yousefed",
+          tags: ["Interoperability"],
+          sharedTestDocument: true,
+          dependencies: {
+            "@blocknote/xl-multi-column": "latest",
+            "@blocknote/xl-pdf-exporter": "latest",
+            "@react-pdf/renderer": "^4.5.1",
+          } as any,
+          pro: true,
+        },
+        title: "Exporting documents to PDF (react-pdf, deprecated)",
+        group: {
+          pathFromRoot: "examples/05-interoperability",
+          slug: "interoperability",
+        },
+        readme:
+          '> **Deprecated:** this example uses the react-pdf based exporter\n> (`@blocknote/xl-pdf-exporter/react-pdf`), which is deprecated and will be\n> removed after a few releases. Use the Typst-based `PDFExporter` instead -\n> see the "Exporting documents to PDF (PDF/UA)" example - which\n> produces accessible, tagged PDF/UA-1 output.\n\nThis example exports the current document (all blocks) as a PDF file and downloads it to your computer.\n\n**Try it out:** Edit the document and click "Download .pdf" at the top to download the PDF file.',
       },
     ],
   },
@@ -1843,7 +1872,7 @@ export const examples = {
           dependencies: {
             "y-websocket": "^2.1.0",
             yjs: "^13.6.27",
-            lib0: "^0.2.99",
+            lib0: "^0.2.119",
           } as any,
         },
         title: "Local Storage Versioning (yjs v13)",
@@ -1867,7 +1896,7 @@ export const examples = {
             "@y/protocols": "^1.0.6-rc.1",
             "@y/websocket": "^4.0.0-3",
             "@y/y": "^14.0.0-rc.23",
-            lib0: "1.0.0-rc.22",
+            lib0: "^1.0.0-rc.34",
           } as any,
         },
         title: "YHub Multi-Doc",
@@ -1892,7 +1921,7 @@ export const examples = {
             "@y/protocols": "^1.0.6-rc.1",
             "@y/websocket": "^4.0.0-3",
             "@y/y": "^14.0.0-rc.23",
-            lib0: "1.0.0-rc.22",
+            lib0: "^1.0.0-rc.34",
           } as any,
         },
         title: "YHub Versioning (@y/y v14)",
@@ -1943,7 +1972,7 @@ export const examples = {
           tags: ["Extension"],
           pro: true,
           dependencies: {
-            "@tiptap/core": "^3.29.2",
+            "@tiptap/core": "^3.31.3",
           } as any,
         },
         title: "TipTap extension (arrow InputRule)",

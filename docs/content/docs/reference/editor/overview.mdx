@@ -30,6 +30,14 @@ editor.focus();
 const isFocused = editor.isFocused();
 ```
 
+默认情况下，当焦点移入工具栏、菜单或弹出框时，`isFocused()` 会返回 `false`。传入 `includeEditorUI: true` 可将编辑器 UI 包含在内：
+
+```ts
+const isInteractingWithEditor = editor.isFocused({ includeEditorUI: true });
+```
+
+这些方法读取当前焦点状态。要响应焦点变化，请使用 [`onFocusChange`](/docs/reference/editor/events#onfocuschange)，或使用 [`useEditorFocus`](/docs/react/overview#useeditorfocus) 根据焦点渲染 React UI。
+
 ## 撤销/重做
 
 您可以使用 `undo` 方法撤销上一次操作。

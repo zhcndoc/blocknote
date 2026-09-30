@@ -14,6 +14,7 @@ BlockNote 提供了多个事件回调，允许您响应编辑器中的变化。�
 - **编辑器生命周期** - 编辑器创建、挂载、卸载等时触发
 - **内容变化** - 插入、更新或删除区块时触发
 - **选择变化** - 光标位置或选择范围发生变化时触发
+- **焦点变化** - 焦点进入或离开编辑器时触发
 
 ## `onMount`
 
@@ -51,6 +52,26 @@ editor.onSelectionChange((editor) => {
   console.log("文本光标位置：", textCursorPosition);
 });
 ```
+
+## `onFocusChange`
+
+The `onFocusChange` callback receives the editor and a context containing `focused` (a boolean) and `event` (the triggering DOM `FocusEvent`). By default, it reports focus entering or leaving the content area.
+
+Pass `includeEditorUI: true` to count focus within the editor's toolbars, menus, and popovers too. In this mode, the callback runs only when that combined state changes, allowing focus to settle so moving from the content area into a popover input does not report a blur.
+
+```typescript
+const unsubscribe = editor.onFocusChange(
+  (editor, { focused }) => {
+    console.log("Interacting with editor:", focused);
+  },
+  { includeEditorUI: true },
+);
+
+// When you no longer need the listener:
+unsubscribe();
+```
+
+For the current focus state, use [`editor.isFocused()`](/docs/reference/editor/overview#focus). In React, use [`useEditorFocus`](/docs/react/overview#useeditorfocus) when focus determines what to render.
 
 ## `onChange`
 

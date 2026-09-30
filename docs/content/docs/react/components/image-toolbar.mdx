@@ -29,7 +29,7 @@ type uploadFile = (file: File) => Promise<string>;
 
 `返回值:` 一个 `Promise`，解析后得到该图片可访问的 URL。
 
-您可以使用提供的 `uploadToTempFilesOrg` 函数作为起点，该函数会将文件上传到 [tmpfiles.org](https://tmpfiles.org/)。然而，不推荐在生产环境中使用它——您应当使用自己的后端：
+下面的示例将文件编码为 base64 data URL 作为起点。不过，这仅用于开发环境——在生产环境中，应使用你自己的后端：
 
 <Example name="backend/file-uploading" />
 

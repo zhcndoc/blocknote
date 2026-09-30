@@ -21,13 +21,13 @@ BlockNote 使用带有 `bn-` 前缀的类来为编辑器元素添加样式。以
 
 #### 编辑器结构
 
-- `.bn-root`: 容器类，用于浮动菜单/工具栏和编辑器
+- `.bn-root`: 编辑器或 portal UI 的主题根元素。一个编辑器可以有多个根元素。
 - `.bn-container`: 围绕 `.bn-editor` 的容器
-- `.bn-editor`: 主编辑器元素（可编辑区域）。
-- `.bn-block`: 单个块元素（包括嵌套块）。
-- `.bn-block-group`: 嵌套块的容器。
-- `.bn-block-content`: 块内容包装器。
-- `.bn-inline-content`: 块的可编辑富文本内容。
+- `.bn-editor`: 主编辑器元素（可编辑区域）
+- `.bn-block`: 单个块元素（包括嵌套块）
+- `.bn-block-group`: 嵌套块的容器
+- `.bn-block-content`: 块内容包装器
+- `.bn-inline-content`: 块的可编辑富文本内容
 
 #### UI 组件
 
@@ -35,6 +35,8 @@ BlockNote 使用带有 `bn-` 前缀的类来为编辑器元素添加样式。以
 - `.bn-side-menu`：侧边菜单元素。
 - `.bn-drag-handle-menu`：拖拽手柄菜单。
 - `.bn-suggestion-menu`：建议菜单。
+
+菜单和弹出框可能会 portal 到打开它们的工具栏或按钮之外。请在 `.bn-root` 下针对它们自己的类，而不要依赖工具栏或 `.bn-container` 祖先元素。请参阅[配置 Portal 目标](/docs/react/components#configuring-portal-targets)。
 
 ### BlockNote CSS 属性
 

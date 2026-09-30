@@ -119,36 +119,21 @@ import {
 // Spread into the ODTExporter's mappings exactly as for DOCX above.
 ```
 
-### PDF
+### Typst / PDF
 
-使用 [PDF 导出器](/docs/features/export/pdf)时，数学块会导出为矢量公式——不会进行栅格化，因此同样开箱即用地支持服务端运行。行内数学会栅格化为随文本流动的图像：
+使用 [Typst 导出器](/docs/features/export/typst)和基于其构建的 [PDF 导出器](/docs/features/export/pdf)（它们共享映射）时，数学块和行内数学会导出为**原生 Typst 公式**：真正可选择的文本，不进行栅格化，因此同样开箱即用地支持服务端运行：
 
 ```typescript
 import {
-  createInlineMathMapping,
+  inlineMathMapping,
   mathBlockMapping,
-} from "@blocknote/math-block/pdf-exporter";
+} from "@blocknote/math-block/typst-exporter";
 
-// Spread into the PDFExporter's mappings as for DOCX above - note that
-// inline math is a factory here: `math: createInlineMathMapping()`.
+// Spread into the PDFExporter's mappings as for DOCX above:
+// `mathBlock: mathBlockMapping` and `math: inlineMathMapping`.
 ```
 
-行内数学工厂接受一个选项：
-
-```typescript
-createInlineMathMapping(options?: {
-  /**
-   * Rasterizes the formula SVG to an image. Defaults to the built-in
-   * canvas rasterizer, which only works in the browser - when exporting
-   * server-side, pass one backed by e.g. `@resvg/resvg-js` or `sharp`;
-   * without it, a server-side export throws. The `RasterizeSVG` type is
-   * exported from the same subpath.
-   */
-  rasterize?: RasterizeSVG;
-});
-```
-
-数学块需要 `@react-pdf/math` 包（PDF 映射的 peer dependency）。
+LaTeX 会转换为 Typst 的数学表示法。大多数 KaTeX 命令都受支持；使用未覆盖命令的有效公式会让导出明确失败（而不是静默导出其他内容），而无效 LaTeX 会像其他格式一样渲染错误占位符。
 
 ### 电子邮件
 

@@ -126,23 +126,27 @@ export const docxBlockMappingForDefaultSchema: BlockMapping<
       ],
     });
   },
-  numberedListItem: (block, exporter, nestingLevel) => {
+  numberedListItem: (block, exporter, nestingLevel, numberingInstance) => {
     return new Paragraph({
       ...blockPropsToStyles(block.props, exporter.options.colors),
       children: exporter.transformInlineContent(block.content),
       numbering: {
         reference: "blocknote-numbered-list",
         level: clampListLevel(nestingLevel),
+        // Each distinct list gets its own instance so separate lists don't
+        // continue each other's numbering (see DOCXExporter.transformBlocks).
+        instance: numberingInstance,
       },
     });
   },
-  bulletListItem: (block, exporter, nestingLevel) => {
+  bulletListItem: (block, exporter, nestingLevel, numberingInstance) => {
     return new Paragraph({
       ...blockPropsToStyles(block.props, exporter.options.colors),
       children: exporter.transformInlineContent(block.content),
       numbering: {
         reference: "blocknote-bullet-list",
         level: clampListLevel(nestingLevel),
+        instance: numberingInstance,
       },
     });
   },
@@ -173,18 +177,33 @@ export const docxBlockMappingForDefaultSchema: BlockMapping<
     });
   },
   audio: (block, exporter) => {
+    if (!block.props.url && !block.props.name) {
+      // An un-uploaded media placeholder ("Add file") is an editing
+      // affordance, not document content - it exports as nothing.
+      return [];
+    }
     return [
       file(block.props, exporter.dictionary.open_audio_file, exporter),
       ...caption(block.props, exporter),
     ];
   },
   video: (block, exporter) => {
+    if (!block.props.url && !block.props.name) {
+      // An un-uploaded media placeholder ("Add file") is an editing
+      // affordance, not document content - it exports as nothing.
+      return [];
+    }
     return [
       file(block.props, exporter.dictionary.open_video_file, exporter),
       ...caption(block.props, exporter),
     ];
   },
   file: (block, exporter) => {
+    if (!block.props.url && !block.props.name) {
+      // An un-uploaded media placeholder ("Add file") is an editing
+      // affordance, not document content - it exports as nothing.
+      return [];
+    }
     return [
       file(block.props, exporter.dictionary.open_file, exporter),
       ...caption(block.props, exporter),
@@ -258,6 +277,14 @@ export const docxBlockMappingForDefaultSchema: BlockMapping<
     });
   },
   image: async (block, exporter) => {
+    if (!block.props.url) {
+      // An image without a URL is the editor's un-uploaded placeholder ("Add
+      // image"), not document content - it exports as nothing. (The typst
+      // exporter renders a labelled placeholder figure when a name is present;
+      // this format has no placeholder rendering, so any url-less image is
+      // omitted.)
+      return [];
+    }
     const blob = await exporter.resolveFile(block.props.url);
     const { width, height } = await getImageDimensions(blob);
 

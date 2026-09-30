@@ -19,7 +19,7 @@ BlockNote 包含许多可以完全自定义的 UI 组件（如菜单和工具栏
 
 ## 配置 Portal 目标
 
-默认情况下，所有浮动 UI 元素（工具栏、菜单、表格手柄等）都会 portal 到编辑器的 `bn-container` 中，这样它们就会被限定在编辑器范围内。如果你的布局需要它们脱离该范围——例如，某个 `overflow: hidden` 的祖先元素会裁剪较大的下拉菜单，或者宿主模态框拥有自己的层叠上下文——请向 `BlockNoteView` 传入 `portalElements` 属性：
+默认情况下，浮动组件（格式化工具栏、侧边菜单、斜杠菜单、表格控制柄等）会 portal 到包裹编辑器的元素中：如果直接使用编辑器，就是编辑器的 `bn-container`；如果自行渲染 `BlockNoteViewEditor`，则是你将其渲染到的元素。因此它们会被限定在编辑器范围内并随其裁剪。浮动组件打开的菜单和弹出框会渲染在该组件的包装器中，因此会随其移动和隐藏。如果你的布局需要浮动组件脱离该范围，例如某个 `overflow: hidden` 的祖先元素会裁剪较大的下拉菜单，或者宿主模态框拥有自己的层叠上下文，请向 `BlockNoteView` 传入 `portalElements` 属性：
 
 ```tsx
 <BlockNoteView
@@ -27,12 +27,14 @@ BlockNote 包含许多可以完全自定义的 UI 组件（如菜单和工具栏
   portalElements={{
     // 所有未在下方列出的元素的全局默认值。
     default: document.body,
-    // 按元素覆盖。值可以是 HTMLElement、CSS 选择器或 null（= document.body）。
+    // Per-element overrides. Values can be an HTMLElement or a CSS selector.
     tableHandles: ".bn-container",
   }}
 />
 ```
 
-这些键与默认的 UI 开关一一对应（`formattingToolbar`、`linkToolbar`、`slashMenu`、`emojiPicker`、`sideMenu`、`filePanel`、`tableHandles`、`comments`）。手动挂载的 Controllers 也接受 `portalElement` 属性，并且其优先级高于该映射。另请参见 [Portal 目标示例](/examples/ui-components/portal-elements)。
+这些键与默认的 UI 开关一一对应（`formattingToolbar`、`linkToolbar`、`slashMenu`、`emojiPicker`、`sideMenu`、`filePanel`、`tableHandles`、`comments`、`attributionTooltip`）。手动挂载的 Controllers 也接受 `portalElement` 属性，并且其优先级高于该映射。所有键（包括 `default`）都会响应式更新。另请参见 [Portal 目标示例](/examples/ui-components/portal-elements)。
 
-注意：在挂载后更改 `portalElements.default` 需要重新挂载编辑器（`editor.mount()` 只会在首次挂载时读取它）；按元素的键会实时更新。
+[移动端格式化工具栏](/docs/react/components/formatting-toolbar#mobile-formatting-toolbar)始终 portal 到 `document.body`，包括其菜单和弹出框。它不会使用配置的格式化工具栏目标或默认目标。
+
+当目标位于编辑器 DOM 之外（例如 `document.body`）时，BlockNote 会自动在其中渲染一个带主题的包装元素，使浮动 UI 无论 portal 到何处都保留编辑器的样式和主题。

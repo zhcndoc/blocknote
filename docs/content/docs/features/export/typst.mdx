@@ -1,0 +1,131 @@
+---
+title: Typst
+description: 将 BlockNote 文档导出为 Typst 标记。
+imageTitle: Typst 导出
+path: /docs/export-to-typst
+---
+
+# Typst 导出
+
+可以将 BlockNote 文档导出为 [Typst](https://typst.app) 标记，例如在 Typst 工作流中对文档进行后处理，或使用你自己的 Typst 工具链（包括在服务端）将其编译为 PDF。此导出器也是 [PDF 导出器](/docs/features/export/pdf) 的基础，后者会在浏览器中将其输出编译为可访问的带标签 PDF/UA-1。
+
+<Callout type={"info"}>
+  此功能由 `@blocknote/xl-typst-exporter` 提供。`xl-` 系列包完全开源，但采用了强制开源许可证。用于闭源专有产品的商业许可证包含在[商业订阅](/pricing)中。
+</Callout>
+
+首先，安装 `@blocknote/xl-typst-exporter` 包：
+
+```bash
+npm install @blocknote/xl-typst-exporter
+```
+
+然后，创建 `TypstExporter` 类的实例：
+
+```typescript
+import {
+  TypstExporter,
+  typstDefaultSchemaMappings,
+} from "@blocknote/xl-typst-exporter";
+
+// Create the exporter
+const exporter = new TypstExporter(editor.schema, typstDefaultSchemaMappings);
+
+// Convert the blocks to a Typst source string
+const typst = await exporter.toTypst(editor.document, {
+  title: "My document",
+  lang: "en",
+});
+```
+
+### 图像与资源
+
+标记通过虚拟路径引用文件：文档图像（如 `/assets/asset-0`）以及前言始终引用的内置代码高亮主题。调用 `toTypst` 后，导出器的 `assetFiles` 映射中包含这些路径对应的字节。编译前请将它们映射到 Typst 编译器的文件系统中；每个文档都需要这样做，不仅包含图像的文档需要：
+
+```typescript
+const assets = exporter.assetFiles; // Map<string, Uint8Array>
+```
+
+（[PDF 导出器](/docs/features/export/pdf)会自动完成这一步。）
+
+### 自定义输出
+
+`toTypst` 接受每次导出的选项，用于设置文档元数据和页面布局。
+
+```typescript
+const typst = await exporter.toTypst(editor.document, {
+  // Document title, written to the document metadata
+  title: "My document",
+  // Document author
+  author: "John Doe",
+  // BCP-47 language tag of the document's natural language
+  lang: "en",
+  // Typst paper name, e.g. "a4" (default) or "us-letter"
+  paper: "a4",
+  // Page margin as a Typst length
+  margin: "48pt",
+  // Raw Typst markup for the running page header / footer, e.g. a
+  // page counter: "#context counter(page).display()"
+  header: "My document",
+  footer: "#context counter(page).display()",
+});
+```
+
+只会输出你传入的选项；标记本身不会声明标题、作者或语言。
+
+### 自定义映射 / 自定义 Schema
+
+一个 _mapping_ 定义了如何将 BlockNote schema 元素（区块、行内内容或样式）转换为 **Typst 标记字符串**。相同的映射也驱动 [PDF 导出器](/docs/features/export/pdf)，因此一个自定义区块映射可以同时服务于这两种格式。
+
+如果你在编辑器中使用了[自定义 schema](/docs/features/custom-schemas)，或者想覆盖默认 BlockNote 元素的转换方式，可以传入自己的 `mappings`：
+
+```typescript
+import {
+  TypstExporter,
+  typstDefaultSchemaMappings,
+  strLit,
+} from "@blocknote/xl-typst-exporter";
+
+new TypstExporter(schema, {
+  ...typstDefaultSchemaMappings,
+  blockMapping: {
+    ...typstDefaultSchemaMappings.blockMapping,
+    myCustomBlock: (block, exporter) => {
+      // Return Typst markup; `strLit` safely embeds user text as a
+      // Typst string literal.
+      return `#${strLit("My custom block")}`;
+    },
+  },
+});
+```
+
+对于包含行内内容的区块，请按照默认映射的方式渲染：`exporter.transformInlineContent(block.content).join("")`（行内结果是标记字符串，因此直接拼接即可组合它们）。
+
+
+### 数学与图表区块
+
+[数学](/docs/features/blocks/math)和[图表](/docs/features/blocks/diagrams)区块自带 Typst 映射。有关设置，请参阅[导出数学公式](/docs/features/blocks/math#typst--pdf)和[导出图表](/docs/features/blocks/diagrams#exporting)。
+
+### 导出器选项
+
+`TypstExporter` 构造函数接受一个可选的第三个 `options` 参数：
+
+```typescript
+const defaultOptions = {
+  // a function to resolve external resources (e.g. images) in order to avoid
+  // CORS issues; by default, this calls a BlockNote hosted server-side proxy
+  resolveFileUrl: corsProxyResolveFileUrl,
+  // the strings rendered into the exported document (file link texts, error
+  // placeholders); pass a locale from @blocknote/core/locales (or your
+  // editor's dictionary) to export in another language
+  dictionary: locales.en,
+  // the colors used for highlighting, background colors and font colors
+  colors: COLORS_DEFAULT, // defaults from @blocknote/core
+  // the font families the markup references - they must match fonts loaded
+  // into whichever Typst compiler you use (exported as DEFAULT_FONT_FAMILY
+  // and DEFAULT_MONO_FONT_FAMILY)
+  fontFamily: "Inter 18pt",
+  monoFontFamily: "Geist Mono",
+  // base font size in points
+  fontSize: 12,
+};
+```

@@ -133,6 +133,33 @@ declare function useEditorSelectionChange(
 ): BlockNoteEditor;
 ```
 
+### useEditorFocus
+
+`useEditorFocus` Hook 返回一个布尔值，并在编辑器获得或失去焦点时重新渲染组件。默认情况下，它会跟踪内容区域。传入 `includeEditorUI: true` 后，当焦点移入编辑器的工具栏、菜单或弹出框时，它仍会保持为 `true`。
+
+```tsx twoslash
+/**
+ * See the [Editor API reference](/docs/reference/editor/overview) for more details
+ */
+type BlockNoteEditor = object;
+/**
+ * This hook tracks whether the editor is focused.
+ */
+// ---cut---
+declare function useEditorFocus(
+  options?: {
+    /**
+     * Include focus within the editor's toolbars, menus, and popovers.
+     * Defaults to false.
+     */
+    includeEditorUI?: boolean;
+  },
+  editor?: BlockNoteEditor,
+): boolean;
+```
+
+选项和 editor 参数都是可选的。在 `BlockNoteView` 内调用时，该 Hook 可以使用上下文中的编辑器。要在焦点变化时运行副作用，请订阅 [`editor.onFocusChange`](/docs/reference/editor/events#onfocuschange)。
+
 ## 下一步
 
 编辑器现已准备就绪！开始输入，探索工具栏中各种块类型和格式化选项。

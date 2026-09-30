@@ -388,7 +388,7 @@ if (selectedText) {
 getActiveStyles(): Styles
 ```
 
-返回当前光标位置或选区末尾的激活文本样式。
+返回当前光标位置或当前选区末尾的激活文本样式。选区为空时，这包括为后续输入启用的样式：例如，在输入前启用粗体，即使周围文本不是粗体，`activeStyles.bold` 也会为 `true`。
 
 ```typescript
 const activeStyles = editor.getActiveStyles();
@@ -411,7 +411,7 @@ if (activeStyles.textColor) {
 getSelectedLinkUrl(): string | undefined
 ```
 
-返回当前选区中最后一个链接的 URL，若无链接则返回 `undefined`。
+返回当前选区起始位置所在链接的 URL；如果起始位置不在链接中，则返回 `undefined`。
 
 ```typescript
 const linkUrl = editor.getSelectedLinkUrl();
