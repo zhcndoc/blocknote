@@ -1,6 +1,6 @@
 {
   "app_dir": "/",
   "install_command": "pnpm install --frozen-lockfile",
-  "build_command": "pnpm --filter docs run build:vercel",
+  "build_command": "CI=1 pnpm --filter docs run build:vercel",
   "start_command": "cd docs && pnpm run start"
 }
