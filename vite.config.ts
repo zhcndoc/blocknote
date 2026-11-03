@@ -12,7 +12,7 @@ export default defineConfig({
     // so cache invalidation already follows the workspace dependency graph:
     // when `core`'s dist changes, `react`'s build cache misses because
     // its tsc step reads `core`'s `.d.ts` files.
-    cache: { scripts: true },
+    cache: process.env.CI ? false : { scripts: true },
     tasks: {
       // The release script is interactive and produces only side-effects
       // (git commit/tag/push, npm publish). It reads a stable file set

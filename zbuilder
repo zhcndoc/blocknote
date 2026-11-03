@@ -8,8 +8,6 @@ RUN corepack enable pnpm
 
 COPY . .
 
-RUN rm -rf docs/.next docs/.source
-
 RUN pnpm install --frozen-lockfile
 
 RUN pnpm --filter docs run build:vercel
