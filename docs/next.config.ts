@@ -7,6 +7,7 @@ const withMDX = createMDX();
 
 const config = {
   // output: "export",
+  output: "standalone",
   reactStrictMode: true,
   // Next.js 16 blocks cross-origin requests to dev resources (`/_next/*`, HMR)
   // by default. When testing on a device on the local network - e.g. a phone

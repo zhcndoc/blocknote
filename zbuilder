@@ -1,0 +1,33 @@
+FROM node:24-bookworm AS builder
+
+WORKDIR /app
+
+ENV CI=true
+
+RUN corepack enable pnpm
+
+COPY . .
+
+RUN rm -rf docs/.next docs/.source
+
+RUN pnpm install --frozen-lockfile
+
+RUN pnpm --filter docs run build:vercel
+
+FROM node:24-bookworm-slim
+
+WORKDIR /app
+
+ENV NODE_ENV=production \
+    HOSTNAME=0.0.0.0 \
+    PORT=8080
+
+COPY --from=builder /app/docs/.next/standalone ./
+
+COPY --from=builder /app/docs/.next/static ./docs/.next/static
+
+COPY --from=builder /app/docs/public ./docs/public
+
+EXPOSE 8080
+
+CMD ["node", "docs/server.js"]
