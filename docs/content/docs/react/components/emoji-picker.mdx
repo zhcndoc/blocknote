@@ -1,0 +1,36 @@
+---
+title: 表情选择器
+description: 使用内置的本地化表情选择器插入表情，并配置触发方式和显示条件。
+---
+
+# 表情选择器
+
+表情选择器默认启用。输入 `:` 并继续输入至少两个非空白字符即可搜索，也可以在斜杠菜单中选择表情项。
+
+选择器使用 [Frimousse](https://frimousse.liveblocks.io/)，并根据编辑器的[语言环境](/docs/features/localization)加载表情名称和搜索关键词。
+
+## 禁用选择器
+
+向 `BlockNoteView` 传入 `emojiPicker={false}`，即可禁用默认的行内选择器。
+
+## 配置选择器
+
+要配置触发字符或最小查询长度，请先禁用默认选择器，再将 `EmojiPickerController` 挂载到 `BlockNoteView` 内：
+
+```tsx
+import { BlockNoteView } from "@blocknote/mantine";
+import "@blocknote/mantine/style.css";
+import { EmojiPickerController, useCreateBlockNote } from "@blocknote/react";
+
+export default function Editor() {
+  const editor = useCreateBlockNote();
+
+  return (
+    <BlockNoteView editor={editor} emojiPicker={false}>
+      <EmojiPickerController triggerCharacter=":" minQueryLength={3} />
+    </BlockNoteView>
+  );
+}
+```
+
+该控制器还接受 `shouldOpen`、`floatingUIOptions` 和 `portalElement`，用于控制打开条件和位置。将 `minQueryLength` 设为 `0`，即可在输入触发字符后立即打开。

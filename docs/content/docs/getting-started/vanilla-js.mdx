@@ -60,7 +60,7 @@ editor.mount(document.getElementById("root")!); // 要将编辑器附加到的�
 UI 元素的具体渲染方式由你决定，而 store 可以让你响应状态变化，从而更新元素的可见性、位置和内容：
 
 ```typescript
-import { SideMenuExtension } from "@blocknote/core";
+import { SideMenuExtension } from "@blocknote/core/extensions";
 
 const extension = editor.getExtension(SideMenuExtension)!;
 

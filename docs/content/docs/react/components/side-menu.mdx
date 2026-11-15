@@ -52,3 +52,26 @@ path: /docs/side-menu
 <Example name="ui-components/side-menu-drag-handle-items" />
 
 这里，我们使用了 `SideMenu` 组件但保留了默认按钮（没有传递任何子组件）。相反，我们通过 `dragHandleMenu` 属性传递了自定义的拖动手柄菜单。
+
+## 悬停与放置区域
+
+默认情况下，鼠标位于编辑器（包括侧边菜单所在的内边距）上方时，区块侧边菜单才会显示。拖动中的区块仍可放置在编辑器外最多 250px 的位置。可以通过 `sideMenu` 编辑器选项调整这两个距离：
+
+```tsx
+import { useCreateBlockNote } from "@blocknote/react";
+
+const editor = useCreateBlockNote({
+  sideMenu: {
+    // Also show the menu up to 100px left or right of the editor.
+    hoverMargin: 100,
+    // Accept drops up to 400px outside the editor.
+    dropMargin: 400,
+  },
+});
+```
+
+`hoverMargin:` 鼠标在编辑器左右两侧超出多少像素时，侧边菜单仍会显示（针对鼠标所在高度的区块）。默认为 `0`。
+
+`dropMargin:` 拖动中的区块在编辑器任一侧超出多少像素时，仍可放置。区块会放到编辑器中最近的位置。默认为 `250`。
+
+两个距离都从编辑器边缘开始计算。因此，当它们的值相同时，菜单在编辑器左右两侧的显示范围与区块可放置的范围一致。

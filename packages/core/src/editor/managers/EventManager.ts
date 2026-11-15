@@ -5,6 +5,7 @@ import {
 } from "../../api/getBlocksChangedByTransaction.js";
 import { Transaction } from "prosemirror-state";
 import { EventEmitter } from "../../util/EventEmitter.js";
+import type { VersioningController } from "../../extensions/Versioning/Versioning.js";
 import {
   BlockSchema,
   InlineContentSchema,
@@ -108,18 +109,31 @@ export class EventManager<
     });
   }
 
+  private uiFocusHandler?: (event: FocusEvent) => void;
+
+  /** Observe the boundary itself, even if it later moves into a shadow root. */
+  public trackUIFocus(element: HTMLElement): Unsubscribe {
+    // Portal registration can precede editor mount; use the current tracker.
+    const onFocus = (event: FocusEvent) => this.uiFocusHandler?.(event);
+    element.addEventListener("focusin", onFocus, true);
+    element.addEventListener("focusout", onFocus, true);
+    return () => {
+      element.removeEventListener("focusin", onFocus, true);
+      element.removeEventListener("focusout", onFocus, true);
+    };
+  }
+
   /**
-   * Settled focus-within-UI tracking. Document-level listeners (attached on
-   * editor mount, detached on unmount — a no-op per focus event is too
-   * cheap to be worth gating on subscribers) cover the case tiptap events
-   * can't: focus moving from the editor's own UI outside the content area
-   * (including registered portal elements) to somewhere else entirely.
+   * Settled focus-within-UI tracking. Tiptap only tracks the content area, so
+   * boundary listeners also observe focus leaving its surrounding UI and
+   * registered portals, including transitions hidden inside closed shadow roots.
    * Blur-side changes are re-checked after the current task because
    * `document.activeElement` transiently becomes `<body>` during focus
    * handoffs (and `relatedTarget` is unreliable on mobile).
    */
   private attachUIFocusTracker(): Unsubscribe {
-    if (typeof document === "undefined") {
+    const element = this.editor.domElement?.parentElement;
+    if (!element) {
       return () => {};
     }
     let wasLastFocused = this.editor.isFocused({ includeEditorUI: true });
@@ -138,25 +152,27 @@ export class EventManager<
     };
     // On focusin the new element already holds focus, so the state can be
     // read immediately.
-    const onFocusIn = (event: FocusEvent) => settleUIFocus(event);
-
     // On focusout it can't: `document.activeElement` is still the outgoing
     // element (and passes through `<body>` mid-handoff), and some UI
     // libraries restore focus asynchronously — the ariakit and shadcn link
     // popovers both do. The check therefore has to wait for the current task
     // to finish. A microtask is too early (verified: those popover tests go
     // red), and a frame would work but doesn't run in a background tab.
-    const onFocusOut = (event: FocusEvent) => {
+    const handleUIFocus = (event: FocusEvent) => {
+      if (event.type === "focusin") {
+        settleUIFocus(event);
+        return;
+      }
       clearTimeout(settleUiFocusedTimeout);
       settleUiFocusedTimeout = setTimeout(() => settleUIFocus(event));
     };
 
-    document.addEventListener("focusin", onFocusIn, true);
-    document.addEventListener("focusout", onFocusOut, true);
+    this.uiFocusHandler = handleUIFocus;
+    const untrackElement = this.trackUIFocus(element);
     return () => {
       clearTimeout(settleUiFocusedTimeout);
-      document.removeEventListener("focusin", onFocusIn, true);
-      document.removeEventListener("focusout", onFocusOut, true);
+      this.uiFocusHandler = undefined;
+      untrackElement();
     };
   }
 
@@ -177,8 +193,13 @@ export class EventManager<
     includeUpdatesFromRemote = true,
   ): Unsubscribe {
     return this.on("onChange", ({ transaction, appendedTransactions }) => {
-      if (!includeUpdatesFromRemote && isRemoteTransaction(transaction)) {
-        // don't trigger the callback if the changes are caused by a remote user
+      if (
+        this.editor.getExtension<VersioningController>("versioning")
+          ?.isPreviewOpen ||
+        transaction.getMeta("blocknoteVersionPreview") ||
+        (!includeUpdatesFromRemote && isRemoteTransaction(transaction))
+      ) {
+        // Don't trigger the callback for previews or excluded remote changes.
         return;
       }
       callback(this.editor, {

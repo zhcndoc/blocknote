@@ -125,7 +125,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: openai("gpt-4.1"), // 参考 https://ai-sdk.dev/docs/foundations/providers-and-models
-    system: aiDocumentFormats.html.systemPrompt,
+    instructions: aiDocumentFormats.html.systemPrompt,
     messages: await convertToModelMessages(
       injectDocumentStateMessages(messages),
     ),

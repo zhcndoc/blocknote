@@ -17,7 +17,7 @@ npm install @blocknote/math-block
 
 ## 添加到编辑器
 
-该包导出 `createReactMathBlockSpec`（块）和 `createReactInlineMathSpec`（行内内容）。分别将它们添加到 schema 的 `blockSpecs` 和 `inlineContentSpecs` 中：
+该包导出 `createReactMathBlockSpec`（块）和 `createReactInlineMathSpec`（行内内容）。分别将它们添加到 schema 的 `blockSpecs` 和 `inlineContentSpecs` 中，并导入用于设置渲染公式样式的包样式表：
 
 ```tsx
 import { BlockNoteSchema } from "@blocknote/core";
@@ -25,6 +25,7 @@ import {
   createReactMathBlockSpec,
   createReactInlineMathSpec,
 } from "@blocknote/math-block";
+import "@blocknote/math-block/style.css";
 
 const schema = BlockNoteSchema.create().extend({
   blockSpecs: {

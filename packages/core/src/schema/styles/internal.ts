@@ -1,5 +1,9 @@
 import { Attributes, Mark } from "@tiptap/core";
 import { DOMSerializer } from "@tiptap/pm/model";
+import type {
+  Extension,
+  ExtensionFactoryInstance,
+} from "../../editor/BlockNoteExtension.js";
 import {
   StyleConfig,
   StyleImplementation,
@@ -68,17 +72,23 @@ export function addStyleAttributes<
 export function createInternalStyleSpec<T extends StyleConfig>(
   config: T,
   implementation: StyleImplementation<T>,
+  extensions?: (Extension | ExtensionFactoryInstance)[],
 ) {
   return {
     config,
     implementation,
+    extensions,
   } satisfies StyleSpec<T>;
 }
 
 export function createStyleSpecFromTipTapMark<
   T extends Mark,
   P extends StylePropSchema,
->(mark: T, propSchema: P) {
+>(
+  mark: T,
+  propSchema: P,
+  extensions?: (Extension | ExtensionFactoryInstance)[],
+) {
   return createInternalStyleSpec(
     {
       type: mark.name as T["name"],
@@ -145,6 +155,7 @@ export function createStyleSpecFromTipTapMark<
         };
       },
     },
+    extensions,
   );
 }
 

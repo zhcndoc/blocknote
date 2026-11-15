@@ -1,0 +1,190 @@
+---
+title: 布局块
+description: 学习如何创建可容纳其他块的自定义块
+---
+
+# 布局块
+
+<Callout type="info" title="预览">
+  布局块目前处于预览阶段，API 可能在未来版本中变化。我们希望了解你
+  使用布局块构建了什么，以及遇到了哪些问题。请在 [GitHub
+  Discussions](https://github.com/TypeCellOS/BlockNote/discussions) 中反馈，或提交
+  [issue](https://github.com/TypeCellOS/BlockNote/issues)。
+</Callout>
+
+布局块是一种容纳并排列其他块、自身没有内容的自定义块。面板、标签页组和分栏布局都是示例。其子块位于布局块内部，而不是缩进显示在下方；布局块会为它们绘制框架。布局块还可以限制可容纳的块类型，例如标签页组只容纳标签页。
+
+如果你的块既有自身文本也有子块，例如带标题和正文的提示框，请使用带[框架](/docs/features/custom-schemas/custom-blocks#block-frames)的自定义块。有关区别，请参阅[布局块与区块框架](#layout-blocks-and-block-frames)。
+
+下面的演示为 BlockNote 编辑器添加了一个自定义面板，以及用于插入面板的自定义[斜杠菜单项](/docs/react/components/suggestion-menus#changing-slash-menu-items)。每个面板都可以包含段落、标题、列表或编辑器中的其他块。
+
+<Example name="custom-schema/layout-block" />
+
+更复杂的布局块示例请参阅[标签页块](/examples/custom-schema/tabs-block)和[步骤器块](/examples/custom-schema/stepper-block)。
+
+<a id="creating-a-layout-block" />
+
+## 创建布局块
+
+与[自定义块](/docs/features/custom-schemas/custom-blocks)一样，使用 `createReactBlockSpec` 函数创建布局块。对于下面的面板，我们将 `content` 设为 `"none"`，并将 `layoutOnly` 设为 `true`，这样面板的子块就会放在其中：
+
+```tsx
+import { createReactBlockSpec } from "@blocknote/react";
+
+export const createPanel = createReactBlockSpec(
+  {
+    type: "panel",
+    propSchema: {},
+    content: "none",
+    layoutOnly: true,
+  },
+  {
+    renderFrame: (props) => (
+      <div className="panel" ref={props.slotRef} />
+    ),
+  },
+);
+```
+
+<a id="block-config" />
+
+### 块配置
+
+块配置定义了布局块可容纳的内容和子块：
+
+`content:` 布局块必须设为 `"none"`，因为它只容纳子块。若块本身有文本且也包含子块，请参阅[布局块与区块框架](#layout-blocks-and-block-frames)。
+
+`layoutOnly:` 设为 `true` 后，块的子块会放在它的内部；否则子块会缩进显示在下方。布局块默认接受任意块。你也可以将其限制为特定布局块类型，详见[限制子块](#restricting-children)。
+
+`propSchema:` 与其他自定义块一样，定义布局块的属性。可用这些属性自定义其外观或行为。
+
+<a id="block-implementation" />
+
+### 块实现
+
+`renderFrame:` 你的 React 组件负责绘制布局块的框架。布局块自身没有内容，因此不提供 `render`，只有框架。`renderFrame` 接收与[其他块](/docs/features/custom-schemas/custom-blocks#block-frames)相同的 props，但必须始终绘制框架，不能返回 `null`。请将 `slotRef` 挂到容纳子块的元素上，并可在该元素周围添加图标、按钮或其他内容：
+
+```tsx
+renderFrame: (props) => (
+  <div className="panel">
+    <span contentEditable={false}>💡</span>
+    <div ref={props.slotRef} />
+  </div>
+),
+```
+
+与其他 React 组件一样，你可以使用 CSS 设置组件样式：
+
+```css
+.panel {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-left: 4px solid #507aff;
+  border-radius: 6px;
+}
+```
+
+<a id="adding-layout-blocks-to-the-editor" />
+
+## 将布局块添加到编辑器
+
+将布局块添加到 [BlockNote schema](/docs/features/custom-schemas#creating-your-own-schema)：
+
+```typescript
+import { BlockNoteSchema } from "@blocknote/core";
+import { createPanel } from "./Panel";
+
+const schema = BlockNoteSchema.create().extend({
+  blockSpecs: {
+    panel: createPanel(),
+  },
+});
+```
+
+然后可以按照[自定义 Schema](/docs/features/custom-schemas)页面的说明，使用该 schema 创建编辑器。通过 `children` 设置面板中的块：
+
+```typescript
+import { useCreateBlockNote } from "@blocknote/react";
+
+const editor = useCreateBlockNote({
+  schema,
+  initialContent: [
+    {
+      type: "panel",
+      children: [
+        { type: "heading", content: "Getting started" },
+        { type: "paragraph", content: "Follow these steps to get set up." },
+        { type: "checkListItem", content: "Create an account" },
+      ],
+    },
+  ],
+});
+```
+
+如果创建面板时没有指定子块，它会以一个空段落开始。要让用户自行插入面板，请像演示中那样添加一个[自定义斜杠菜单项](/docs/react/components/suggestion-menus#changing-slash-menu-items)。
+
+要向现有布局块添加块，请参阅[插入块](/docs/reference/editor/manipulating-content#inserting-blocks)。
+
+<a id="layout-blocks-and-block-frames" />
+
+## 布局块与区块框架
+
+每个自定义块都可以有一个[框架](/docs/features/custom-schemas/custom-blocks#block-frames)，由 `renderFrame` 围绕块的内容及其子块绘制。布局块则只有框架。下表列出了两者的区别：
+
+| | 带框架的块 | 布局块 |
+| --- | --- | --- |
+| 示例 | [带标题和正文的提示框](/examples/custom-schema/alert-block-with-title-and-body) | [面板](/examples/custom-schema/layout-block)、[标签页组](/examples/custom-schema/tabs-block)、[步骤器](/examples/custom-schema/stepper-block)、[分栏列表](/examples/basic/multi-column) |
+| 配置 | 任意 `content`，通常为 `"inline"` 或 `"plain"` | `content: "none"` 且 `layoutOnly: true` |
+| 内容 | 自身文本，由 `render` 绘制 | 无 |
+| 实现 | 必须使用 `render` 绘制内容；可选的 `renderFrame` 绘制框架。它可以返回 `null`，让块不显示框架 | 必须使用 `renderFrame` 绘制框架，且始终要绘制框架；如果返回 `null`，导出会失败 |
+| 子块 | 任意块 | 任意块，或 [`children.allow`](#restricting-children) 中指定的布局块类型 |
+
+当块只用于容纳和排列其他块时，请使用布局块。如果块本身有文本，例如标题，请使用带框架的块。
+
+<a id="restricting-children" />
+
+## 限制子块
+
+对于结构化布局，可以通过以下块配置选项将布局块限制为特定的布局块类型：
+
+`children.allow:` 可设为 `"blocks"`（默认值），或布局块类型名称数组。目前不能单独列出 `"paragraph"` 等普通块类型。
+
+`children.min:` 仅用于 `allow` 列表，表示最少子块数。默认为 `1`。
+
+`children.dissolve:` 仅用于 `allow` 列表，决定子块数量不足时布局块是否会解散，并将其内容提升到上一层。默认为 `true`，例如分栏列表只剩一列时会解散。设为 `false` 可保留布局块及其中的空子块，例如标签页组。
+
+`children.exclude:` 对于接受任意块的布局块，指定其不容纳的布局块类型。只能排除布局块类型，不能排除 `"paragraph"` 等普通块类型。
+
+`placeable:` 设为 `"namedOnly"` 后，该布局块只能放在通过 `children.allow` 指定它的父块中。默认为 `"anywhere"`。
+
+这些选项用于[标签页块](/examples/custom-schema/tabs-block)和[步骤器块](/examples/custom-schema/stepper-block)示例。标签页组只容纳 `tab` 块，步骤器只容纳 `step` 块。两者都将 `dissolve` 设为 `false`，因此用户移除最后一个标签页或步骤时，布局块仍会保留。`tab` 和 `step` 的 `placeable` 均为 `"namedOnly"`，所以只能放入标签页组或步骤器。
+
+这些选项要求设置 `layoutOnly: true`。其他块始终可以包含任意类型的子块，因此它们的 `children` 只能使用默认值 `{ allow: "blocks" }`。
+
+内置分栏块请参阅[多栏布局](/docs/foundations/document-structure#column-blocks)。
+
+<a id="exporting-layout-blocks" />
+
+## 导出布局块
+
+要将包含布局块的文档导出为 [DOCX](/docs/features/export/docx)、[ODT](/docs/features/export/odt)、[PDF](/docs/features/export/pdf)、[Typst](/docs/features/export/typst) 或[电子邮件](/docs/features/export/email)，请为该块提供映射。布局块必须使用 `{ withChildren }` 映射。若使用函数映射，导出器会报错，因为它无法确定子块的放置位置。
+
+`withChildren` 会接收导出器已转换的子块。请将它们放入该块的导出结果中。例如，Typst 可这样配置：
+
+```typescript
+new TypstExporter(schema, {
+  ...typstDefaultSchemaMappings,
+  blockMapping: {
+    ...typstDefaultSchemaMappings.blockMapping,
+    panel: {
+      withChildren: (block, exporter, nestingLevel, numberedListIndex, children) =>
+        // Draws a box around the child blocks. Each child block is Typst
+        // markup, and a blank line keeps them as separate blocks.
+        `#block(stroke: 1pt, inset: 8pt)[${children.join("\n\n")}]`,
+    },
+  },
+});
+```
+
+其他导出器的用法相同，但 `children` 会采用各自的格式，例如 DOCX 使用 `docx` 元素。

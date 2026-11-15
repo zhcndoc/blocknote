@@ -1,6 +1,6 @@
 ---
 title: 文件面板
-description: 每当您选择一个没有 URL 的图片，或者在选中图片时点击格式面板中的“替换文件”按钮时，文件面板都会出现。
+description: 使用文件面板上传或嵌入文件、图像、视频和音频。
 ---
 
 # 文件面板
@@ -12,22 +12,26 @@ description: 每当您选择一个没有 URL 的图片，或者在选中图片�
     light: "/img/screenshots/image_toolbar.png",
     dark: "/img/screenshots/image_toolbar_dark.png",
   }}
-  alt="图片"
+  alt="图像块的文件面板"
   width={600}
   height={600}
 />
 
 ## 文件上传
 
-您可能会注意到，在新建一个 BlockNote 编辑器时，文件面板中的“上传”标签缺失。这是因为您必须为 BlockNote 提供一个处理文件上传的函数，使用 `uploadFile` [编辑器选项](/docs/reference/editor/overview#options)：
+您可能会注意到，在新建一个 BlockNote 编辑器时，文件面板中的“上传”标签缺失。这是因为您必须为 BlockNote 提供一个处理文件上传的函数，使用 `uploadFile` [编辑器选项](/docs/reference/editor/overview#options)。对于返回文件 URL 的常见用法，回调类型如下：
 
 ```ts
 type uploadFile = (file: File) => Promise<string>;
 ```
 
-`file:` 要上传的文件，此处为图片文件。
+`file:` 要上传的文件，例如图像、视频、音频文件或文档。
 
-`返回值:` 一个 `Promise`，解析后得到该图片可访问的 URL。
+`返回值:` 一个 `Promise`，解析后得到该文件可访问的 URL。
+
+提供 `uploadFile` 后，用户还可以将电脑中的文件拖放到编辑器，或粘贴剪贴板中的文件。BlockNote 会调用同一个回调并插入对应区块，无需单独处理拖放。如果剪贴板中同时包含受支持的文本格式，BlockNote 会粘贴该内容，而不是上传文件。
+
+使用默认 schema 时，图像、视频和音频会根据浏览器报告的 MIME 类型使用对应的区块类型。其他文件（包括没有 MIME 类型的文件）会使用通用文件区块。如果你自定义了 schema，请保留 `defaultBlockSpecs.file` 作为无法匹配文件的回退类型；有关文件匹配配置，请参阅[自定义文件块](/docs/features/custom-schemas/custom-blocks#custom-file-blocks)。
 
 下面的示例将文件编码为 base64 data URL 作为起点。不过，这仅用于开发环境——在生产环境中，应使用你自己的后端：
 

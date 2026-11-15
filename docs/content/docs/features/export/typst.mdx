@@ -100,6 +100,7 @@ new TypstExporter(schema, {
 
 对于包含行内内容的区块，请按照默认映射的方式渲染：`exporter.transformInlineContent(block.content).join("")`（行内结果是标记字符串，因此直接拼接即可组合它们）。
 
+`{ withChildren }` 映射由区块自行放置其子区块（[布局块](/docs/features/custom-schemas/layout-blocks)必须使用这种映射）。它接收已渲染为标记字符串的子区块；请用空行连接，即 `children.join("\n\n")`，让每个子区块保持独立，因为在 Typst 标记中单个 `\n` 只是软换行。
 
 ### 数学与图表区块
 

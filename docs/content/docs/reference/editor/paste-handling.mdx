@@ -22,6 +22,14 @@ BlockNote 默认尝试按以下顺序粘贴内容：
 
 您可以通过提供自定义粘贴处理器来更改默认的粘贴行为，从而完全控制粘贴内容如何插入到编辑器中。
 
+## Word 和 Google Docs
+
+BlockNote 会自动将 Microsoft Word 的列表段落转换为嵌套列表，移除 Word 的段落结尾占位符，并保留从 Google Docs 复制的空段落。这适用于从剪贴板粘贴的外部 HTML。
+
+该转换会尽力映射到 BlockNote 的块类型，并不保证精确保留源格式。对于 `iv.` 或 `1.2.` 等不支持的列表标记，会保留为文本，而不是移除。
+
+要替换此行为，请使用自定义 `pasteHandler`，并在调用 `editor.pasteHTML` 前处理 HTML。调用 `defaultPasteHandler` 会保留内置规范化处理。BlockNote 内部剪贴板内容不会经过此规范化。
+
 ## `pasteHandler` 选项
 
 `pasteHandler` 选项是一个函数，接收以下参数：

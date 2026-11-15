@@ -29,9 +29,13 @@ type Extension = {
       match: RegExpMatchArray;
       range: { from: number; to: number };
       editor: BlockNoteEditor;
-    }) => PartialBlock | undefined;
+    }) =>
+      | PartialBlock
+      | { text: string; styles: Record<string, string | boolean> }
+      | PartialInlineContent
+      | undefined;
   }[];
-  plugins?: Plugin[];
+  prosemirrorPlugins?: Plugin[];
   tiptapExtensions?: AnyExtension[];
 }
 
@@ -39,7 +43,7 @@ const CustomExtension = createExtension({
   key: "customBlockExtension",
   keyboardShortcuts: ...,
   inputRules: ...,
-  plugins: ...,
+  prosemirrorPlugins: ...,
   tiptapExtensions: ...,
 });
 ```
@@ -52,13 +56,59 @@ const CustomExtension = createExtension({
 
 - `ctx:` 包含 BlockNote 编辑器实例的对象。
 
-`inputRules?:` 输入规则用于在检测到指定正则表达式时更新区块。接受一个对象数组。每个对象包含 `find` 字段，用于指定要查找的正则表达式，以及 `replace` 字段，用于指定匹配时要执行的函数。该函数应返回一个 [`PartialBlock`](docs/reference/editor/manipulating-content#partial-blocks)，用于指定区块应该如何更新，或者不执行更新。函数也有一个参数：
+`inputRules?:` 一组声明式输入规则，可用于区块、样式或内联内容。请参阅[输入规则](#input-rules)。
 
-- `props:` 一个对象，包含正则匹配的结果、匹配范围对应的 [Prosemirror 位置索引](https://prosemirror.net/docs/guide/#doc.indexing)，以及 BlockNote 编辑器实例。
-
-`plugins?:` 一个 [ProseMirror 插件](https://prosemirror.net/docs/ref/#state.Plugin_System) 数组。
+`prosemirrorPlugins?:` 一个 [ProseMirror 插件](https://prosemirror.net/docs/ref/#state.Plugin_System)数组。
 
 `tiptapExtensions?:` 一个 [TipTap 扩展](https://tiptap.dev/docs/editor/extensions/custom-extensions/create-new) 数组。
+
+<a id="input-rules" />
+
+## 输入规则
+
+输入规则是包含 `find` 和 `replace` 的普通对象。例如，将以 `# ` 开头的段落转换为标题：
+
+```typescript
+import { createExtension } from "@blocknote/core";
+
+const HeadingShortcut = createExtension({
+  key: "heading-shortcut",
+  inputRules: [
+    {
+      find: /^#\s$/,
+      replace: () => ({ type: "heading", props: { level: 1 } }),
+    },
+  ],
+});
+```
+
+`replace` 回调会收到 `{ editor, match, range }`。返回 [`PartialBlock`](/docs/reference/editor/manipulating-content#partial-blocks) 可转换当前区块；返回 `undefined` 则保持不变。撤销操作会恢复完整的字面输入文本，包括触发字符。
+
+返回值的形状决定执行的操作：`{ text, styles }` 会应用样式；字符串或数组会替换内联内容；部分区块会更新当前区块：
+
+```typescript
+import { createExtension } from "@blocknote/core";
+
+const TextShortcuts = createExtension({
+  key: "text-shortcuts",
+  inputRules: [
+    {
+      find: /\*\*([^*]+)\*\*$/,
+      replace: ({ match }) => ({ text: match[1], styles: { bold: true } }),
+    },
+    {
+      find: /->$/,
+      replace: () => "→",
+    },
+  ],
+});
+```
+
+样式规则会保留匹配结果中的 `text`，移除其两侧分隔符（保留开头空白），并应用 `styles`，而不丢弃已有格式。内联规则会将整个匹配项替换为字符串或 BlockNote 内联内容数组，包括自定义内联内容。两种规则都可以返回 `undefined` 表示不处理该匹配项。与样式关联的扩展可以和样式 spec 放在一起。
+
+区块规则也会将普通 Enter 匹配为换行。样式规则和内联规则只会在输入文本时运行。请在创建编辑器时注册规则；不支持运行时添加输入规则。
+
+自定义 TipTap 扩展仍可使用 `addInputRules`，但它们会沿用 TipTap 自身的输入规则和撤销行为，而不使用 BlockNote 共享的引擎。
 
 ## 向编辑器添加扩展
 

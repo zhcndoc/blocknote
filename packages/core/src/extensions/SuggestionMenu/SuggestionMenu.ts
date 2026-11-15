@@ -49,12 +49,21 @@ class SuggestionMenuView {
     this.rootEl?.addEventListener("scroll", this.handleScroll, true);
   }
 
-  handleScroll = () => {
+  handleScroll = (event: Event) => {
     if (this.state?.show) {
       const decorationNode = this.rootEl?.querySelector(
         `[data-decoration-id="${this.pluginState!.decorationId}"]`,
       );
       if (!decorationNode) {
+        return;
+      }
+      // Only a scroll of an ancestor of the cursor can move the menu's
+      // reference. The menu's own scroll (it is in the editor's subtree, so
+      // this capture listener sees it) must not reposition it.
+      if (
+        event.target instanceof Node &&
+        !event.target.contains(decorationNode)
+      ) {
         return;
       }
       this.state.referencePos = decorationNode
@@ -84,10 +93,15 @@ class SuggestionMenuView {
     this.pluginState = stopped ? prev : next;
 
     if (stopped || !this.editor.isEditable) {
+      // If the menu was never actually shown (`state` is still undefined - e.g.
+      // it was opened while the editor was not editable, which happens when the
+      // editable prop is toggled right before the menu opens), there is nothing
+      // to hide, and calling `emitUpdate` here would throw "Attempting to update
+      // uninitialized suggestions menu" (#2701).
       if (this.state) {
         this.state.show = false;
+        this.emitUpdate(this.pluginState!.triggerCharacter);
       }
-      this.emitUpdate(this.pluginState!.triggerCharacter);
 
       return;
     }

@@ -9,17 +9,43 @@ path: /docs/server-side-processing
 
 虽然你可以在客户端使用 `BlockNoteEditor`，但你也可以使用来自 `@blocknote/server-util` 的 `ServerBlockNoteEditor` 在服务器端处理 BlockNote 文档。
 
-例如，使用以下代码在服务器端将 BlockNote 文档转换为 HTML：
+安装 `@blocknote/server-util`：
+
+```bash
+pnpm add @blocknote/server-util
+```
+
+处理 HTML 或 Markdown 时，将文档传递给编辑器。内置的 JSDOM 工厂提供了可直接使用的实现：
 
 ```tsx
 import { ServerBlockNoteEditor } from "@blocknote/server-util";
+import { getDocument } from "@blocknote/server-util/dom";
 
-const editor = ServerBlockNoteEditor.create();
-const html = await editor.blocksToFullHTML(blocks);
+const document = getDocument();
+const editor = ServerBlockNoteEditor.create({}, document);
+const html = await editor.blocksToFullHTML([
+  { type: "paragraph", content: "Hello" },
+]);
 ```
 
 `ServerBlockNoteEditor.create` 接受与 `useCreateBlockNote` 和 `BlockNoteEditor.create` 相同的 BlockNoteEditorOptions（[参见文档](/docs/getting-started)），  
 因此你可以将同样的配置（例如自定义 schema）传递给服务器端的 BlockNote 编辑器，和客户端保持一致。
+
+## DOM 生命周期与隔离
+
+`ServerBlockNoteEditor.create(options, document)` 接受来自兼容 DOM 实现的 `document`。同一个渲染环境中的所有编辑器应共用一个 `document`。如果未传入，编辑器会回退到全局 `window` 和 `document`。导入工厂或创建文档都不会安装全局变量。
+
+React 和自定义区块渲染器需要访问全局 DOM。首次使用 DOM 时，如果全局变量都不存在，编辑器会持久绑定传入的 `document` 及其 `defaultView`；如果已有匹配的一组全局变量，则会复用；如果环境不完整或互相冲突，则会报错。编辑器不会切换或释放这些全局变量。请使用关联到窗口的文档，不要使用 `defaultView` 为 `null` 的脱离文档。
+
+在整个渲染环境的生命周期内保持 DOM 和这些全局变量可用。导出完成后不要还原全局变量或关闭 DOM：即使导出已完成且临时根节点已卸载，React 仍可能在已调度的工作中读取 DOM。导出 Promise 表示结果已准备就绪，并不表示自定义组件启动的异步工作都已结束。
+
+嵌套导出及来自不同编辑器的导出会共用稳定的 DOM，不会切换全局变量。JSON、ProseMirror 和 Yjs 转换无需设置 DOM。
+
+安装全局 DOM 变量会影响其他库对浏览器环境的检测。如果应用无法接受这一点，请在专用 worker 或进程中初始化 DOM、编辑器、schema 和 providers，并将文档数据传入其中。相关 API（例如 DOM 事件及其 abort signal）应使用同一种 DOM 实现；混用 Node 和 DOM 实现可能导致不兼容。请通过终止 worker 或进程来释放渲染环境，不要在 React 仍可能运行时拆除 DOM。
+
+### 自定义 DOM 实现
+
+将自定义实现的 `document` 直接作为 `ServerBlockNoteEditor.create` 的第二个参数传入。无需适配器或获取/释放钩子。主入口 `@blocknote/server-util` 不会加载 JSDOM。
 
 ## 转换 Blocks 的函数
 
@@ -54,6 +80,8 @@ const html = await editor.withReactContext(
   async () => editor.blocksToFullHTML(blocks),
 );
 ```
+
+请串行执行同一个编辑器上的 `withReactContext` 调用，因为它的上下文渲染器是编辑器本地的可变状态。若要并发执行依赖上下文的导出，请使用不同的编辑器实例。自定义 React 区块仍使用与客户端相同的回调 ref API。
 
 ## Next.js App Router
 

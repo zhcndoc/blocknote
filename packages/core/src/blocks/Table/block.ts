@@ -5,12 +5,12 @@ import { NodeView } from "prosemirror-view";
 
 import { createExtension } from "../../editor/BlockNoteExtension.js";
 import {
+  applyDataAttributes,
   BlockConfig,
   createBlockSpecFromTiptapNode,
   TableContent,
 } from "../../schema/index.js";
 import { mergeCSSClasses } from "../../util/browser.js";
-import { camelToDataKebab } from "../../util/string.js";
 import { suggestionMarks } from "../../pm-nodes/suggestionMarks.js";
 import { createDefaultBlockDOMOutputSpec } from "../defaultBlockHelpers.js";
 import { defaultProps } from "../defaultProps.js";
@@ -19,6 +19,32 @@ import { EMPTY_CELL_WIDTH, TableExtension } from "./TableExtension.js";
 export const tablePropSchema = {
   textColor: defaultProps.textColor,
 };
+
+/**
+ * Reads HTML cell spans, keeping rowspans within the containing row group.
+ */
+function parseTableSpan(
+  element: HTMLElement,
+  attribute: "colspan" | "rowspan",
+): number {
+  const raw = element.getAttribute(attribute) ?? "";
+  const parsed = /^[0-9]+$/.test(raw) ? Number(raw) : 1;
+  const value = Number.isSafeInteger(parsed) && parsed > 0 ? parsed : 1;
+  if (attribute === "colspan") {
+    // HTML caps colspans at 1000; bound allocation before building a TableMap.
+    return Math.min(value, 1000);
+  }
+
+  const row = element.closest("tr");
+  const group = row?.parentElement;
+  if (!row || !group) {
+    return 1;
+  }
+  const rows = Array.from(group.children).filter(
+    (child) => child.tagName === "TR",
+  );
+  return Math.min(value, rows.length - rows.indexOf(row));
+}
 
 const TiptapTableHeader = Node.create<{
   HTMLAttributes: Record<string, any>;
@@ -48,16 +74,21 @@ const TiptapTableHeader = Node.create<{
     return {
       colspan: {
         default: 1,
+        parseHTML: (element) => parseTableSpan(element, "colspan"),
       },
       rowspan: {
         default: 1,
+        parseHTML: (element) => parseTableSpan(element, "rowspan"),
       },
       colwidth: {
         default: null,
         parseHTML: (element) => {
           const colwidth = element.getAttribute("colwidth");
           const value = colwidth
-            ? colwidth.split(",").map((width) => parseInt(width, 10))
+            ? colwidth
+                .split(",")
+                .slice(0, parseTableSpan(element, "colspan"))
+                .map((width) => parseInt(width, 10))
             : null;
 
           return value;
@@ -112,16 +143,21 @@ const TiptapTableCell = Node.create<{
     return {
       colspan: {
         default: 1,
+        parseHTML: (element) => parseTableSpan(element, "colspan"),
       },
       rowspan: {
         default: 1,
+        parseHTML: (element) => parseTableSpan(element, "rowspan"),
       },
       colwidth: {
         default: null,
         parseHTML: (element) => {
           const colwidth = element.getAttribute("colwidth");
           const value = colwidth
-            ? colwidth.split(",").map((width) => parseInt(width, 10))
+            ? colwidth
+                .split(",")
+                .slice(0, parseTableSpan(element, "colspan"))
+                .map((width) => parseInt(width, 10))
             : null;
 
           return value;
@@ -277,15 +313,7 @@ const TiptapTableNode = Node.create({
             return false;
           }
 
-          for (const [propName, propSpec] of Object.entries(tablePropSchema)) {
-            const attrName = camelToDataKebab(propName);
-            const value = updatedNode.attrs[propName];
-            if (value !== propSpec.default) {
-              this.dom.setAttribute(attrName, String(value));
-            } else {
-              this.dom.removeAttribute(attrName);
-            }
-          }
+          applyDataAttributes(this.dom, updatedNode.attrs, tablePropSchema);
 
           return true;
         }
@@ -355,7 +383,10 @@ const TiptapTableRow = Node.create<{
     };
   },
 
-  content: "(tableCell | tableHeader)+",
+  // A row is empty when all of its positions are covered by rowspans from the
+  // rows above, e.g. after merging cells across every column. With `+`,
+  // ProseMirror fills such rows with new cells, which breaks the table.
+  content: "(tableCell | tableHeader)*",
 
   tableRole: "row",
   marks() {

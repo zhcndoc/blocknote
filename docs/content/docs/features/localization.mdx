@@ -25,11 +25,13 @@ BlockNote 开箱即用支持以下语言：
 - **日语** (`ja`) - 日本語
 - **韩语** (`ko`) - 한국어
 - **挪威语** (`no`) - Norsk
+- **波斯语** (`fa`) - فارسی
 - **波兰语** (`pl`) - Polski
 - **葡萄牙语** (`pt`) - Português
 - **俄语** (`ru`) - Русский
 - **斯洛伐克语** (`sk`) - Slovenčina
 - **西班牙语** (`es`) - Español
+- **土耳其语** (`tr`) - Türkçe
 - **乌克兰语** (`uk`) - Українська
 - **乌兹别克语** (`uz`) - O'zbekcha
 - **越南语** (`vi`) - Tiếng Việt
@@ -53,25 +55,9 @@ function FrenchEditor() {
 
 ## 动态切换语言
 
-您可以根据用户偏好或应用的语言环境动态更改语言：
+字典会在创建编辑器时选定。语言变化时，将 `[language]` 作为 `useCreateBlockNote` 的第二个参数，以重新创建编辑器；同时将 `BlockNoteView` 的 `key` 设为语言，以重置菜单。
 
-```tsx
-import { useCreateBlockNote, BlockNoteView } from "@blocknote/react";
-import * as locales from "@blocknote/core/locales";
-
-function LocalizedEditor({ language = "en" }) {
-  const editor = useCreateBlockNote({
-    dictionary: locales[language as keyof typeof locales] || locales.en,
-  });
-
-  return <BlockNoteView editor={editor} />;
-}
-
-// 使用示例
-<LocalizedEditor language="fr" />
-<LocalizedEditor language="de" />
-<LocalizedEditor language="ja" />
-```
+要保留文档内容，请在编辑器之外保存文档，并通过 `initialContent` 传回。重新创建编辑器会重置撤销历史和选区。[本地化示例](#基础本地化)展示了完整实现。
 
 ## 自定义文本字符串
 
@@ -109,6 +95,20 @@ function CustomEditor() {
 ## 字典结构
 
 字典对象包含编辑器各部分的翻译：
+
+### 语言环境
+
+可选的 `locale` 字段用于选择表情选择器中本地化的表情名称、类别、肤色名称和搜索词。BlockNote 内置字典已设置此字段。创建自定义字典时，请将它设为对应的语言代码；如果省略或不受支持，表情数据会回退到英语。
+
+表情选择器界面字符串与 BlockNote 其他部分使用同一个字典：
+
+```tsx
+emoji_picker: {
+  search: "Search",
+  search_no_results: "No emoji found",
+  loading: "Loading…",
+}
+```
 
 ### 占位符
 
@@ -203,6 +203,7 @@ function I18nEditor() {
 
 创建翻译时，请确保：
 
+- 将 `locale` 设为对应的语言代码，让表情选择器使用适当的本地化数据
 - 翻译字典中的所有文本字符串
 - 保持与英文字典相同的结构
 - 用不同内容类型测试翻译效果

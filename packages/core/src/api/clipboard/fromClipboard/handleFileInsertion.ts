@@ -5,7 +5,7 @@ import {
   InlineContentSchema,
   StyleSchema,
 } from "../../../schema/index.js";
-import { getBlockInfoAtNearest, getNodeId } from "../../getBlockInfoFromPos.js";
+import { getBlockInfoNearPos, getNodeId } from "../../getBlockInfoFromPos.js";
 import { acceptedMIMETypes } from "./acceptedMIMETypes.js";
 
 function checkFileExtensionsMatch(
@@ -105,20 +105,26 @@ export async function handleFileInsertion<
 
   event.preventDefault();
 
-  for (let i = 0; i < items.length; i++) {
+  // Capture files before awaiting uploads, while event data is still available.
+  const files = Array.from(items, (item) => ({
+    file: item.getAsFile(),
+    type: item.type,
+  }));
+
+  let previousBlockId: string | undefined;
+
+  for (const { file, type } of files) {
     // Gets file block corresponding to MIME type.
     let fileBlockType = "file";
     for (const blockSpec of Object.values(editor.schema.blockSpecs)) {
-      for (const mimeType of blockSpec.implementation.meta?.fileBlockAccept ||
+      for (const mimeType of blockSpec.implementation.meta.fileBlockAccept ||
         []) {
         const isFileExtension = mimeType.startsWith(".");
-        const file = items[i].getAsFile();
-
         if (file) {
           if (
             (!isFileExtension &&
               file.type &&
-              checkMIMETypesMatch(items[i].type, mimeType)) ||
+              checkMIMETypesMatch(type, mimeType)) ||
             (isFileExtension &&
               checkFileExtensionsMatch(
                 "." + file.name.split(".").pop(),
@@ -132,7 +138,6 @@ export async function handleFileInsertion<
       }
     }
 
-    const file = items[i].getAsFile();
     if (file) {
       const fileBlock = {
         type: fileBlockType,
@@ -143,7 +148,18 @@ export async function handleFileInsertion<
 
       let insertedBlockId: string | undefined = undefined;
 
-      if (event.type === "paste") {
+      const previousBlock = previousBlockId
+        ? editor.getBlock(previousBlockId)
+        : undefined;
+      if (previousBlock) {
+        // Resolve the event's insertion point only for the first file. Reusing
+        // it for every file reverses insertions after a nonempty block.
+        insertedBlockId = editor.insertBlocks(
+          [fileBlock],
+          previousBlock,
+          "after",
+        )[0].id;
+      } else if (event.type === "paste") {
         const currentBlock = editor.getTextCursorPosition().block;
         insertedBlockId = insertOrUpdateBlock(editor, currentBlock, fileBlock);
       } else if (event.type === "drop") {
@@ -159,8 +175,8 @@ export async function handleFileInsertion<
         }
 
         insertedBlockId = editor.transact((tr) => {
-          const blockInfo = getBlockInfoAtNearest(tr, pos.pos);
-          const id = getNodeId(blockInfo.bnBlock.node, tr.doc);
+          const blockInfo = getBlockInfoNearPos(tr, pos.pos);
+          const id = getNodeId(blockInfo.block.node, tr.doc);
           // TODO technically data-id will always be the non-rewritten id, so there might be multiple in the document.
           // getNodeId might find the wrong one (aka point to a deleted node when it should be a non-deleted on)
           // This is acceptable right now, given that we don't expect edits on the document content
@@ -192,7 +208,16 @@ export async function handleFileInsertion<
         return;
       }
 
-      const updateData = await editor.uploadFile(file, insertedBlockId);
+      previousBlockId = insertedBlockId;
+
+      const updateData = await editor
+        .uploadFile(file, insertedBlockId)
+        .catch(() => undefined);
+
+      // Skip the block update after failure or deletion, but process remaining files.
+      if (updateData === undefined || !editor.getBlock(insertedBlockId)) {
+        continue;
+      }
 
       const updatedFileBlock =
         typeof updateData === "string"

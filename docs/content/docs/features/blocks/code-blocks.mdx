@@ -88,7 +88,7 @@ const editor = useCreateBlockNote({
 
 在底层，高亮功能分为两部分。你也可以自行连接这两部分，从而完全控制打包内容：
 
-- `SyntaxHighlightingExtension`（来自 `@blocknote/core`）提供高亮器——一个由你选择语言、主题和引擎的 [Shiki](https://shiki.style) 实例：
+- `SyntaxHighlightingExtension`（来自 `@blocknote/core/extensions`）提供高亮器——一个由你选择语言、主题和引擎的 [Shiki](https://shiki.style) 实例：
 
   ```ts
   type SyntaxHighlightingOptions = {
@@ -118,7 +118,7 @@ npx shiki-codegen --langs javascript,typescript,vue --themes light-plus,dark-plu
 这会生成一个 `shiki.bundle.ts` 文件，你可以使用它来创建扩展——就像上面的预配置扩展一样，将其添加到编辑器中，同时使用配置了相匹配语言的 `createCodeBlockSpec`：
 
 ```ts
-import { SyntaxHighlightingExtension } from "@blocknote/core";
+import { SyntaxHighlightingExtension } from "@blocknote/core/extensions";
 import { createHighlighter } from "./shiki.bundle.js";
 
 const syntaxHighlighter = SyntaxHighlightingExtension({

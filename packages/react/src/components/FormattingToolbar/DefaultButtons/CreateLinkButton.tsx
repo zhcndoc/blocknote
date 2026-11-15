@@ -103,12 +103,20 @@ export const CreateLinkButton = () => {
     },
   });
   useEffect(() => {
+    // Closing in response to editor state changes keeps an invalid selection
+    // from leaving the create-link popover open.
+    // eslint-disable-next-line react/set-state-in-effect
     setShowPopover(false);
   }, [state]);
 
   // Makes Ctrl+K/Meta+K open link creation popover.
   useEffect(() => {
     const callback = (event: KeyboardEvent) => {
+      // A read-only editor (e.g. while a version preview is open) has no link
+      // creation to offer, so leave the shortcut to the browser.
+      if (!editor.isEditable) {
+        return;
+      }
       if ((event.ctrlKey || event.metaKey) && event.key === "k") {
         setShowPopover(true);
         event.preventDefault();
@@ -120,7 +128,7 @@ export const CreateLinkButton = () => {
     return () => {
       editorDOMElement?.removeEventListener("keydown", callback);
     };
-  }, [editorDOMElement]);
+  }, [editor, editorDOMElement]);
 
   if (state === undefined) {
     return null;
@@ -158,9 +166,11 @@ export const CreateLinkButton = () => {
           text={state.text}
           range={state.range}
           showTextField={false}
-          // (No explicit popover close here: any editor-state change — like
-          // submitting the link — already closes it via the setShowPopover
-          // effect above.)
+          onSubmit={(url) => {
+            editor.createLink(url);
+            // An unchanged URL may not modify the document, so close the form explicitly.
+            setPopoverOpen(false);
+          }}
           setToolbarOpen={(open) => formattingToolbar.store.setState(open)}
         />
       </Components.Generic.Popover.Content>

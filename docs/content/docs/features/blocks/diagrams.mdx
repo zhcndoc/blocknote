@@ -5,7 +5,7 @@ description: BlockNote 的 Mermaid 图表块——在编辑器中渲染为图表
 
 # 图表
 
-`@blocknote/diagram-block` 包新增了一个**图表块**：在源代码弹窗中以 [Mermaid](https://mermaid.js.org/) 源代码编写，并渲染为其描述的图表——流程图、时序图、甘特图以及 Mermaid 支持的其他所有图表。
+`@blocknote/diagram-block` 包新增了一个**图表块**：在源代码弹窗中以 [Mermaid](https://mermaid.js.org/) 源代码编写，再由 [Pele](https://pele.run/) 渲染。图表渲染器会按需加载，支持流程图、时序图、甘特图以及其他[受支持的图表类型](https://pele.run/compatibility)。
 
 <Callout type="info">
   此块仅在 React（`@blocknote/react`）中可用。
@@ -64,6 +64,64 @@ import {
 
 <Example name="custom-schema/diagram-block" />
 
+<a id="renderer-compatibility" />
+
+## 渲染器兼容性
+
+保存的图表和 Markdown 围栏代码块仍使用 Mermaid 源代码，因此现有文档无需迁移。Pele 使用自己的布局和视觉样式。Mermaid 主题和 `themeVariables` 不再生效；请使用 [Pele 的 CSS 变量](https://pele.run/theming)自定义预览。不支持任意 HTML 标签，也不支持 ZenUML 等外部 Mermaid 插件。
+
+切换渲染器后，不再导出 Mermaid 专用辅助函数 `initializeMermaid`、`defaultMermaidOptions`、`trimDiagramSVG`、`setSVGFontFamily` 和 `withSVGFontFamily`。如果你直接使用了这些辅助函数，请改用 `renderDiagram` 执行渲染，或用 `renderDiagramToSVG` / `renderDiagramToImage` 导出图像。请将字体系列传给渲染器，而不是重写生成的 SVG。全局初始化和基于 DOM 的裁剪不再需要。
+
+<a id="theming" />
+
+## 主题
+
+图表预览会自动继承编辑器主题，包括实时的明暗模式切换，无需单独配置图表主题：
+
+- **Mantine：** 使用 BlockNote 的颜色和圆角，包括自定义 `theme` 对象中的取值。
+- **Ariakit / React：** 使用共享的 `--bn-*` 主题变量。
+- **Shadcn：** 使用宿主环境的语义颜色变量（`--background`、`--foreground`、`--muted`、`--primary` 和 `--destructive`）、`--radius` 以及 `--chart-1` 至 `--chart-5`。这些变量必须是完整的 CSS 颜色值，与 Shadcn 当前主题一致。缺少变量时会回退到 BlockNote 调色板。暗色模式会跟随宿主环境的 token 变化，通常由 `.dark` 类控制。
+
+图表复用 BlockNote 现有调色板，不会引入单独的图表主题。节点填充色与编辑器背景相同（默认浅色主题为白色，默认深色主题为深灰色），子图则使用次级背景色：
+
+| 图表颜色 | BlockNote 默认值 |
+| --- | --- |
+| 背景、文本和连接线 | 编辑器背景色和文本色 |
+| 次级文本 | 侧边菜单颜色 |
+| 节点填充色 | 编辑器背景色 |
+| 子图填充色 | 悬停背景色 |
+| 描边 | 编辑器文本色（浅色模式为深色，深色模式为浅色） |
+| 强调色和关键/错误颜色 | 蓝色和红色文本高亮色 |
+| 八组图表序列色 | 蓝、橙、绿、红、紫、粉、黄和棕色文本高亮色 |
+
+描边使用文本颜色，而非编辑器较淡的界面边框颜色，使图形能与背景清晰区分。Shadcn 在可用时会用自己的语义 token 替换这些颜色；其中五个图表 token 会替换前五组序列色，第六至第八组仍使用共享默认值。
+
+你可以自定义所有 Pele 颜色，而不更改 BlockNote 调色板或添加 BlockNote 主题属性。在 `.bn-root` 上设置 `--pele-*` 变量，可覆盖 portal 中的预览；也可以在单个图表的 `.pele` SVG 上设置。例如：
+
+```css
+.bn-root {
+  --pele-accent: #6366f1;
+  --pele-surface: #eef2ff;
+  --pele-border: #6366f1;
+  --pele-series-1: #4338ca;
+  --pele-series-2: #b45309;
+  --pele-series-3: #047857;
+  --pele-radius: 8px;
+}
+
+.bn-root[data-color-scheme="dark"] {
+  --pele-accent: #a5b4fc;
+  --pele-surface: #312e81;
+  --pele-border: #a5b4fc;
+}
+```
+
+请使用控制应用暗色主题的选择器（例如 Shadcn 的 `.dark .bn-root`）。界面边框色和高亮色不一定适合作为高对比度图表色或分类图表调色板；请在两种主题下检查描边、标签和序列色。Pele 在第八组之后会重复使用序列颜色，某些形状还会使用 `--pele-bg` 为序列填充添加文本，因此请选用对比鲜明的颜色。
+
+请参阅 [Pele 主题参考](https://pele.run/theming)，了解所有变量，包括 `--pele-series-1` 至 `--pele-series-8`、源代码定义的填充色所用的对比文本颜色（`--pele-fg-on-light` / `--pele-fg-on-dark`）以及元素级样式。字体覆盖必须与测量标签时使用的字体一致；只修改 `--pele-font` 可能导致标签超出节点。
+
+Mermaid `style` / `classDef` 规则中显式设置的颜色优先于主题默认值。编辑器主题变量只影响预览；导出图像使用独立渲染器的默认值。若需为导出设置不同调色板，请使用自定义 `renderDiagram` 回调。
+
 ## 导出
 
 图表可以导出为 BlockNote 支持的所有格式。[Markdown](/docs/features/export/markdown) 开箱即用——图表会导出为 ` ```mermaid ` 围栏代码块，这是它们常见的 Markdown 表示方式。
@@ -95,9 +153,8 @@ const exporter = new DOCXExporter(editor.schema, {
 ```typescript
 createDiagramBlockMapping(options?: {
   /**
-   * Renders the Mermaid source to an image. Defaults to the built-in
-   * Mermaid renderer, which only works in the browser - see "Exporting
-   * server-side" below.
+   * Renders the Mermaid source to an image. Defaults to Pele, producing
+   * PNG for email, or vector SVG for DOCX, ODT, and Typst / PDF.
    */
   renderDiagram?: RenderDiagram;
 });
@@ -109,11 +166,15 @@ createDiagramBlockMapping(options?: {
 
 ### 服务端导出
 
-将 Mermaid 源代码渲染为图像需要浏览器，因此内置渲染器仅适用于客户端导出。在服务端导出时，将一个 `renderDiagram` 函数传递给 `createDiagramBlockMapping`——如果不提供，服务端导出将抛出错误：
+DOCX、ODT 和 Typst / PDF 导出器可直接在服务端工作：Pele 无需浏览器即可生成矢量 SVG。Typst / PDF 标签使用导出器的字体系列；请确保 PDF 编译器可以访问这些字体。导出时会解析 Pele 默认颜色，因此独立的 SVG 使用方无需 CSS 变量；仅用于预览的 CSS 覆盖不会包含在导出中。
+
+DOCX 图表要求阅读器支持嵌入式 SVG。不支持 SVG 的阅读器会显示空白占位符；系统不会生成光栅化兼容副本。若需兼容这类阅读器，请提供返回 PNG 或其他受支持光栅格式的自定义 `renderDiagram` 回调。
+
+电子邮件使用 PNG 图像以兼容邮件客户端。内置光栅化器需要浏览器 canvas。若要在服务端导出电子邮件，请向 `createDiagramBlockMapping` 传入 `renderDiagram` 函数；否则导出会报错：
 
 ```typescript
-import { createDiagramBlockMapping } from "@blocknote/diagram-block/docx-exporter";
-import type { RenderDiagram } from "@blocknote/diagram-block/docx-exporter";
+import { createDiagramBlockMapping } from "@blocknote/diagram-block/odt-exporter";
+import type { RenderDiagram } from "@blocknote/diagram-block/odt-exporter";
 
 const renderDiagram: RenderDiagram = async (source) => {
   // Render the Mermaid source to an image with your renderer of choice.
@@ -125,4 +186,4 @@ const renderDiagram: RenderDiagram = async (source) => {
 createDiagramBlockMapping({ renderDiagram });
 ```
 
-服务端渲染器的常见选择包括 [`@mermaid-js/mermaid-cli`](https://github.com/mermaid-js/mermaid-cli)（在无头浏览器中渲染）或 [Kroki](https://kroki.io) 服务器。无效的 Mermaid 源代码属于预期失败——将其作为 `{ error }` 返回，而不是抛出错误；这样导出时会为该块渲染错误占位符，而不会导致整个导出失败。
+例如，可使用 `pele/lazy` 中的 Pele `renderAsync` 渲染 SVG，再通过服务端 SVG 转 PNG 工具将其光栅化。无效的 Mermaid 源代码属于预期失败：请将其作为 `{ error }` 返回，而不是抛出错误；这样导出时会为该块渲染错误占位符，而不会导致整个导出失败。

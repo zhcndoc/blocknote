@@ -4,6 +4,7 @@
       "propSchema": "string",
       "type": "backgroundColor",
     },
+    "extensions": undefined,
     "implementation": {
       "mark": null,
       "parse": [Function],
@@ -16,6 +17,9 @@
       "propSchema": "boolean",
       "type": "bold",
     },
+    "extensions": [
+      [Function],
+    ],
     "implementation": {
       "mark": null,
       "render": [Function],
@@ -27,6 +31,9 @@
       "propSchema": "boolean",
       "type": "code",
     },
+    "extensions": [
+      [Function],
+    ],
     "implementation": {
       "mark": null,
       "render": [Function],
@@ -38,6 +45,7 @@
       "propSchema": "string",
       "type": "fontSize",
     },
+    "extensions": undefined,
     "implementation": {
       "mark": null,
       "render": [Function],
@@ -49,6 +57,9 @@
       "propSchema": "boolean",
       "type": "italic",
     },
+    "extensions": [
+      [Function],
+    ],
     "implementation": {
       "mark": null,
       "render": [Function],
@@ -60,6 +71,7 @@
       "propSchema": "boolean",
       "type": "small",
     },
+    "extensions": undefined,
     "implementation": {
       "mark": null,
       "render": [Function],
@@ -71,6 +83,9 @@
       "propSchema": "boolean",
       "type": "strike",
     },
+    "extensions": [
+      [Function],
+    ],
     "implementation": {
       "mark": null,
       "render": [Function],
@@ -82,6 +97,7 @@
       "propSchema": "string",
       "type": "textColor",
     },
+    "extensions": undefined,
     "implementation": {
       "mark": null,
       "parse": [Function],
@@ -94,6 +110,7 @@
       "propSchema": "boolean",
       "type": "underline",
     },
+    "extensions": undefined,
     "implementation": {
       "mark": null,
       "render": [Function],

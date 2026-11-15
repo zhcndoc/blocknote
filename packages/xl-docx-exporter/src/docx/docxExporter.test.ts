@@ -13,14 +13,24 @@ import {
   TextWriter,
   ZipReader,
 } from "@zip.js/zip.js";
-import { Packer, Paragraph, TextRun } from "docx";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table,
+  TableCell,
+  TableRow,
+  TextRun,
+} from "docx";
 import { describe, expect, it } from "vite-plus/test";
 import xmlFormat from "xml-formatter";
 import { docxDefaultSchemaMappings } from "./defaultSchema/index.js";
 import { DOCXExporter } from "./docxExporter.js";
+import { createDOCXParagraph } from "./mapping.js";
 import { ColumnBlock, ColumnListBlock } from "@blocknote/xl-multi-column";
 import { partialBlocksToBlocksForTesting } from "@shared/formatConversionTestUtil.js";
 import { testResolveFileUrl } from "@shared/util/testFileResolver.js";
+import { readDocumentImages } from "./imageRelationships.testUtil.js";
 
 const getZIPEntryContent = (entries: Entry[], fileName: string) => {
   const entry = entries.find((entry) => {
@@ -62,7 +72,40 @@ describe("exporter", () => {
     ).toMatchFileSnapshot("__snapshots__/basic/document.xml");
     await expect(
       prettify(await getZIPEntryContent(entries, "word/styles.xml")),
-    ).toMatchFileSnapshot("__snapshots__/basic/styles.xml");
+    ).toMatchFileSnapshot(await stylesSnapshotPath("basic"));
+  });
+
+  it("should resolve distinct and repeated images to their original bytes in drawing order", async () => {
+    const first = Uint8Array.from(
+      Buffer.from(
+        "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+        "base64",
+      ),
+    );
+    const second = first.slice();
+    second[13] = 255; // Different palette, still a complete 1x1 GIF.
+    const schema = BlockNoteSchema.create();
+    const exporter = new DOCXExporter(schema, docxDefaultSchemaMappings, {
+      resolveFileUrl: async (url) =>
+        new Blob([url === "first.gif" ? first : second], { type: "image/gif" }),
+    });
+    const doc = await exporter.toDocxJsDocument(
+      partialBlocksToBlocksForTesting(schema, [
+        { type: "image", props: { url: "first.gif" } },
+        { type: "image", props: { url: "second.gif" } },
+        { type: "image", props: { url: "first.gif" } },
+      ]),
+    );
+    const entries = await new ZipReader(
+      new BlobReader(await Packer.toBlob(doc)),
+    ).getEntries();
+    const { images } = await readDocumentImages(entries);
+    expect(images).toEqual([first, second, first]);
+    expect(
+      entries.filter(
+        (entry) => !entry.directory && entry.filename.startsWith("word/media/"),
+      ),
+    ).toHaveLength(2);
   });
 
   it(
@@ -116,9 +159,7 @@ describe("exporter", () => {
 
       // files related to header / footer
       await expect(
-        prettify(
-          await getZIPEntryContent(entries, "word/_rels/document.xml.rels"),
-        ),
+        prettify((await readDocumentImages(entries)).relationships),
       ).toMatchFileSnapshot(
         "__snapshots__/withCustomOptions/document.xml.rels",
       );
@@ -135,6 +176,206 @@ describe("exporter", () => {
       await expect(
         prettify(await getZIPEntryContent(entries, "docProps/core.xml")),
       ).toMatchFileSnapshot("__snapshots__/withCustomOptions/core.xml");
+    },
+  );
+
+  it("should indent nested paragraphs but not list items", async () => {
+    const schema = BlockNoteSchema.create();
+    const exporter = new DOCXExporter(schema, docxDefaultSchemaMappings, {
+      resolveFileUrl: testResolveFileUrl,
+    });
+    const doc = await exporter.toDocxJsDocument(
+      partialBlocksToBlocksForTesting(schema, [
+        {
+          type: "paragraph",
+          content: "root",
+          children: [
+            {
+              type: "paragraph",
+              content: "child",
+              children: [{ type: "paragraph", content: "grandchild" }],
+            },
+            {
+              type: "numberedListItem",
+              content: "numbered",
+              children: [
+                {
+                  type: "bulletListItem",
+                  content: "bullet",
+                  children: [{ type: "paragraph", content: "under-list" }],
+                },
+              ],
+            },
+          ],
+        },
+      ]),
+      { sectionOptions: {}, documentOptions: {}, locale: "en-US" },
+    );
+    const zip = new ZipReader(new BlobReader(await Packer.toBlob(doc)));
+    const xml = await getZIPEntryContent(
+      await zip.getEntries(),
+      "word/document.xml",
+    );
+    const paragraphs = xml.match(/<w:p[ >][\s\S]*?<\/w:p>/g) ?? [];
+
+    expect(
+      paragraphs.map((paragraph) => ({
+        text: [...paragraph.matchAll(/<w:t(?: [^>]*)?>(.*?)<\/w:t>/g)]
+          .map((match) => match[1])
+          .join(""),
+        tabs: (paragraph.match(/<w:tab\/>/g) ?? []).length,
+        numbered: paragraph.includes("<w:numPr>"),
+      })),
+    ).toEqual([
+      { text: "root", tabs: 0, numbered: false },
+      { text: "child", tabs: 1, numbered: false },
+      { text: "grandchild", tabs: 2, numbered: false },
+      { text: "numbered", tabs: 0, numbered: true },
+      { text: "bullet", tabs: 0, numbered: true },
+      { text: "under-list", tabs: 3, numbered: false },
+    ]);
+  });
+
+  it("should use mapping-declared indentation instead of block names", async () => {
+    const schema = BlockNoteSchema.create();
+    const exporter = new DOCXExporter(schema, {
+      ...docxDefaultSchemaMappings,
+      blockMapping: {
+        ...docxDefaultSchemaMappings.blockMapping,
+        paragraph: (block, exporter, level) =>
+          createDOCXParagraph({
+            children: exporter.transformInlineContent(block.content),
+            numbering: { reference: "blocknote-numbered-list", level },
+          }),
+        // Replacing a built-in list mapping with a plain paragraph must not
+        // silently retain the built-in mapping's indentation behavior.
+        numberedListItem: () => new Paragraph("plain replacement"),
+        // Raw custom paragraphs still work, but must opt into the helper to
+        // declare numbering indentation without relying on private docx fields.
+        heading: () =>
+          new Paragraph({
+            text: "raw numbered paragraph",
+            numbering: { reference: "blocknote-numbered-list", level: 2 },
+          }),
+      },
+    });
+    const doc = await exporter.toDocxJsDocument(
+      partialBlocksToBlocksForTesting(schema, [
+        {
+          type: "numberedListItem",
+          children: [
+            {
+              type: "paragraph",
+              content: "custom numbered paragraph",
+              children: [{ type: "numberedListItem" }, { type: "heading" }],
+            },
+          ],
+        },
+      ]),
+    );
+    const zip = new ZipReader(new BlobReader(await Packer.toBlob(doc)));
+    const xml = await getZIPEntryContent(
+      await zip.getEntries(),
+      "word/document.xml",
+    );
+    const paragraphs = xml.match(/<w:p[ >][\s\S]*?<\/w:p>/g) ?? [];
+    expect(
+      paragraphs.map((paragraph) => ({
+        tabs: (paragraph.match(/<w:tab\/>/g) ?? []).length,
+        numbered: paragraph.includes("<w:numPr>"),
+      })),
+    ).toEqual([
+      { tabs: 0, numbered: false },
+      { tabs: 0, numbered: true },
+      { tabs: 2, numbered: false },
+      { tabs: 2, numbered: true },
+    ]);
+  });
+
+  it("should pass real paragraphs to custom child-placement mappings", async () => {
+    const schema = BlockNoteSchema.create();
+    const exporter = new DOCXExporter(schema, {
+      ...docxDefaultSchemaMappings,
+      blockMapping: {
+        ...docxDefaultSchemaMappings.blockMapping,
+        paragraph: {
+          withChildren: (_block, _exporter, _level, _index, children) =>
+            new Table({
+              rows: [
+                new TableRow({
+                  children: [
+                    new TableCell({
+                      children: children.flat().map((child) => {
+                        expect(child).toBeInstanceOf(Paragraph);
+                        if (!(child instanceof Paragraph)) {
+                          throw new Error("Expected a docx paragraph");
+                        }
+                        return child;
+                      }),
+                    }),
+                  ],
+                }),
+              ],
+            }),
+        },
+      },
+    });
+    const doc = await exporter.toDocxJsDocument(
+      partialBlocksToBlocksForTesting(schema, [
+        {
+          type: "paragraph",
+          children: [
+            { type: "bulletListItem", content: "bullet" },
+            { type: "numberedListItem", content: "numbered" },
+          ],
+        },
+      ]),
+    );
+    const zip = new ZipReader(new BlobReader(await Packer.toBlob(doc)));
+    const xml = await getZIPEntryContent(
+      await zip.getEntries(),
+      "word/document.xml",
+    );
+    expect((xml.match(/<w:numPr>/g) ?? []).length).toBe(2);
+  });
+
+  it.each(["document", "columnList", "column"] as const)(
+    "should reject invalid layout results in a %s",
+    async (context) => {
+      const schema = BlockNoteSchema.create({
+        blockSpecs: {
+          ...defaultBlockSpecs,
+          column: ColumnBlock,
+          columnList: ColumnListBlock,
+        },
+      });
+      const exporter = new DOCXExporter(schema, docxDefaultSchemaMappings);
+      const blocks: PartialBlock<
+        typeof schema.blockSchema,
+        typeof schema.inlineContentSchema,
+        typeof schema.styleSchema
+      >[] =
+        context === "document"
+          ? [{ type: "column", children: [{ type: "paragraph" }] }]
+          : context === "columnList"
+            ? [{ type: "columnList", children: [{ type: "paragraph" }] }]
+            : [
+                {
+                  type: "columnList",
+                  children: [
+                    { type: "column", children: [{ type: "column" }] },
+                  ],
+                },
+              ];
+      const error =
+        context === "columnList"
+          ? "DOCX columnList children must be columns"
+          : `DOCX ${context} cannot contain a column directly`;
+      await expect(
+        exporter.transformBlocks(
+          partialBlocksToBlocksForTesting(schema, blocks),
+        ),
+      ).rejects.toThrow(error);
     },
   );
 
@@ -251,6 +492,271 @@ describe("exporter", () => {
     },
   );
 
+  it.each(["plain parent", "legacy parent", "legacy child"] as const)(
+    "should restart nested lists with a custom %s mapping",
+    async (variant) => {
+      const schema = BlockNoteSchema.create();
+      const exporter = new DOCXExporter(schema, {
+        ...docxDefaultSchemaMappings,
+        blockMapping: {
+          ...docxDefaultSchemaMappings.blockMapping,
+          ...(variant === "legacy child"
+            ? {
+                numberedListItem: (block, exporter, level, instance) =>
+                  createDOCXParagraph({
+                    children: exporter.transformInlineContent(block.content),
+                    numbering: {
+                      reference: "blocknote-numbered-list",
+                      level,
+                      instance,
+                    },
+                  }),
+              }
+            : {
+                bulletListItem: (block, exporter, level, instance) =>
+                  variant === "plain parent"
+                    ? new Paragraph("plain parent")
+                    : createDOCXParagraph({
+                        children: exporter.transformInlineContent(
+                          block.content,
+                        ),
+                        numbering: {
+                          reference: "blocknote-bullet-list",
+                          level,
+                          instance,
+                        },
+                      }),
+              }),
+        },
+      });
+      const blocks = partialBlocksToBlocksForTesting(schema, [
+        {
+          type: "bulletListItem",
+          content: "parent one",
+          children: [
+            { type: "numberedListItem", content: "child one" },
+            { type: "numberedListItem", content: "child two" },
+          ],
+        },
+        {
+          type: "bulletListItem",
+          content: "parent two",
+          children: [
+            { type: "numberedListItem", content: "child three" },
+            { type: "numberedListItem", content: "child four" },
+          ],
+        },
+      ]);
+      const entries = await new ZipReader(
+        new BlobReader(await exporter.toBlob(blocks)),
+      ).getEntries();
+      const xml = await getZIPEntryContent(entries, "word/document.xml");
+      const childIds = [...xml.matchAll(/<w:p[ >][\s\S]*?<\/w:p>/g)]
+        .filter((match) => match[0].includes("child "))
+        .map((match) => match[0].match(/<w:numId w:val="(\d+)"\/>/)?.[1]);
+      expect(childIds).toHaveLength(4);
+      expect(childIds[0]).toBeDefined();
+      expect(childIds[2]).toBeDefined();
+      expect(childIds[0]).toBe(childIds[1]);
+      expect(childIds[2]).toBe(childIds[3]);
+      // Neither custom boundary guarantees that a parent paragraph uses the
+      // children's numbering reference, so each child run needs its own reset.
+      expect(childIds[0]).not.toBe(childIds[2]);
+    },
+  );
+
+  it("should keep concurrent exports' numbering definitions independent", async () => {
+    const schema = BlockNoteSchema.create();
+    const exporter = new DOCXExporter(schema, docxDefaultSchemaMappings);
+    const documents = (["bulletListItem", "numberedListItem"] as const).map(
+      (type) =>
+        partialBlocksToBlocksForTesting(schema, [{ type, content: "item" }]),
+    );
+    async function numberingXml(doc: Document) {
+      const entries = await new ZipReader(
+        new BlobReader(await Packer.toBlob(doc)),
+      ).getEntries();
+      return getZIPEntryContent(entries, "word/numbering.xml");
+    }
+    const expected = [];
+    for (const blocks of documents) {
+      expected.push(
+        await numberingXml(await exporter.toDocxJsDocument(blocks)),
+      );
+    }
+    const concurrent = await Promise.all(
+      documents.map((blocks) => exporter.toDocxJsDocument(blocks)),
+    );
+    expect(await Promise.all(concurrent.map(numberingXml))).toEqual(expected);
+  });
+
+  it.each(["bulletListItem", "numberedListItem"] as const)(
+    "should keep mixed descendants in the %s parent's numbering instance",
+    async (type) => {
+      const schema = BlockNoteSchema.create();
+      const childType =
+        type === "bulletListItem" ? "numberedListItem" : "bulletListItem";
+      const exporter = new DOCXExporter(schema, docxDefaultSchemaMappings);
+      const blocks = partialBlocksToBlocksForTesting(schema, [
+        {
+          type,
+          content: "parent one",
+          children: [
+            {
+              type: childType,
+              content: "child one",
+              children: [{ type, content: "grandchild" }],
+            },
+            { type: childType, content: "child two" },
+          ],
+        },
+        {
+          type,
+          content: "parent two",
+          children: [{ type: childType, content: "restarted child" }],
+        },
+        { type: "paragraph", content: "break" },
+        { type, content: "separate list" },
+      ]);
+      // Reusing an exporter must not retain a previous document's definitions.
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const doc = await exporter.toDocxJsDocument(blocks);
+        const entries = await new ZipReader(
+          new BlobReader(await Packer.toBlob(doc)),
+        ).getEntries();
+        const xml = await getZIPEntryContent(entries, "word/document.xml");
+        const ids = [...xml.matchAll(/<w:numId w:val="(\d+)"\/>/g)].map(
+          (match) => match[1],
+        );
+        expect(ids).toHaveLength(7);
+        expect(
+          [...xml.matchAll(/<w:ilvl w:val="(\d+)"\/>/g)].map((match) =>
+            Number(match[1]),
+          ),
+        ).toEqual([0, 1, 2, 1, 0, 1, 0]);
+        expect(new Set(ids.slice(0, 6)).size).toBe(1);
+        expect(ids[6]).not.toBe(ids[0]);
+        const numbering = await getZIPEntryContent(
+          entries,
+          "word/numbering.xml",
+        );
+        const concrete = [
+          ...numbering.matchAll(/<w:num w:numId="(\d+)">([\s\S]*?)<\/w:num>/g),
+        ].find((match) => match[1] === ids[0]);
+        const abstractId = concrete?.[2].match(
+          /<w:abstractNumId w:val="(\d+)"/,
+        )?.[1];
+        const abstract = [
+          ...numbering.matchAll(
+            /<w:abstractNum\b[^>]*w:abstractNumId="(\d+)"[^>]*>([\s\S]*?)<\/w:abstractNum>/g,
+          ),
+        ].find((match) => match[1] === abstractId);
+        const levels = [
+          ...(abstract?.[2] ?? "").matchAll(
+            /<w:lvl\b[^>]*w:ilvl="(\d+)"[^>]*>([\s\S]*?)<\/w:lvl>/g,
+          ),
+        ];
+        expect(
+          levels.slice(0, 3).map((level) => ({
+            format: level[2].match(/<w:numFmt w:val="([^"]+)"/)?.[1],
+            text: level[2].match(/<w:lvlText w:val="([^"]+)"/)?.[1],
+          })),
+        ).toEqual(
+          type === "bulletListItem"
+            ? [
+                { format: "bullet", text: "•" },
+                { format: "decimal", text: "%2." },
+                { format: "bullet", text: "▪" },
+              ]
+            : [
+                { format: "decimal", text: "%1." },
+                { format: "bullet", text: "○" },
+                { format: "decimal", text: "%3." },
+              ],
+        );
+      }
+    },
+  );
+
+  it("should isolate incompatible child runs without restarting their parent", async () => {
+    const schema = BlockNoteSchema.create();
+    const exporter = new DOCXExporter(schema, docxDefaultSchemaMappings);
+    const doc = await exporter.toDocxJsDocument(
+      partialBlocksToBlocksForTesting(schema, [
+        {
+          type: "numberedListItem",
+          content: "parent one",
+          children: [
+            { type: "bulletListItem", content: "bullet one" },
+            { type: "bulletListItem", content: "bullet two" },
+            { type: "paragraph", content: "break" },
+            { type: "bulletListItem", content: "restarted bullet" },
+            { type: "numberedListItem", content: "switched number" },
+            { type: "bulletListItem", content: "switched back bullet" },
+          ],
+        },
+        {
+          type: "numberedListItem",
+          content: "parent two",
+          children: [
+            { type: "numberedListItem", content: "incompatible child one" },
+            { type: "numberedListItem", content: "incompatible child two" },
+          ],
+        },
+        {
+          type: "numberedListItem",
+          content: "parent three",
+          children: [{ type: "bulletListItem", content: "compatible child" }],
+        },
+      ]),
+    );
+    const entries = await new ZipReader(
+      new BlobReader(await Packer.toBlob(doc)),
+    ).getEntries();
+    const xml = await getZIPEntryContent(entries, "word/document.xml");
+    const ids = [...xml.matchAll(/<w:numId w:val="(\d+)"\/>/g)].map(
+      (match) => match[1],
+    );
+    expect(ids).toHaveLength(11);
+    expect([ids[1], ids[2], ids[6], ids[9], ids[10]]).toEqual(
+      Array(5).fill(ids[0]),
+    );
+    expect(ids[7]).toBe(ids[8]);
+    expect(new Set([ids[0], ids[3], ids[4], ids[5], ids[7]]).size).toBe(5);
+    const numbering = await getZIPEntryContent(entries, "word/numbering.xml");
+    const definitions = new Map(
+      [
+        ...numbering.matchAll(
+          /<w:abstractNum\b[^>]*w:abstractNumId="(\d+)"[^>]*>([\s\S]*?)<\/w:abstractNum>/g,
+        ),
+      ].map((match) => [match[1], match[2]]),
+    );
+    const instances = new Map(
+      [
+        ...numbering.matchAll(/<w:num w:numId="(\d+)">([\s\S]*?)<\/w:num>/g),
+      ].map((match) => [
+        match[1],
+        match[2].match(/<w:abstractNumId w:val="(\d+)"/)?.[1],
+      ]),
+    );
+    const formats = ids.map((id) => {
+      const definition = definitions.get(instances.get(id) ?? "") ?? "";
+      return [
+        ...definition.matchAll(
+          /<w:lvl\b[^>]*w:ilvl="1"[^>]*>([\s\S]*?)<\/w:lvl>/g,
+        ),
+      ][0]?.[1].match(/<w:numFmt w:val="([^"]+)"/)?.[1];
+    });
+    expect([
+      formats[1],
+      formats[3],
+      formats[4],
+      formats[5],
+      formats[7],
+      formats[10],
+    ]).toEqual(["bullet", "bullet", "decimal", "bullet", "decimal", "bullet"]);
+  });
+
   it(
     "should give each list its own numbering instance",
     { timeout: 10000 },
@@ -310,9 +816,9 @@ describe("exporter", () => {
       expect(listOneB).toBe(listOneA);
       expect(listTwoB).toBe(listTwoA);
 
-      // A nested sub-list is its own list: it gets its own numId and restarts,
-      // rather than continuing its parent's numbering.
-      expect(listOneNested).not.toBe(listOneA);
+      // Nested levels share the parent instance; OOXML restarts a deeper
+      // level when its parent level occurs, without continuing the parent's count.
+      expect(listOneNested).toBe(listOneA);
 
       // Separate lists get separate numIds so they don't continue each other -
       // this is the actual bug (#2225): before the fix every numbered list
@@ -396,10 +902,12 @@ describe("exporter", () => {
     { timeout: 10000 },
     async () => {
       const entries = await exportAndGetStylesEntries();
+      const styles = await getZIPEntryContent(entries, "word/styles.xml");
 
-      await expect(
-        prettify(await getZIPEntryContent(entries, "word/styles.xml")),
-      ).toMatchFileSnapshot("__snapshots__/noLocale/styles.xml");
+      expect(styles).not.toMatch(/<w:lang\b/);
+      await expect(prettify(styles)).toMatchFileSnapshot(
+        await stylesSnapshotPath("noLocale"),
+      );
     },
   );
 
@@ -408,19 +916,48 @@ describe("exporter", () => {
     { timeout: 10000 },
     async () => {
       const entries = await exportAndGetStylesEntries("fr-FR");
+      const styles = await getZIPEntryContent(entries, "word/styles.xml");
 
-      await expect(
-        prettify(await getZIPEntryContent(entries, "word/styles.xml")),
-      ).toMatchFileSnapshot("__snapshots__/withLocale/styles.xml");
+      expect(styles).toContain('<w:lang w:val="fr-FR"');
+      await expect(prettify(styles)).toMatchFileSnapshot(
+        await stylesSnapshotPath("withLocale"),
+      );
     },
   );
 });
+
+async function stylesSnapshotPath(
+  scenario: "basic" | "noLocale" | "withLocale",
+) {
+  // docx 9.14 adds Bibliography, TOC1-9 and LineNumber defaults. Keep full
+  // reviewed snapshots for both default sets, rather than stripping styles or
+  // making the locked 9.9 output adopt newer defaults. Probe a separate plain
+  // Document, NOT the exporter output: losing a style in our export must fail,
+  // not silently select a different baseline. Unreviewed XML changes still fail.
+  const control = new Document({ sections: [{ children: [] }] });
+  const entries = await new ZipReader(
+    new BlobReader(await Packer.toBlob(control)),
+  ).getEntries();
+  const styles = await getZIPEntryContent(entries, "word/styles.xml");
+  const file = styles.includes('w:styleId="TOC1"')
+    ? "styles-docx-9.14.xml"
+    : "styles.xml";
+  return `__snapshots__/${scenario}/${file}`;
+}
 
 function prettify(sourceXml: string) {
   let ret = xmlFormat(sourceXml);
 
   // replace random ids like r:id="rIdll8_ocxarmodcwrnsavfb"
   ret = ret.replace(/r:id="[a-zA-Z0-9_-]*"/g, 'r:id="FAKE-ID"');
+
+  // Image relationship IDs are internal to docx and can change between releases.
+  ret = ret.replace(/r:embed="[a-zA-Z0-9_-]*"/g, 'r:embed="FAKE-ID"');
+
+  // docx 9.13 omits empty optional drawing metadata; it means the same as "".
+  ret = ret.replace(/<wp:docPr\b[^>]*>/g, (tag) =>
+    tag.replace(/ (?:descr|title)=""/g, ""),
+  );
 
   // replace random ids like Id="rIdll8_ocxarmodcwrnsavfb"
   ret = ret.replace(/ Id="[a-zA-Z0-9_-]*"/g, ' Id="FAKE-ID"');

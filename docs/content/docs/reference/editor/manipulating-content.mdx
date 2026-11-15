@@ -141,11 +141,11 @@ editor.forEachBlock((block) => {
 insertBlocks(
   blocksToInsert: PartialBlock[],
   referenceBlock: BlockIdentifier,
-  placement: "before" | "after" = "before"
-): void
+  placement: "before" | "after" | "first-child" | "last-child" = "before"
+): Block[]
 ```
 
-将新块插入到现有块的相对位置。
+将新块插入到现有块的相对位置。`"before"` 和 `"after"` 会将新块作为参考块的同级块插入；`"first-child"` 和 `"last-child"` 会将新块嵌套在参考块中。返回插入的块。
 
 ```typescript
 // 在现有块前插入段落
@@ -164,7 +164,19 @@ editor.insertBlocks(
   "existing-block-id",
   "after",
 );
+
+// Insert a paragraph as the last child of an existing block
+editor.insertBlocks(
+  [{ type: "paragraph", content: "Nested paragraph" }],
+  "existing-block-id",
+  "last-child",
+);
 ```
+
+`placement` 指定新块相对于参考块的插入位置：
+
+- `"before"` 和 `"after"`：作为参考块的同级块，直接插入其前或其后。
+- `"first-child"` 和 `"last-child"`：作为参考块的子块，插入其开头或末尾。参考块此前无需已经有子块。
 
 ### 更新块
 
@@ -370,7 +382,7 @@ editor.insertInlineContent([
 getSelectedText(): string
 ```
 
-以纯文本形式获取当前选中的文本。
+以纯文本形式获取当前选中的文本。如果选区跨越多个块，每个块的文本之间会以换行符分隔。
 
 ```typescript
 const selectedText = editor.getSelectedText();

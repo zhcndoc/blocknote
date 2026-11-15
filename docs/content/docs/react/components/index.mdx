@@ -38,3 +38,35 @@ BlockNote 包含许多可以完全自定义的 UI 组件（如菜单和工具栏
 [移动端格式化工具栏](/docs/react/components/formatting-toolbar#mobile-formatting-toolbar)始终 portal 到 `document.body`，包括其菜单和弹出框。它不会使用配置的格式化工具栏目标或默认目标。
 
 当目标位于编辑器 DOM 之外（例如 `document.body`）时，BlockNote 会自动在其中渲染一个带主题的包装元素，使浮动 UI 无论 portal 到何处都保留编辑器的样式和主题。
+
+<a id="placing-blocknote-ui-in-your-own-layout" />
+
+### 在自定义布局中放置 BlockNote UI
+
+有些组件（例如[评论侧边栏](/docs/features/collaboration/comments#sidebar-view)）不是浮动组件，但仍需要编辑器上下文，因此必须在 `BlockNoteView` 内渲染。若要将这类组件显示在应用布局的其他位置，请将它放在 `BlockNoteView` 内，并用 `RenderInPortalElement` 包裹，再传入要显示它的目标元素：
+
+```tsx
+function App() {
+  const editor = useCreateBlockNote(/* ... */);
+  // The element in your layout that the sidebar is rendered into.
+  const [sidebarElement, setSidebarElement] = useState<HTMLElement | null>(
+    null,
+  );
+
+  return (
+    <div className="my-layout">
+      <BlockNoteView editor={editor} comments={false}>
+        <FloatingComposerController />
+        {sidebarElement && (
+          <RenderInPortalElement target={sidebarElement}>
+            <ThreadsSidebar />
+          </RenderInPortalElement>
+        )}
+      </BlockNoteView>
+      <aside ref={setSidebarElement} />
+    </div>
+  );
+}
+```
+
+子组件会在 `target` 中渲染到带主题的包装元素内，因此会保留编辑器样式；其中的焦点也会被视为编辑器内的焦点。

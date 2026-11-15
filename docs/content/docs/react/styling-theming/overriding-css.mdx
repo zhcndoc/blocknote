@@ -44,3 +44,16 @@ BlockNote 使用数据属性来针对特定的块类型和属性：
 
 - `[data-content-type="blockType"]`：针对类型为 `blockType` 的块。
 - `[data-propName="propValue"]`：针对具有特定属性值的块。如果该值与默认值相同，则不会添加 `data-propName` 属性。
+
+## 链接
+
+编辑器中的链接使用浏览器默认的链接样式。BlockNote 通过一条 CSS specificity 为零的规则设置该样式，因此你在自己的样式表中编写的任何 `a` 规则都会覆盖它。
+
+Tailwind 的 preflight reset 也会针对 `a` 元素。在 Tailwind v4 中，该 reset 位于级联层内，因此仍由 BlockNote 的规则生效。在 Tailwind v3 中，reset 的优先级更高，链接会显示为普通文本；可通过以下样式恢复默认效果：
+
+```css
+.bn-editor a {
+  color: revert;
+  text-decoration: revert;
+}
+```

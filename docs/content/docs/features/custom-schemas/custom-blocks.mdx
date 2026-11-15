@@ -57,6 +57,11 @@ type BlockConfig = {
   type: string;
   content: "inline" | "plain" | "none";
   readonly propSchema: PropSchema;
+  layoutOnly?: boolean;
+  children?:
+    | { allow?: "blocks"; exclude?: string[] }
+    | { allow: string[]; min?: number; dissolve?: boolean };
+  placeable?: "anywhere" | "namedOnly";
 };
 ```
 
@@ -70,6 +75,10 @@ type BlockConfig = {
 
 <Callout type="info">
   _在警告演示中，我们希望用户能够在警告区块中输入富文本，因此将 `content` 设置为 `"inline"`。_
+</Callout>
+
+<Callout type="info">
+  _每个区块都可以包含缩进显示在其下方的子区块，无需在配置中声明。要为区块内容及其子区块绘制框架，请参阅[区块框架](#block-frames)。`layoutOnly`、`children` 和 `placeable` 仅用于布局块。布局块只容纳并排列其他区块，自身没有内容，例如面板或标签页组。请参阅[布局块](/docs/features/custom-schemas/layout-blocks)。_
 </Callout>
 
 `propSchema:` `PropSchema` 指定区块支持的属性。区块属性（props）是存储在文档中的数据，可用于自定义其外观或行为。
@@ -107,12 +116,6 @@ type PropSchema<PrimitiveType extends "boolean" | "number" | "string"> = Record<
   _在警告示例中，我们添加了名为 `type` 的属性，用于指定警告类型（警告 / 错误 / 信息 / 成功），还添加了从[默认区块属性](/docs/features/blocks#default-block-properties)继承的文本对齐和文本颜色属性，以支持基本样式选项。_
 </Callout>
 
-`isSelectable?:` 可以设置为 false，使区块不可被鼠标和键盘选中。这也有助于能选中区块中不可编辑的内容。仅当 `content` 为 `none` 时才应设置为 false，默认为 true。
-
-`hardBreakShortcut?:` 定义用于在区块的内联内容中插入硬换行的键盘快捷键。默认为 `"shift+enter"`。
-
-#### 文件区块配置
-
 ### 区块实现 (`ReactCustomBlockImplementation`)
 
 区块实现定义了区块在编辑器中的渲染方式，以及如何从 HTML 解析和转换为 HTML。
@@ -124,11 +127,17 @@ type ReactCustomBlockImplementation = {
     editor: BlockNoteEditor;
     contentRef?: (node: HTMLElement | null) => void;
   }>;
+  renderFrame?: React.FC<{
+    block: Block;
+    editor: BlockNoteEditor;
+    slotRef: (node: HTMLElement | null) => void;
+  }>;
   toExternalHTML?: React.FC<{
     block: Block;
     editor: BlockNoteEditor;
     contentRef?: (node: HTMLElement | null) => void;
-    contest: { nestingLevel: number };
+    childrenRef: (node: HTMLElement | null) => void;
+    context: { nestingLevel: number };
   }>;
   parse?: (element: HTMLElement) => PartialBlock["props"] | undefined;
   parseContent?: (options: {
@@ -136,13 +145,26 @@ type ReactCustomBlockImplementation = {
     schema: Schema;
   }) => Fragment | undefined;
   runsBefore?: string[];
+  experimental_keyboard?:
+    | KeyboardSettings
+    | ((block: Block) => KeyboardSettings);
+  // KeyboardSettings: {
+  //   enter?: "split" | "into-children" | "line-break";
+  //   shiftEnter?: "line-break" | "same-as-enter";
+  //   splitKeepsType?: boolean;
+  //   splitKeepsChildren?: boolean;
+  //   resetsTo?: { type: string; props?: Record<string, unknown> };
+  //   emptyEnterResets?: boolean;
+  //   emptyChildEnter?: "outdent" | "exit-at-end" | "stay";
+  //   childrenCanOutdent?: boolean;
+  // }
   meta?: {
-    hardBreakShortcut?: "shift+enter" | "enter" | "none";
     selectable?: boolean;
     fileBlockAccept?: string[];
     code?: boolean;
     defining?: boolean;
     isolating?: boolean;
+    draggable?: boolean;
     highlight?: (block: Block) => string | undefined;
   };
 };
@@ -156,9 +178,14 @@ type ReactCustomBlockImplementation = {
 
 - `contentRef:` 可用于标记区块中哪个元素可编辑的 React `ref`。仅当区块配置包含 `content: "inline"` 或 `content: "plain"` 时可用。
 
-`toExternalHTML?:` 该组件在区块导出为 HTML 用于 BlockNote 之外使用时调用，例如复制到剪贴板时。如果未定义，BlockNote 将使用 `render` 进行 HTML 转换。它接收与 `render` 相同的 props 以及一个额外的 `context` 属性，该属性是一个包含以下属性的对象：
+`renderFrame?:` 用于围绕区块内容及其子区块绘制框架的组件。请参阅[区块框架](#block-frames)。
 
-- `nestingLevel`: 当前导出的区块嵌套在其他区块中的深度。0 表示处于文档的顶层。
+`toExternalHTML?:` 该组件在区块导出为 HTML、供 BlockNote 之外使用时调用，例如复制到剪贴板时。如果未定义，BlockNote 会使用 `render`（如果该区块定义了 `renderFrame`，也会使用它）转换 HTML。它接收与 `render` 相同的 props，以及另外两个属性：
+
+- `childrenRef:` React `ref`，用于标记区块子内容应放置的位置，例如 `<details>` 元素内部。若未指定，子区块会跟在当前区块之后。
+
+- `context:` 对象，包含以下属性：
+  - `nestingLevel:` 当前导出区块嵌套在其他区块中的深度。`0` 表示位于文档顶层。
 
 <Callout type="info">
   _请注意，传入 `toExternalHTML` 的组件会在一个独立的 React 根实例中渲染和序列化，因此无法使用依赖于 React 上下文的 Hooks。_
@@ -172,19 +199,39 @@ type ReactCustomBlockImplementation = {
 
 `runsBefore?:` 如果该区块具有需要优先于其他区块进行解析的内容或扩展，可以在此处传入其 `type` 数组。
 
-`meta?:` 用于设置区块的各种通用属性的对象。
+`experimental_keyboard?:` 指定键盘如何处理该区块及其子区块。此 API 目前处于实验阶段，未来可能变化。只需填写与默认行为不同的设置。若需根据区块属性决定设置，可传入一个接收区块并返回设置的函数。
 
-- `hardBreakShortcut?:` 定义用于在区块的内联内容中插入硬换行的键盘快捷键。默认为 `"shift+enter"`。对于 `content: "plain"` 区块（不能包含硬换行节点），该快捷键会改为插入字面换行符（`"\n"`）。
+- `enter?:` 在区块内容中按 Enter 时的行为。默认的 `"split"` 会拆分区块，将光标后的文本移到下方的新区块。`"into-children"` 会将其移入第一个子区块。`"line-break"` 会插入换行，并使 Shift-Enter 执行相同操作。对于无法包含硬换行节点的 `content: "plain"` 区块，换行会插入字面换行符（`"\n"`）。
+
+- `shiftEnter?:` 在区块内容中按 Shift-Enter 时的行为：默认的 `"line-break"`，或 `"same-as-enter"`。
+
+- `splitKeepsType?:` 按 Enter 拆分区块时，新建区块是否沿用当前区块类型（例如列表项）。默认为 `false`。
+
+- `splitKeepsChildren?:` 按 Enter 拆分区块时，子区块是否留在当前区块。否则它们会随光标后的文本移到新区块，如同嵌套区块的行为，新区块会移到子区块上方并占据原位置。`enter` 为 `"into-children"` 时默认为 `true`（子区块构成该区块的主体）；关闭状态的 toggle 也会设置为保留其隐藏子区块。
+
+- `resetsTo?:` 重置区块时要转换成的类型，同时保留内容和子区块。在区块开头按 Backspace 总会重置区块。此设置包含 `type`，以及要合并到区块属性中的 `props`。默认为 `{ type: "paragraph" }`。
+
+- `emptyEnterResets?:` 在空区块中按 Enter 时是否也重置区块，例如空列表项变为段落。默认为 `false`。
+
+- `emptyChildEnter?:` 在该区块的空子区块中按 Enter 时的行为。默认的 `"outdent"` 会提升任何空子区块的层级。布局块默认使用 `"exit-at-end"`：最后一个空子区块会移到布局块之后，其他空子区块后则会新增一个子区块。`"stay"` 总是在空子区块后新增子区块。
+
+- `childrenCanOutdent?:` 子区块是否可以通过 Shift-Tab，或在空子区块、嵌套子区块中按 Enter 或 Backspace 来移出该区块。默认为 `true`；布局块中默认为 `false`，其子区块不能移出。
+
+多个设置同时适用时，在非空内容开头按 Enter 总会在其上方插入空区块；重置空区块的行为优先于 `enter: "into-children"`。
+
+`meta?:` 用于设置区块的各种通用属性的对象。
 
 - `selectable?:` 可以设置为 false，使区块不可被鼠标和键盘选中。这也有助于能选中区块中不可编辑的内容。仅当 `content` 为 `none` 时才应设置为 false，默认为 true。
 
-- `fileBlockAccept?:` 针对自定义的文件区块，指定上传文件时接受的 MIME 类型。所有文件区块都应指定该属性，并在 `render` 函数中使用 [`FileBlockWrapper`](https://github.com/TypeCellOS/BlockNote/blob/main/packages/react/src/blocks/File/helpers/render/FileBlockWrapper.tsx) / [`ResizableFileBlockWrapper`](https://github.com/TypeCellOS/BlockNote/blob/main/packages/react/src/blocks/File/helpers/render/ResizableFileBlockWrapper.tsx) 组件（详见下一小节）。
+- `fileBlockAccept?:` 对于自定义文件块，可指定接受的 MIME 类型（例如 `"application/pdf"` 或 `"image/*"`）或文件扩展名（例如 `".pdf"`）。它控制文件上传选择器，以及拖放或粘贴文件时使用的区块类型。请参阅[自定义文件块](#custom-file-blocks)。
 
 - `code?:` 该区块是否包含 [代码](https://prosemirror.net/docs/ref/#model.NodeSpec.code)。
 
 - `defining?:` 该区块是否为 [defining](https://prosemirror.net/docs/ref/#model.NodeSpec.defining)。
 
 - `isolating?:` 该区块是否为 [isolating](https://prosemirror.net/docs/ref/#model.NodeSpec.isolating)。
+
+- `draggable?:` 该区块是否显示侧边菜单拖动手柄。默认为 `true`；对于只能放入指定父级的布局块（`placeable: "namedOnly"`），默认为 `false`。
 
 - `highlight?:` 返回区块文本应进行语法高亮的语言的回调（如果不进行高亮则返回 `undefined`）。只有在编辑器中添加了[语法高亮扩展](/docs/features/blocks/code-blocks#syntax-highlighting)时，高亮才会生效。
 
@@ -257,3 +304,99 @@ const schema = BlockNoteSchema.create({
 现在您已经知道如何创建自定义区块并将其添加到编辑器，但用户尚无方式往文档中创建该区块实例。
 
 为了解决这个问题，建议实现一个[命令以在斜杠菜单中插入您的自定义区块](/docs/react/components/suggestion-menus#changing-slash-menu-items)，以及[在区块类型选择器中为其添加一个条目](/docs/react/components/formatting-toolbar)。
+
+<a id="custom-file-blocks" />
+
+## 自定义文件块
+
+要扩展内置文件块的行为，添加新的文件类型或预览，请使用 `createReactBlockSpec`，并沿用内置块的文件属性和渲染包装器：
+
+1. 将 `content` 设为 `"none"`，并包含 `name`、`url` 和 `caption` 属性，每个属性的 `default` 都设为 `""`。你可以复用 `@blocknote/core` 导出的 `createFileBlockConfig().propSchema`。
+2. 在块实现中设置 `meta.fileBlockAccept`，例如 PDF 文件使用 `["application/pdf"]`。
+3. 从 `@blocknote/react` 导入并渲染 `FileBlockWrapper`，将渲染属性传给它，并把预览作为子元素。它会提供添加文件按钮、上传加载状态和说明文字；没有预览时，则显示文件名和图标。若希望文件名也显示在预览旁边，请在预览子元素中包含文件名。若需可调整大小的预览，请改用 `ResizableFileBlockWrapper`，并添加数值型 `previewWidth` 属性。添加默认值为 `true` 的布尔型 `showPreview` 属性，让用户可以在预览和文件名与图标之间切换。
+4. 将块 spec 添加到你的[schema](/docs/features/custom-schemas#creating-your-own-schema)中，并放在其他接受相同文件的文件块之后：拖放或粘贴文件时，schema 中最后一个匹配的块 spec 会生效。配置 [`uploadFile`](/docs/react/components/image-toolbar#file-upload) 以启用上传。保留 `defaultBlockSpecs.file` 作为未匹配文件的回退类型。若要让用户插入空白区块，请添加[斜杠菜单项](/docs/react/components/suggestion-menus#changing-slash-menu-items)。
+
+目前包装器的 TypeScript 类型针对内置的 `"file"` 区块，因此自定义区块的渲染属性不能直接赋给它。下面的 PDF 示例在包装器边界使用类型断言来处理这一限制。
+
+下面的示例添加了一个带可调整大小预览的 PDF 区块和一个斜杠菜单项，并自定义了用于 PDF 专属标签的[字典](/docs/features/localization)。它通过 URL 嵌入 PDF；配置 `uploadFile` 后也支持上传：
+
+<Example name="custom-schema/pdf-file-block" />
+
+<a id="block-frames" />
+
+## 区块框架
+
+区块可以包含子区块。默认情况下，BlockNote 会在区块下方缩进显示子区块。使用 `renderFrame` 可为区块内容及其子区块绘制统一框架，例如让两者共享同一背景。
+
+在下面的演示中，我们为上方演示中的 Alert 区块添加标题和正文。警告文本作为标题，子区块作为正文；框架会根据警告类型设置标题和正文的背景色：
+
+<Example name="custom-schema/alert-block-with-title-and-body" />
+
+块配置本身无需更改。包含内容（`content: "inline"` 或 `"plain"`）的区块始终可以包含子区块，因此无需声明。我们在块实现中添加 `renderFrame` 和 `experimental_keyboard`：
+
+```tsx
+export const createAlert = createReactBlockSpec(
+  {
+    type: "alert",
+    propSchema: {
+      type: {
+        default: "warning",
+        values: ["warning", "error", "info", "success"],
+      },
+    },
+    content: "inline",
+  },
+  {
+    experimental_keyboard: {
+      enter: "into-children",
+      childrenCanOutdent: false,
+      emptyChildEnter: "exit-at-end",
+    },
+    // Draws the title row, the same as in the Alert demo.
+    render: (props) => {
+      ...
+    },
+    renderFrame: (props) => (
+      <div className="alert-frame" data-alert-type={props.block.props.type}>
+        <div ref={props.slotRef} />
+      </div>
+    ),
+  },
+);
+```
+
+`render:` 只绘制区块内容，此处是 Alert 的标题行。添加框架不会改变它。
+
+`renderFrame:` 绘制框架的 React 组件，接收三个 React props：
+
+- `block:` 当前区块。可使用它的属性调整框架，例如显示对应警告类型的颜色。
+- `editor:` 当前区块所在的 BlockNote 编辑器实例。
+- `slotRef:` React `ref`，应挂到容纳区块内容及其子区块的元素上。可在该元素周围添加图标或按钮等其他元素；请为这些元素设置 `contentEditable={false}`。
+
+若要让区块不显示框架，请返回 `null`。例如，可以通过区块属性控制是否显示框架。
+
+`experimental_keyboard:` 如果不设置这些选项，子区块的行为与其他嵌套区块相同。此处的设置会让正文留在 Alert 中：
+
+- `enter: "into-children"`：在标题中按 Enter，会在正文开头添加区块。
+- `childrenCanOutdent: false`：按 Shift-Tab 不会将区块移出 Alert。
+- `emptyChildEnter: "exit-at-end"`：在正文最后一个空区块中按 Enter，会将该区块移出 Alert。
+
+上述[区块实现](#block-implementation-reactcustomblockimplementation)部分列出了 `experimental_keyboard` 的所有设置。
+
+使用 `content` 设置标题，使用 `children` 设置正文：
+
+```typescript
+{
+  type: "alert",
+  content: "Before you start",
+  children: [
+    { type: "paragraph", content: "Make sure you have an account." },
+  ],
+}
+```
+
+用户移动 Alert 时，标题和正文会一起移动。
+
+<Callout type="info">
+  _带框架的区块不同于[布局块](/docs/features/custom-schemas/layout-blocks)。布局块自身没有内容，只容纳子区块，例如面板或标签页组。请参阅[布局块与区块框架](/docs/features/custom-schemas/layout-blocks#layout-blocks-and-block-frames)。_
+</Callout>

@@ -10,6 +10,9 @@ COPY . .
 
 RUN pnpm install --frozen-lockfile
 
+ARG NEXT_BUILD_NODE_OPTIONS=--max-old-space-size=6144
+ENV NEXT_BUILD_NODE_OPTIONS=${NEXT_BUILD_NODE_OPTIONS}
+
 RUN pnpm --filter docs run build:vercel
 
 FROM node:24-bookworm-slim

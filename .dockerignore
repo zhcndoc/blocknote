@@ -5,12 +5,14 @@
 # these entries just stop the heavy/irrelevant trees from bloating the context.
 **/node_modules
 **/dist
+**/.next
 **/types
 **/.vite
 **/.vite-plus
 **/*.tsbuildinfo
 **/.DS_Store
 .git
+**/.env*
 **/test-results
 **/blob-report
 # The Typst compiler's Rust build tree (GBs) and wasm output: never image

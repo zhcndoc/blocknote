@@ -27,6 +27,7 @@ export const EditLinkMenuItems = (
     "url" | "text" | "range" | "setToolbarOpen" | "setToolbarPositionFrozen"
   > & {
     showTextField?: boolean;
+    onSubmit?: (url: string, text: string) => void;
   },
 ) => {
   const Components = useComponentsContext()!;
@@ -41,7 +42,10 @@ export const EditLinkMenuItems = (
   const [currentText, setCurrentText] = useState<string>(text);
 
   useEffect(() => {
+    // Reset the controlled form when a different link is selected.
+    // eslint-disable-next-line react/set-state-in-effect
     setCurrentUrl(url);
+    // eslint-disable-next-line react/set-state-in-effect
     setCurrentText(text);
   }, [text, url]);
 
@@ -58,7 +62,14 @@ export const EditLinkMenuItems = (
   );
 
   const handleSubmit = useCallback(() => {
-    editLink(validateUrl(currentUrl), currentText, props.range.from);
+    if (props.onSubmit) {
+      props.onSubmit(
+        currentUrl === "" ? currentUrl : validateUrl(currentUrl),
+        currentText,
+      );
+    } else {
+      editLink(validateUrl(currentUrl), currentText, props.range.from);
+    }
     props.setToolbarOpen?.(false);
     props.setToolbarPositionFrozen?.(false);
   }, [editLink, currentUrl, currentText, props]);
